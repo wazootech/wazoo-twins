@@ -1,0 +1,295 @@
+{
+  "generatedAt": "2026-11-06T19:03:19.111Z",
+  "world": "synthetic",
+  "worldNote": "SYNTHETIC baseline: run against a hand-written in-memory world (src/eval/synthetic-world.ts), not the real seeded World. These numbers measure the harness, not the Twin. The baseline against the real World is PENDING integration — the createWorldClient factory (src/world/client.ts) is implemented, but no seeded World exists yet (no ~/workspace/wazoo-twins-data/world.db; the seed has not been run).",
+  "taskSet": "held-out-v1",
+  "totals": {
+    "tasks": 25,
+    "passed": 25,
+    "failed": 0,
+    "passAt1": 1,
+    "provenanceFailures": 0,
+    "unapprovedActions": 0
+  },
+  "perKind": {
+    "briefing": {
+      "tasks": 10,
+      "passed": 10,
+      "passAt1": 1
+    },
+    "draft": {
+      "tasks": 10,
+      "passed": 10,
+      "passAt1": 1
+    },
+    "scheduling": {
+      "tasks": 5,
+      "passed": 5,
+      "passAt1": 1
+    },
+    "smoke": {
+      "tasks": 0,
+      "passed": 0,
+      "passAt1": 0
+    }
+  },
+  "draftApprovalProxy": {
+    "score": 1,
+    "drafts": 10,
+    "approvable": 10,
+    "note": "Proxy for 'approvable without edits': fraction of draft tasks whose every factual claim is cited and whose deterministic checks pass. This is NOT a human approval rate — no human reviewed these drafts."
+  },
+  "failedRun": false,
+  "results": [
+    {
+      "id": "brief-01-rtx-outstanding",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 2,
+      "answerExcerpt": "NBIS eApp (SF-86): description=SF-86 clearance application; case HRC12777765, A00001315986; complete sections 1-10, download archival copy, certify/sign/release; CPC contact Shelby Frazier, GSS-CPC@RTX.com; due ~Nov 8, 2026 (four days after the Nov 4 reminder); status=outstanding; due=2026-11-08; ne"
+    },
+    {
+      "id": "brief-02-deadlines-week",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Techstars Spring 2027: description=Deadline Wed Nov 18, 2026. Accelerator backup; $220,000; program Mar 8-Jun 3, 2027; do not let it displace Mozilla (due Nov 20); due=2026-11-18 [opportunity-tracker.md — Active opportunities / Techstars Spring 2027]\nNBIS eApp (SF-86): description=SF-86 clearance ap"
+    },
+    {
+      "id": "brief-03-gt-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Ernest McCarter: name=Ernest McCarter; role=VP of Engineering, General Translation; org=General Translation; contact=GitHub eoinest (gt-react/gt-next author); X @mccarterernest (lead, not yet verified on x.com); description=Conversation Fri Nov 6, 2026, 11:00-11:30am PT, Cal Video; originally reache"
+    },
+    {
+      "id": "brief-04-lm-studio-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "LM Studio — Full Stack Software Engineer: name=LM Studio — Full Stack Software Engineer; stage=résumé tailored Nov 6; no application sent yet; description=NYC; $150K-$350K + equity; apply route is email only: Apply now opens a dialog to email apply@lmstudio.ai with résumé + a note on why fit, discus"
+    },
+    {
+      "id": "brief-05-eclerx-status",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Peter Van Voorhis: name=Peter Van Voorhis; role=General Translation contact; description=Nov 2 intro call went well; fully in person in San Francisco, relocation covered; next steps: Ernest conversation, then 2-3 team conversations, technical interview, one-week paid onsite in SF; comp ranges only: "
+    },
+    {
+      "id": "brief-06-mozilla-blockers",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Mozilla Human-Scale AI Incubator proposal: description=Deadline Fri Nov 20, 2026, 11:59pm PT. Proposal draft, NOT submitted; $300,000 for 12 months from April 2027, up to $500,000 over 3 years; blockers: (1) applicant type, (2) name ONE pilot community with permission plus verified user/partner coun"
+    },
+    {
+      "id": "brief-07-john-sync",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "John Carlo Manuel: name=John Carlo Manuel; role=Wazoo collaborator, DevRel; description=Twice-weekly sync Wednesdays 9:30am and Sundays 6pm PT; building engineering blog at blog.wazoo.dev (Astro, Cloudflare Workers); fundamentals pillar: knowledge graphs, vector DBs, NLP concepts [MEMORY.md — Commit"
+    },
+    {
+      "id": "brief-08-benchmark-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Travis Long: name=Travis Long; role=Founder, Autonomous Search; org=Benchmark Motion; contact=travis@autonomoussearch.io; description=Founding Engineer, Irvine, onsite 6 days/week, work directly with founder Daniel + small team; company bootstrapped to ~$60M ARR via golf business, top-benchmarked re"
+    },
+    {
+      "id": "brief-09-kiroween-credits",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Kiroween 2026 credits request: description=Request 4,000 free Kiro credits on the Devpost Resources tab by Tue Dec 1, 2026, 12:00pm PT (needs Kiro user ID or AWS account ID); registration is NOT credits confirmation; redeemed credits expire Dec 31, 2026, 11:59pm PT; due=2026-12-01T12:00:00-08:00 [ME"
+    },
+    {
+      "id": "brief-10-discord-status",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Discord CCPA data request: description=CCPA Request to Know / Access (section 1798.110) sent Fri Nov 6, 2:53am PT to privacy@discord.com, asking for a copy, not deletion; confirmation due Fri Nov 20, 2026; full response due Mon Dec 21, 2026; Ethan is not looking to sue, just wants his data back; sta"
+    },
+    {
+      "id": "draft-01-travis-followup",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask for a 30-min call next week, mornings PT\n- Note the Tue/Thu 1:30-4:30pm PT teaching block is unavailable\n- Ask about the 6-day onsite schedule\n- Ask about the comp range and timeline\n\nGrounded in:\nTravis Long: name=Travis Long; role=Founder, Autono"
+    },
+    {
+      "id": "draft-02-openhack-ananay",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Apologize if the free-plan / Mythos request was off base\n- Ask about a paid-tier trial to evaluate full scans\n- Note the demo booked for Fri Nov 6, 2:00-2:30pm PT was canceled\n\nGrounded in:\nOpenHack demo thread (Ananay): channel=Gmail; participants=Ana"
+    },
+    {
+      "id": "draft-03-purav-thanks",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Thank Purav for the Nov 4 intro and Clayzo\n- Share the wazoo.dev Clayzo result (PR #33)\n- Confirm the meetup Wed Nov 11, 6:00-7:00pm PT at Airoma Cafe\n\nGrounded in:\nPurav Patel: name=Purav Patel; role=Builder of Clayzo; org=Clayzo; contact=purav@clayzo"
+    },
+    {
+      "id": "draft-04-sarah-kate-clearance",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask about interim vs final clearance timing and whether the Jan 18, 2027 start depends on it\n- Confirm taking Effectors over HWIL\n- Confirm the HWIL offer req 01874565 withdrawal\n\nGrounded in:\nRTX Effectors offer: description=Software Engineer I (Onsit"
+    },
+    {
+      "id": "draft-05-shelby-nbis",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask Shelby Frazier for the status of the NBIS eApp\n- Reference case HRC12777765 and A00001315986\n- Confirm the sections 1-10 scope and the ~Nov 8, 2026 due date\n\nGrounded in:\nNBIS eApp (SF-86): description=SF-86 clearance application; case HRC12777765,"
+    },
+    {
+      "id": "draft-06-wanda-drug-screen",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Confirm the retest at Quest Diagnostics Anaheim Ball\n- Reference the Thu Nov 5, 9:10am appointment\n- Ask Wanda Charles about the extension if needed\n\nGrounded in:\nRTX drug screen retest: description=First Advantage retest registration issued Nov 2, 202"
+    },
+    {
+      "id": "draft-07-lm-studio-apply",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Apply for the Full Stack Software Engineer role in NYC\n- Note TypeScript/React, API backend, SDK, CLI, and SQL/data modeling experience\n- Mention the sparql-engine CLI work\n- Send with résumé to apply@lmstudio.ai\n\nGrounded in:\nLM Studio — Full Stack So"
+    },
+    {
+      "id": "draft-08-john-blog-sync",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Propose the Wednesday 9:30am sync agenda\n- Cover the blog.wazoo.dev launch and the fundamentals pillar\n- Note the Sunday 6pm sync as the alternate\n\nGrounded in:\nJohn Carlo Manuel: name=John Carlo Manuel; role=Wazoo collaborator, DevRel; description=Twi"
+    },
+    {
+      "id": "draft-09-vogel-docs",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Reply to Patrick Vogel about the citizenship verification\n- Confirm a driver's license/state ID plus a birth certificate or US passport/passport card will be provided via the secure email flow\n- Do not attach document images to regular email\n\nGrounded "
+    },
+    {
+      "id": "draft-10-manmeet-caltrans",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask Manmeet Kaur Phagurah about open Caltrans roles fitting a B.S. in computer science\n- Mention Ethan's software engineering background\n- Ask whether a Technical Project Engineer path or software roles fit better\n\nGrounded in:\nManmeet Kaur Phagurah: n"
+    },
+    {
+      "id": "sched-01-travis-call",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Proposed: Tue Nov 10, 2026, 10:00am PT [MEMORY.md — Commitments / Tue/Thu work block]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT; Thu Nov 12, 2026, 3:00pm PT\n\nGrounded in:\nTravis Long: name=Travis Long; role=Founder, Autonomous Search; org=Benchmark Motion; contact"
+    },
+    {
+      "id": "sched-02-ernest-followup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Proposed: Wed Nov 11, 2026, 11:00am PT [MEMORY.md — Commitments / Tue/Thu work block]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 3:00pm PT; Thu Nov 12, 2026, 2:00pm PT\n\nGrounded in:\ncodeCampus teaching block: start=Tue/Thu 1:30pm PT; end=Tue/Thu 4:30pm PT; kind=teaching; att"
+    },
+    {
+      "id": "sched-03-purav-meetup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Proposed: Wed Nov 11, 2026, 6:00pm PT [MEMORY.md — Commitments / Tue/Thu work block]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT; Thu Nov 12, 2026, 4:00pm PT\n\nGrounded in:\nPurav Patel: name=Purav Patel; role=Builder of Clayzo; org=Clayzo; contact=purav@clayzo.com; d"
+    },
+    {
+      "id": "sched-04-john-sync",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 0,
+      "answerExcerpt": "Proposed: Sun Nov 8, 2026, 6:00pm PT [MEMORY.md — Commitments / Tue/Thu work block]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Thu Nov 12, 2026, 3:00pm PT\n\nGrounded in:\nJohn Carlo Manuel: name=John Carlo Manuel; role=Wazoo collaborator, DevRel; description=Twice-weekly sync Wednesdays 9:30am "
+    },
+    {
+      "id": "sched-05-peter-followup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1,
+      "answerExcerpt": "Proposed: Mon Nov 9, 2026, 10:00am PT [MEMORY.md — Commitments / Tue/Thu work block]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Thu Nov 12, 2026, 2:00pm PT\n\nGrounded in:\nPeter Van Voorhis: name=Peter Van Voorhis; role=General Translation contact; description=Nov 2 intro call went well; fully "
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "generatedAt": "2026-11-06T19:33:14.120Z",
+  "world": "real",
+  "worldNote": "Real World via createWorldClient (env-selected backend).",
+  "taskSet": "held-out-v1",
+  "totals": {
+    "tasks": 25,
+    "passed": 25,
+    "failed": 0,
+    "passAt1": 1,
+    "provenanceFailures": 0,
+    "unapprovedActions": 0
+  },
+  "perKind": {
+    "briefing": {
+      "tasks": 10,
+      "passed": 10,
+      "passAt1": 1
+    },
+    "draft": {
+      "tasks": 10,
+      "passed": 10,
+      "passAt1": 1
+    },
+    "scheduling": {
+      "tasks": 5,
+      "passed": 5,
+      "passAt1": 1
+    },
+    "smoke": {
+      "tasks": 0,
+      "passed": 0,
+      "passAt1": 0
+    }
+  },
+  "draftApprovalProxy": {
+    "score": 1,
+    "drafts": 10,
+    "approvable": 10,
+    "note": "Proxy for 'approvable without edits': fraction of draft tasks whose every factual claim is cited and whose deterministic checks pass. This is NOT a human approval rate — no human reviewed these drafts."
+  },
+  "failedRun": false,
+  "results": [
+    {
+      "id": "brief-01-rtx-outstanding",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 598,
+      "answerExcerpt": "Jesse Garza: contact=jesse.garza@rtx.com; name=Jesse Garza; relationship=Jesse Garza is an RTX recruiter, jesse.garza@rtx.com, who handled the user's HWIL Software Engineer I offer for req 01874565. [memory/people/jesse-garza.md]\n[event] RTX pre-signature checklist delivered (Oct 16): the checklist "
+    },
+    {
+      "id": "brief-02-deadlines-week",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 1007,
+      "answerExcerpt": "Basis Fellowship deadline: due=2026-11-02; description=Basis Fellowship: https://basisfellowship.org/ — Money-and-community grant for people solving \"intractable\" problems. **$25,000–$75,000 one-time grant per fellow from a $1,000,000 fund, $0 equity, no reporting, no spending restrictions.** First "
+    },
+    {
+      "id": "brief-03-gt-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 491,
+      "answerExcerpt": "General Translation (private, not yet public, shared verbally Nov 2, 2026): Peter said General Translation raised a Seri: status=noted; description=General Translation (private, not yet public, shared verbally Nov 2, 2026): Peter said General Translation raised a Series A from Martin Casado at Andre"
+    },
+    {
+      "id": "brief-04-lm-studio-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 463,
+      "answerExcerpt": "[fact] LM Studio hiring checked Fri Nov 6, 2026 at Ethan's request (friend tipped him LM Studio is hiring): LM Studio is: status=noted; description=[fact] LM Studio hiring checked Fri Nov 6, 2026 at Ethan's request (friend tipped him LM Studio is hiring): LM Studio is built by Element Labs, small te"
+    },
+    {
+      "id": "brief-05-eclerx-status",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 470,
+      "answerExcerpt": "eClerx recruiter briefing, per Fiza (HR recruiter, London-based, 4 years at eClerx; transcript supplied by Ethan Nov 3, : status=noted; description=eClerx recruiter briefing, per Fiza (HR recruiter, London-based, 4 years at eClerx; transcript supplied by Ethan Nov 3, 2026): eClerx is 26 years old, a"
+    },
+    {
+      "id": "brief-06-mozilla-blockers",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 498,
+      "answerExcerpt": "Mozilla Human-Scale AI Incubator Wazoo proposal draft (Oct 31, 2026, NOT submitted): drafted from live Mozilla form, fra: due=2026-11-20; description=Mozilla Human-Scale AI Incubator Wazoo proposal draft (Oct 31, 2026, NOT submitted): drafted from live Mozilla form, framed as distinct charitable ope"
+    },
+    {
+      "id": "brief-07-john-sync",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 490,
+      "answerExcerpt": "John Carlo Manuel: relationship=John's full name was established by the user on Nov 4, 2026, correcting meeting notes that had listed him only as John (window: message:20227bd7-2341-4fc3-93ce-0848f25278f8).; name=John Carlo Manuel [memory/people/john-carlo-manuel.md]\n[correction|high] John is John C"
+    },
+    {
+      "id": "brief-08-benchmark-next",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 971,
+      "answerExcerpt": "Travis Long: relationship=Travis Long is the Founder of Autonomous Search (MEMORY.md, Benchmark Motion).; name=Travis Long [memory/people/travis-long.md]\nBenchmark Motion (Nov 5, 2026): Travis Long, Founder Autonomous Search (travis@autonomoussearch.io), emailed Nov 5, 1:37: description=Benchmark Mo"
+    },
+    {
+      "id": "brief-09-kiroween-credits",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 491,
+      "answerExcerpt": "Kiroween 2026 registration confirmed via Gmail check Mon Nov 2, 2026, ~9:30am PT: Devpost email Fri Oct 30, 2026, 5:38pm: description=Kiroween 2026 registration confirmed via Gmail check Mon Nov 2, 2026, ~9:30am PT: Devpost email Fri Oct 30, 2026, 5:38pm PT, \"Kiroween 2026: You're in!\" — submissions"
+    },
+    {
+      "id": "brief-10-discord-status",
+      "kind": "briefing",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 576,
+      "answerExcerpt": "[fact] Discord replacement account: new account etok_me registered Mar 25, 2026 (ethanrdavidson+discord@gmail.com, verif: status=noted; description=[fact] Discord replacement account: new account etok_me registered Mar 25, 2026 (ethanrdavidson+discord@gmail.com, verification emails that afternoon). "
+    },
+    {
+      "id": "draft-01-travis-followup",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 72,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask for a 30-min call next week, mornings PT\n- Note the Tue/Thu 1:30-4:30pm PT teaching block is unavailable\n- Ask about the 6-day onsite schedule\n- Ask about the comp range and timeline\n\nGrounded in:\nTravis Long: relationship=Travis Long is the Founde"
+    },
+    {
+      "id": "draft-02-openhack-ananay",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 35,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Apologize if the free-plan / Mythos request was off base\n- Ask about a paid-tier trial to evaluate full scans\n- Note the demo booked for Fri Nov 6, 2:00-2:30pm PT was canceled\n\nGrounded in:\nOpenHack evaluation (Nov 4–6, 2026): Ethan was evaluating Open"
+    },
+    {
+      "id": "draft-03-purav-thanks",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 43,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Thank Purav for the Nov 4 intro and Clayzo\n- Share the wazoo.dev Clayzo result (PR #33)\n- Confirm the meetup Wed Nov 11, 6:00-7:00pm PT at Airoma Cafe\n\nGrounded in:\nPurav Patel: name=Purav Patel; relationship=Purav Patel is based in Irvine, California,"
+    },
+    {
+      "id": "draft-04-sarah-kate-clearance",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 71,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask about interim vs final clearance timing and whether the Jan 18, 2027 start depends on it\n- Confirm taking Effectors over HWIL\n- Confirm the HWIL offer req 01874565 withdrawal\n\nGrounded in:\nSarah Kate Hostetter: relationship=Sarah Kate Hostetter is "
+    },
+    {
+      "id": "draft-05-shelby-nbis",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 42,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask Shelby Frazier for the status of the NBIS eApp\n- Reference case HRC12777765 and A00001315986\n- Confirm the sections 1-10 scope and the ~Nov 8, 2026 due date\n\nGrounded in:\nRTX onboarding: NBIS eApp (SF-86) outstanding — original request Oct 28, 2026"
+    },
+    {
+      "id": "draft-06-wanda-drug-screen",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 74,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Confirm the retest at Quest Diagnostics Anaheim Ball\n- Reference the Thu Nov 5, 9:10am appointment\n- Ask Wanda Charles about the extension if needed\n\nGrounded in:\nRTX drug screen sequencing: the First Advantage background check gates the drug screen — "
+    },
+    {
+      "id": "draft-07-lm-studio-apply",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 79,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Apply for the Full Stack Software Engineer role in NYC\n- Note TypeScript/React, API backend, SDK, CLI, and SQL/data modeling experience\n- Mention the sparql-engine CLI work\n- Send with résumé to apply@lmstudio.ai\n\nGrounded in:\n[fact] LM Studio hiring c"
+    },
+    {
+      "id": "draft-08-john-blog-sync",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 50,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Propose the Wednesday 9:30am sync agenda\n- Cover the blog.wazoo.dev launch and the fundamentals pillar\n- Note the Sunday 6pm sync as the alternate\n\nGrounded in:\nJohn Carlo Manuel: relationship=John's full name was established by the user on Nov 4, 2026"
+    },
+    {
+      "id": "draft-09-vogel-docs",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 74,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Reply to Patrick Vogel about the citizenship verification\n- Confirm a driver's license/state ID plus a birth certificate or US passport/passport card will be provided via the secure email flow\n- Do not attach document images to regular email\n\nGrounded "
+    },
+    {
+      "id": "draft-10-manmeet-caltrans",
+      "kind": "draft",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 24,
+      "answerExcerpt": "Draft reply (for Ethan to review — NOT sent):\n- Ask Manmeet Kaur Phagurah about open Caltrans roles fitting a B.S. in computer science\n- Mention Ethan's software engineering background\n- Ask whether a Technical Project Engineer path or software roles fit better\n\nGrounded in:\nManmeet Kaur Phagurah: n"
+    },
+    {
+      "id": "sched-01-travis-call",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 511,
+      "answerExcerpt": "Proposed: Tue Nov 10, 2026, 10:00am PT [memory/2026-11-03.md]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT; Thu Nov 12, 2026, 3:00pm PT\n\nGrounded in:\nEthan's primary calendar holds a Demo Day block on Tue Nov 10, 2026, 6:00–8:00pm PT, after his codeCampus teaching th"
+    },
+    {
+      "id": "sched-02-ernest-followup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 552,
+      "answerExcerpt": "Proposed: Wed Nov 11, 2026, 11:00am PT [memory/2026-11-03.md]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 3:00pm PT; Thu Nov 12, 2026, 2:00pm PT\n\nGrounded in:\nEthan's primary calendar holds a Demo Day block on Tue Nov 10, 2026, 6:00–8:00pm PT, after his codeCampus teaching th"
+    },
+    {
+      "id": "sched-03-purav-meetup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 482,
+      "answerExcerpt": "Proposed: Wed Nov 11, 2026, 6:00pm PT [memory/2026-11-03.md]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT; Thu Nov 12, 2026, 4:00pm PT\n\nGrounded in:\nEthan's primary calendar holds a Demo Day block on Tue Nov 10, 2026, 6:00–8:00pm PT, after his codeCampus teaching tha"
+    },
+    {
+      "id": "sched-04-john-sync",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 523,
+      "answerExcerpt": "Proposed: Sun Nov 8, 2026, 6:00pm PT [memory/2026-11-03.md]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Thu Nov 12, 2026, 3:00pm PT\n\nGrounded in:\nEthan's primary calendar holds a Demo Day block on Tue Nov 10, 2026, 6:00–8:00pm PT, after his codeCampus teaching that : description=Ethan's primar"
+    },
+    {
+      "id": "sched-05-peter-followup",
+      "kind": "scheduling",
+      "pass": true,
+      "details": [],
+      "provenanceFailures": 0,
+      "unapprovedActions": 0,
+      "durationMs": 536,
+      "answerExcerpt": "Proposed: Mon Nov 9, 2026, 10:00am PT [memory/2026-11-03.md]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Thu Nov 12, 2026, 2:00pm PT\n\nGrounded in:\nEthan's primary calendar holds a Demo Day block on Tue Nov 10, 2026, 6:00–8:00pm PT, after his codeCampus teaching that : description=Ethan's prima"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+# Runtime data (the World database and seed outputs) — never committed.
+# Seed data lives outside the repo by design (plan Appendix A).
+/data/
+*.db
+*.db-journal
+*.db-wal
+.env
+.env.local

@@ -1,0 +1,605 @@
+[
+  {
+    "id": "brief-01-rtx-outstanding",
+    "kind": "briefing",
+    "question": "What RTX onboarding items are still outstanding?",
+    "source": "MEMORY.md — Commitments / RTX onboarding: NBIS eApp; Vogel docs; drug screen",
+    "keywords": [
+      "RTX",
+      "NBIS",
+      "Vogel",
+      "outstanding"
+    ],
+    "factTypes": [
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "NBIS",
+      "HRC12777765",
+      "Vogel",
+      "outstanding"
+    ]
+  },
+  {
+    "id": "brief-02-deadlines-week",
+    "kind": "briefing",
+    "question": "What deadlines fall in the next 7 days from Nov 6?",
+    "source": "MEMORY.md — Commitments / RTX onboarding: NBIS eApp; drug screen",
+    "keywords": [
+      "deadline",
+      "Nov",
+      "due"
+    ],
+    "factTypes": [
+      "Deadline",
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "NBIS",
+      "Nov 8",
+      "Nov 5"
+    ]
+  },
+  {
+    "id": "brief-03-gt-next",
+    "kind": "briefing",
+    "question": "What is the next action for General Translation?",
+    "source": "MEMORY.md — Commitments / General Translation",
+    "keywords": [
+      "General Translation",
+      "Ernest",
+      "next"
+    ],
+    "factTypes": [
+      "Opportunity"
+    ],
+    "expectedSubstrings": [
+      "Ernest",
+      "Nov 6",
+      "11:00"
+    ]
+  },
+  {
+    "id": "brief-04-lm-studio-next",
+    "kind": "briefing",
+    "question": "What is the next step for LM Studio?",
+    "source": "MEMORY.md — Commitments / LM Studio",
+    "keywords": [
+      "LM Studio",
+      "apply"
+    ],
+    "factTypes": [
+      "Opportunity"
+    ],
+    "expectedSubstrings": [
+      "apply@lmstudio.ai",
+      "Full Stack"
+    ]
+  },
+  {
+    "id": "brief-05-eclerx-status",
+    "kind": "briefing",
+    "question": "What is the status of the eClerx interview process?",
+    "source": "MEMORY.md — Commitments / eClerx interview",
+    "keywords": [
+      "eClerx",
+      "interview"
+    ],
+    "factTypes": [
+      "Opportunity"
+    ],
+    "expectedSubstrings": [
+      "Anish Kothuri",
+      "Nov 3",
+      "outcome pending"
+    ]
+  },
+  {
+    "id": "brief-06-mozilla-blockers",
+    "kind": "briefing",
+    "question": "What is blocking the Mozilla proposal?",
+    "source": "MEMORY.md — Commitments / Mozilla Human-Scale AI Incubator",
+    "keywords": [
+      "Mozilla",
+      "blockers",
+      "pilot"
+    ],
+    "factTypes": [
+      "Deadline"
+    ],
+    "expectedSubstrings": [
+      "applicant type",
+      "pilot community"
+    ]
+  },
+  {
+    "id": "brief-07-john-sync",
+    "kind": "briefing",
+    "question": "When does Ethan sync with John Carlo Manuel?",
+    "source": "MEMORY.md — Commitments / John Carlo Manuel",
+    "keywords": [
+      "John Carlo Manuel",
+      "sync"
+    ],
+    "factTypes": [
+      "Person"
+    ],
+    "expectedSubstrings": [
+      "Wednesdays 9:30am",
+      "Sundays 6pm",
+      "blog.wazoo.dev"
+    ]
+  },
+  {
+    "id": "brief-08-benchmark-next",
+    "kind": "briefing",
+    "question": "What is the next step with Benchmark Motion / Travis Long?",
+    "source": "MEMORY.md — Commitments / Benchmark Motion",
+    "keywords": [
+      "Benchmark Motion",
+      "Travis Long",
+      "next"
+    ],
+    "factTypes": [
+      "Event",
+      "Person"
+    ],
+    "expectedSubstrings": [
+      "Nov 9",
+      "8:30",
+      "Travis Long"
+    ]
+  },
+  {
+    "id": "brief-09-kiroween-credits",
+    "kind": "briefing",
+    "question": "What does Ethan need to do for Kiroween credits, and by when?",
+    "source": "MEMORY.md — Facts / Kiroween 2026",
+    "keywords": [
+      "Kiroween",
+      "credits"
+    ],
+    "factTypes": [
+      "Deadline"
+    ],
+    "expectedSubstrings": [
+      "4,000",
+      "Dec 1",
+      "Devpost"
+    ]
+  },
+  {
+    "id": "brief-10-discord-status",
+    "kind": "briefing",
+    "question": "What is the status of the Discord data request?",
+    "source": "MEMORY.md — Facts / Discord account",
+    "keywords": [
+      "Discord",
+      "CCPA",
+      "privacy"
+    ],
+    "factTypes": [
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "privacy@discord.com",
+      "Nov 20",
+      "Dec 21"
+    ]
+  },
+  {
+    "id": "draft-01-travis-followup",
+    "kind": "draft",
+    "question": "Draft a follow-up reply to Travis Long (Benchmark Motion) asking for a 30-min call next week.",
+    "source": "MEMORY.md — Commitments / Benchmark Motion",
+    "keywords": [
+      "Travis Long",
+      "Benchmark Motion",
+      "call"
+    ],
+    "factTypes": [
+      "Person",
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "30-min",
+      "mornings",
+      "1:30-4:30pm",
+      "6-day",
+      "comp"
+    ],
+    "draftPoints": [
+      "Ask for a 30-min call next week, mornings PT",
+      "Note the Tue/Thu 1:30-4:30pm PT teaching block is unavailable",
+      "Ask about the 6-day onsite schedule",
+      "Ask about the comp range and timeline"
+    ],
+    "allowedEmails": [
+      "travis@autonomoussearch.io"
+    ],
+    "allowedAmounts": [
+      "$60M"
+    ]
+  },
+  {
+    "id": "draft-02-openhack-ananay",
+    "kind": "draft",
+    "question": "Draft a reply to Ananay at OpenHack apologizing if the free-plan/Mythos request was off base and asking about a paid-tier trial to evaluate full scans.",
+    "source": "MEMORY.md — Facts / OpenHack evaluation",
+    "keywords": [
+      "OpenHack",
+      "Ananay",
+      "Mythos"
+    ],
+    "factTypes": [
+      "Thread"
+    ],
+    "expectedSubstrings": [
+      "Ananay",
+      "Mythos",
+      "paid",
+      "trial",
+      "full scans"
+    ],
+    "draftPoints": [
+      "Apologize if the free-plan / Mythos request was off base",
+      "Ask about a paid-tier trial to evaluate full scans",
+      "Note the demo booked for Fri Nov 6, 2:00-2:30pm PT was canceled"
+    ],
+    "allowedEmails": [
+      "ananay@openhack.com"
+    ]
+  },
+  {
+    "id": "draft-03-purav-thanks",
+    "kind": "draft",
+    "question": "Draft a thank-you reply to Purav Patel sharing the wazoo.dev Clayzo result and confirming the Nov 11 meetup.",
+    "source": "MEMORY.md — Commitments / Purav Patel",
+    "keywords": [
+      "Purav Patel",
+      "Clayzo",
+      "meetup"
+    ],
+    "factTypes": [
+      "Person"
+    ],
+    "expectedSubstrings": [
+      "Purav",
+      "Clayzo",
+      "Nov 11",
+      "Airoma Cafe"
+    ],
+    "draftPoints": [
+      "Thank Purav for the Nov 4 intro and Clayzo",
+      "Share the wazoo.dev Clayzo result (PR #33)",
+      "Confirm the meetup Wed Nov 11, 6:00-7:00pm PT at Airoma Cafe"
+    ],
+    "allowedEmails": [
+      "purav@clayzo.com"
+    ]
+  },
+  {
+    "id": "draft-04-sarah-kate-clearance",
+    "kind": "draft",
+    "question": "Draft a reply to Sarah Kate Hostetter asking about interim vs final clearance timing and confirming the Effectors decision.",
+    "source": "MEMORY.md — Commitments / RTX offer",
+    "keywords": [
+      "Sarah Kate Hostetter",
+      "RTX",
+      "Effectors"
+    ],
+    "factTypes": [
+      "Person",
+      "Commitment",
+      "Decision"
+    ],
+    "expectedSubstrings": [
+      "Effectors",
+      "01866752",
+      "clearance",
+      "HWIL"
+    ],
+    "draftPoints": [
+      "Ask about interim vs final clearance timing and whether the Jan 18, 2027 start depends on it",
+      "Confirm taking Effectors over HWIL",
+      "Confirm the HWIL offer req 01874565 withdrawal"
+    ],
+    "allowedIds": [
+      "01866752",
+      "01874565"
+    ],
+    "allowedEmails": [
+      "SarahKate.Hostetter@rtx.com"
+    ]
+  },
+  {
+    "id": "draft-05-shelby-nbis",
+    "kind": "draft",
+    "question": "Draft a reply to Shelby Frazier asking for the status of the NBIS eApp.",
+    "source": "MEMORY.md — Commitments / RTX onboarding: NBIS eApp",
+    "keywords": [
+      "NBIS",
+      "eApp",
+      "Shelby Frazier"
+    ],
+    "factTypes": [
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "HRC12777765",
+      "A00001315986",
+      "Shelby Frazier",
+      "Nov 8"
+    ],
+    "draftPoints": [
+      "Ask Shelby Frazier for the status of the NBIS eApp",
+      "Reference case HRC12777765 and A00001315986",
+      "Confirm the sections 1-10 scope and the ~Nov 8, 2026 due date"
+    ],
+    "allowedIds": [
+      "HRC12777765",
+      "A00001315986"
+    ],
+    "allowedEmails": [
+      "GSS-CPC@RTX.com"
+    ]
+  },
+  {
+    "id": "draft-06-wanda-drug-screen",
+    "kind": "draft",
+    "question": "Draft a reply to Wanda Charles confirming the drug screen retest.",
+    "source": "MEMORY.md — Commitments / RTX onboarding: First Advantage drug screen",
+    "keywords": [
+      "drug screen",
+      "Quest",
+      "Wanda Charles"
+    ],
+    "factTypes": [
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "Wanda Charles",
+      "Quest",
+      "Anaheim Ball",
+      "Nov 5"
+    ],
+    "draftPoints": [
+      "Confirm the retest at Quest Diagnostics Anaheim Ball",
+      "Reference the Thu Nov 5, 9:10am appointment",
+      "Ask Wanda Charles about the extension if needed"
+    ]
+  },
+  {
+    "id": "draft-07-lm-studio-apply",
+    "kind": "draft",
+    "question": "Draft the application note Ethan will send himself to LM Studio (he writes it himself; the Twin only drafts).",
+    "source": "MEMORY.md — Commitments / LM Studio",
+    "keywords": [
+      "LM Studio",
+      "Full Stack",
+      "apply"
+    ],
+    "factTypes": [
+      "Opportunity"
+    ],
+    "expectedSubstrings": [
+      "apply@lmstudio.ai",
+      "Full Stack",
+      "TypeScript",
+      "résumé"
+    ],
+    "draftPoints": [
+      "Apply for the Full Stack Software Engineer role in NYC",
+      "Note TypeScript/React, API backend, SDK, CLI, and SQL/data modeling experience",
+      "Mention the sparql-engine CLI work",
+      "Send with résumé to apply@lmstudio.ai"
+    ],
+    "allowedEmails": [
+      "apply@lmstudio.ai"
+    ],
+    "allowedAmounts": [
+      "$150K",
+      "$350K"
+    ]
+  },
+  {
+    "id": "draft-08-john-blog-sync",
+    "kind": "draft",
+    "question": "Draft a message to John Carlo Manuel with the agenda for the next blog sync.",
+    "source": "MEMORY.md — Commitments / John Carlo Manuel",
+    "keywords": [
+      "John Carlo Manuel",
+      "blog"
+    ],
+    "factTypes": [
+      "Person"
+    ],
+    "expectedSubstrings": [
+      "John",
+      "blog.wazoo.dev",
+      "Wednesday",
+      "fundamentals"
+    ],
+    "draftPoints": [
+      "Propose the Wednesday 9:30am sync agenda",
+      "Cover the blog.wazoo.dev launch and the fundamentals pillar",
+      "Note the Sunday 6pm sync as the alternate"
+    ]
+  },
+  {
+    "id": "draft-09-vogel-docs",
+    "kind": "draft",
+    "question": "Draft a reply to Patrick Vogel about the citizenship verification documents.",
+    "source": "MEMORY.md — Commitments / RTX onboarding: empowerU / Vogel",
+    "keywords": [
+      "Vogel",
+      "citizenship",
+      "RTX"
+    ],
+    "factTypes": [
+      "Commitment"
+    ],
+    "expectedSubstrings": [
+      "Vogel",
+      "driver's license",
+      "passport"
+    ],
+    "forbiddenSubstrings": [
+      "attached",
+      "attaching",
+      "see attached"
+    ],
+    "draftPoints": [
+      "Reply to Patrick Vogel about the citizenship verification",
+      "Confirm a driver's license/state ID plus a birth certificate or US passport/passport card will be provided via the secure email flow",
+      "Do not attach document images to regular email"
+    ]
+  },
+  {
+    "id": "draft-10-manmeet-caltrans",
+    "kind": "draft",
+    "question": "Draft a LinkedIn outreach message to Manmeet Kaur Phagurah asking about open Caltrans roles fitting a B.S. in computer science.",
+    "source": "MEMORY.md — People / Manmeet Kaur Phagurah",
+    "keywords": [
+      "Manmeet",
+      "Caltrans"
+    ],
+    "factTypes": [
+      "Person"
+    ],
+    "expectedSubstrings": [
+      "Manmeet",
+      "Caltrans",
+      "computer science"
+    ],
+    "draftPoints": [
+      "Ask Manmeet Kaur Phagurah about open Caltrans roles fitting a B.S. in computer science",
+      "Mention Ethan's software engineering background",
+      "Ask whether a Technical Project Engineer path or software roles fit better"
+    ]
+  },
+  {
+    "id": "sched-01-travis-call",
+    "kind": "scheduling",
+    "question": "Propose a 30-min call with Travis Long next week.",
+    "source": "MEMORY.md — Commitments / Benchmark Motion; Tue/Thu work block",
+    "keywords": [
+      "teaching block",
+      "Travis Long",
+      "call"
+    ],
+    "factTypes": [
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "Proposed:",
+      "1:30",
+      "4:30pm"
+    ],
+    "candidates": [
+      "Tue Nov 10, 2026, 10:00am PT",
+      "Tue Nov 10, 2026, 2:00pm PT",
+      "Thu Nov 12, 2026, 11:00am PT",
+      "Thu Nov 12, 2026, 3:00pm PT",
+      "Wed Nov 11, 2026, 10:00am PT"
+    ]
+  },
+  {
+    "id": "sched-02-ernest-followup",
+    "kind": "scheduling",
+    "question": "Propose a follow-up call with Ernest McCarter next week.",
+    "source": "MEMORY.md — Commitments / General Translation; Tue/Thu work block",
+    "keywords": [
+      "teaching block",
+      "Ernest McCarter",
+      "call"
+    ],
+    "factTypes": [
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "Proposed:",
+      "1:30",
+      "4:30pm"
+    ],
+    "candidates": [
+      "Tue Nov 10, 2026, 3:00pm PT",
+      "Wed Nov 11, 2026, 11:00am PT",
+      "Thu Nov 12, 2026, 2:00pm PT",
+      "Fri Nov 13, 2026, 10:00am PT"
+    ]
+  },
+  {
+    "id": "sched-03-purav-meetup",
+    "kind": "scheduling",
+    "question": "Propose a time for the in-person meetup with Purav Patel.",
+    "source": "MEMORY.md — Commitments / Purav Patel; Tue/Thu work block",
+    "keywords": [
+      "teaching block",
+      "Purav Patel",
+      "meetup"
+    ],
+    "factTypes": [
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "Proposed:",
+      "1:30",
+      "4:30pm"
+    ],
+    "candidates": [
+      "Tue Nov 10, 2026, 2:00pm PT",
+      "Wed Nov 11, 2026, 6:00pm PT",
+      "Thu Nov 12, 2026, 4:00pm PT",
+      "Fri Nov 13, 2026, 6:00pm PT"
+    ]
+  },
+  {
+    "id": "sched-04-john-sync",
+    "kind": "scheduling",
+    "question": "Propose a time for the next sync with John Carlo Manuel.",
+    "source": "MEMORY.md — Commitments / John Carlo Manuel; Tue/Thu work block",
+    "keywords": [
+      "teaching block",
+      "John Carlo Manuel",
+      "sync"
+    ],
+    "factTypes": [
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "Proposed:",
+      "1:30",
+      "4:30pm"
+    ],
+    "candidates": [
+      "Thu Nov 12, 2026, 3:00pm PT",
+      "Sun Nov 8, 2026, 6:00pm PT",
+      "Wed Nov 11, 2026, 9:30am PT"
+    ]
+  },
+  {
+    "id": "sched-05-peter-followup",
+    "kind": "scheduling",
+    "question": "Propose a follow-up call with Peter Van Voorhis next week.",
+    "source": "MEMORY.md — Commitments / General Translation; Tue/Thu work block",
+    "keywords": [
+      "teaching block",
+      "Peter Van Voorhis",
+      "call"
+    ],
+    "factTypes": [
+      "Event"
+    ],
+    "expectedSubstrings": [
+      "Proposed:",
+      "1:30",
+      "4:30pm"
+    ],
+    "candidates": [
+      "Mon Nov 9, 2026, 10:00am PT",
+      "Thu Nov 12, 2026, 2:00pm PT",
+      "Wed Nov 11, 2026, 11:00am PT"
+    ]
+  }
+]

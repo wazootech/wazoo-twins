@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "description": "Wazoo Twins \u2014 a super-agent that orchestrates many other agents using shared expansive context via Worlds infrastructure. First Twin: Ethan Davidson (dogfood build).",
+  "imports": {
+    "@libsql/client": "npm:@libsql/client@^0.17.4",
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@std/fs": "jsr:@std/fs@^1.0.24",
+    "@std/path": "jsr:@std/path@^1.1.5",
+    "@worlds/libsql": "jsr:@worlds/libsql@^0.6.0",
+    "@worlds/sdk/memory": "jsr:@worlds/sdk@^0.9.0/memory"
+  },
+  "name": "@wazoo/twins",
+  "tasks": {
+    "brief": "deno run --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi src/service/brief.ts",
+    "check": "deno check src/**/*.ts",
+    "eval": "deno run --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi src/eval/run.ts",
+    "fmt": "deno fmt",
+    "fmt:check": "deno fmt --check",
+    "lint": "deno lint",
+    "seed": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run --allow-sys --allow-ffi src/seed/run.ts",
+    "server": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run --allow-sys --allow-ffi src/service/server.ts",
+    "smoke": "deno run --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi src/eval/smoke.ts",
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net --allow-run --allow-sys --allow-ffi"
+  },
+  "version": "0.1.0"
+}
