@@ -15,7 +15,7 @@
   "tasks": {
     "brief": "deno run --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi src/service/brief.ts",
     "check": "deno check src/**/*.ts",
-    "ci": "deno fmt --check && deno lint && deno task check && deno task test",
+    "ci": "deno task fmt:check && deno task lint && deno task check && deno task test",
     "eval": "deno run --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi src/eval/run.ts",
     "fmt": "deno fmt",
     "fmt:check": "deno fmt --check",

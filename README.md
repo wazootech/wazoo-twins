@@ -6,7 +6,7 @@ Ethan Davidson's personal twin, a dogfood build. The World is the memory; the
 Twin is the agent that acts on it.
 
 **Owner:** [@EthanThatOneKid](https://github.com/EthanThatOneKid) · **License:**
-MIT · **Set up, check, and test:** `deno task ci`
+MIT · **Check and test:** `deno install && deno task ci`
 
 ## Status
 
@@ -54,7 +54,8 @@ flowchart TD
 
 Every request, chat or scheduled, runs the same bounded loop (max 3 rounds, 10
 tool calls). Nothing leaves the loop unverified, and every run is written back
-to the World as audit quads.
+to the World as audit quads (Run and Action; Approval quads arrive with Phase
+2).
 
 ```mermaid
 flowchart LR
@@ -68,7 +69,7 @@ flowchart LR
     decide -->|"read or draft"| present["Present to Ethan"]
     decide -->|"missing context"| ask["Ask one question"]
     decide -->|"external action"| approval["Approval card<br/>(Phase 2+)"]
-    present --> audit["6. Audit<br/>Run, Action, Approval quads"]
+    present --> audit["6. Audit<br/>Run and Action quads"]
     ask --> audit
     approval --> audit
 ```
