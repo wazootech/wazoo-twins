@@ -221,6 +221,7 @@ function factFromBindings(
   const properties: Record<string, string> = {};
   let source = "";
   let retrievedAt = "";
+  let author: string | undefined = undefined;
   for (const { p, o } of bindings) {
     if (p.value === RDF_TYPE) {
       type = CLASS_BY_IRI.get(o.value) ?? o.value;
@@ -228,6 +229,8 @@ function factFromBindings(
       source = o.value;
     } else if (p.value === Props.retrievedAt) {
       retrievedAt = o.value;
+    } else if (p.value === Props.author) {
+      author = o.value;
     } else if (p.value === Props.label) {
       label = o.value;
     } else {
@@ -238,6 +241,7 @@ function factFromBindings(
   const provenance: Provenance = {
     source: source || "world:unknown",
     retrievedAt: retrievedAt || "1970-01-01T00:00:00.000Z",
+    ...(author === undefined ? {} : { author }),
   };
   return { id, type, label, properties, provenance };
 }

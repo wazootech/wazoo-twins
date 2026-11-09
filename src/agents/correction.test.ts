@@ -507,3 +507,135 @@ Deno.test("correction: retracting a whole procedure is ask-first", async () => {
   assertEquals(await world.getFact("twin:procedure/call-prep-v2"), undefined);
   await world.close();
 });
+
+// ---------------------------------------------------------------------------
+// Typed author field (issue #6): provenance.author decides "Ethan wins",
+// the string-prefix check survives only as a migration fallback.
+// ---------------------------------------------------------------------------
+
+Deno.test("correction: applyCorrection stamps the typed author at write time", async () => {
+  const world = createFakeWorldClient([
+    commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
+  ]);
+  const replacement = commitment(
+    "twin:commitment/mozilla-v2",
+    "Mozilla deadline Nov 22",
+    "open",
+    "gmail:msg-123",
+    LATER,
+  );
+  const result = await applyCorrection(
+    world,
+    ethanCorrection("twin:commitment/mozilla", replacement),
+    { now: LATER },
+  );
+  assertEquals(result.status, "applied");
+  const written = await world.getFact("twin:commitment/mozilla-v2");
+  assertEquals(written?.provenance.author, "Ethan");
+  await world.close();
+});
+
+Deno.test("correction: a sub-agent author is stamped verbatim and is not Ethan", async () => {
+  const world = createFakeWorldClient();
+  const replacement = commitment(
+    "twin:commitment/x",
+    "A fact from a named sub-agent",
+    "open",
+    "subagent:research",
+    LATER,
+  );
+  const result = await applyCorrection(
+    world,
+    { replacement, source: "twin-proposal", author: "research" },
+    { now: LATER },
+  );
+  assertEquals(result.status, "applied");
+  const written = await world.getFact("twin:commitment/x");
+  assertEquals(written?.provenance.author, "research");
+  assertEquals(assertedByEthan(written!), false);
+  await world.close();
+});
+
+Deno.test("correction: assertedByEthan reads the typed field, not the source string", () => {
+  // Typed author wins even when the source string looks like Ethan's.
+  const typedTwin: Fact = {
+    ...commitment("twin:commitment/a", "typed twin author"),
+    provenance: {
+      source: `Ethan, in chat ${NOW}`,
+      retrievedAt: NOW,
+      author: "twin",
+    },
+  };
+  assertEquals(assertedByEthan(typedTwin), false);
+  // Typed author is enough even with a neutral source.
+  const typedEthan: Fact = {
+    ...commitment("twin:commitment/b", "typed ethan author"),
+    provenance: { source: "audit-log", retrievedAt: NOW, author: "Ethan" },
+  };
+  assertEquals(assertedByEthan(typedEthan), true);
+});
+
+Deno.test("correction: the string-prefix check still covers pre-author facts", async () => {
+  // An old-style Ethan fact (no author field) is still protected: the
+  // migration fallback keeps contradicting it ask-first.
+  const world = createFakeWorldClient([
+    commitment(
+      "twin:commitment/mozilla",
+      "Mozilla deadline Nov 20",
+      "open",
+      `Ethan, in chat ${NOW}`,
+    ),
+  ]);
+  const oldStyle = (await world.getFact("twin:commitment/mozilla"))!;
+  assertEquals(oldStyle.provenance.author, undefined);
+  assert(assertedByEthan(oldStyle));
+  const replacement = commitment(
+    "twin:commitment/mozilla-v2",
+    "Mozilla deadline Nov 18",
+    "open",
+    "gmail:msg-999",
+    LATER,
+  );
+  const result = await applyCorrection(
+    world,
+    {
+      oldId: "twin:commitment/mozilla",
+      replacement,
+      source: "sync",
+      author: "twin",
+    },
+    { now: LATER },
+  );
+  assertEquals(result.status, "ask-first");
+  assertEquals(await world.getFact("twin:commitment/mozilla-v2"), undefined);
+  await world.close();
+});
+
+Deno.test("correction: undoCorrection stamps the typed author on the restoration", async () => {
+  const world = createFakeWorldClient([
+    commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
+  ]);
+  await applyCorrection(
+    world,
+    ethanCorrection(
+      "twin:commitment/mozilla",
+      commitment(
+        "twin:commitment/mozilla-v2",
+        "Mozilla deadline Nov 22",
+        "open",
+        `Ethan, in chat ${NOW}`,
+        LATER,
+      ),
+    ),
+    { now: LATER },
+  );
+  const result = await undoCorrection(world, {
+    factId: "twin:commitment/mozilla-v2",
+    author: "Ethan",
+    now: LATER,
+  });
+  assertEquals(result.status, "applied");
+  const restoration = await world.getFact(result.newFactId!);
+  assertEquals(restoration?.provenance.author, "Ethan");
+  await world.close();
+});

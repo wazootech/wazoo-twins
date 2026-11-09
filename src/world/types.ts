@@ -10,12 +10,26 @@
 
 export type Iri = string;
 
-/** Where a fact came from, and when the Twin read it. */
+/**
+ * Who asserted a fact: Ethan himself ("Ethan"), the Twin ("twin"), or a
+ * named sub-agent. Sub-agents are an open string, kept literal-compatible
+ * so `"Ethan"` and `"twin"` still autocomplete in editors.
+ */
+export type FactAuthor = "Ethan" | "twin" | (string & Record<never, never>);
+
+/** Where a fact came from, who asserted it, and when the Twin read it. */
 export interface Provenance {
   /** Human-readable source, e.g. "MEMORY.md#L41" or "github:wazootech/worlds-sdk-ts#251". */
   source: string;
   /** ISO 8601 timestamp of retrieval. */
   retrievedAt: string;
+  /**
+   * Who asserted the fact (spec §2.2). Populated at write time by the
+   * correction loop and the seed importers. Facts written before this
+   * field existed carry no author; `authorFromSource()` is the migration
+   * fallback for them (correction-loop issue #6).
+   */
+  author?: FactAuthor;
 }
 
 /** One RDF quad, with Twin-level provenance attached. */
