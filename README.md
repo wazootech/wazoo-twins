@@ -11,8 +11,13 @@ MIT · **Check and test:** `deno install && deno task ci`
 ## Status
 
 Phase 0 + Phase 1 implemented (Nov 6, 2026). Read-only Twin: briefings,
-research, drafts — no external writes. Phase 2 (supervised writes) is not built
-yet.
+research, drafts — no external writes. Phase 2 correction loop implemented (Nov
+8, 2026, branch `phase2/correction-loop`, not yet reviewed): internal World
+writes — corrections supersede rather than overwrite, every write carries
+provenance and an audit quad, untraceable writes are blocked, and procedure
+patches are fork-evaluated before promotion. External writes (Gmail send,
+calendar create, GitHub writes) are still not built and still need approval
+cards.
 
 Design docs: `docs/ethan-davidson-twin-scope.md` (what a Twin is) and
 `docs/ethan-davidson-twin-implementation-plan.md` (how it is built).

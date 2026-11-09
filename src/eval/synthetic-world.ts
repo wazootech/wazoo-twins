@@ -362,8 +362,20 @@ export class SyntheticWorldClient implements WorldClient {
   async supersede(oldId: Iri, replacement: Fact): Promise<void> {
     const old = this.facts.get(oldId);
     if (!old) throw new Error(`cannot supersede missing fact ${oldId}`);
+    if (replacement.id === oldId) {
+      throw new Error(
+        `cannot supersede ${oldId} with a fact of the same id — a supersession needs a distinct replacement id`,
+      );
+    }
     await this.addFacts([replacement]);
     this.superseded.set(oldId, replacement.id);
+    // Stamp the same `supersededBy` link the real client writes, so
+    // `currentHead` / `history` in provenance.ts read identically on every
+    // backend. The old fact keeps its original properties otherwise.
+    this.facts.set(oldId, {
+      ...old,
+      properties: { ...old.properties, supersededBy: replacement.id },
+    });
   }
 
   /** IRI of the fact that superseded `id`, if any. */

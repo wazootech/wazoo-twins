@@ -5,11 +5,19 @@
  */
 import type { EvalTask } from "../types.ts";
 import { BRIEFING_TASKS } from "./briefing.ts";
+import { CORRECTION_SCENARIOS, runCorrectionScenarios } from "./corrections.ts";
 import { DRAFT_TASKS } from "./drafts.ts";
 import { SCHEDULING_TASKS } from "./scheduling.ts";
 import { SMOKE_TASKS } from "./smoke.ts";
 
-export { BRIEFING_TASKS, DRAFT_TASKS, SCHEDULING_TASKS, SMOKE_TASKS };
+export {
+  BRIEFING_TASKS,
+  CORRECTION_SCENARIOS,
+  DRAFT_TASKS,
+  runCorrectionScenarios,
+  SCHEDULING_TASKS,
+  SMOKE_TASKS,
+};
 
 /** Held-out set: 10 briefing + 10 draft + 5 scheduling = 25 tasks. */
 export const HELD_OUT_TASKS: EvalTask[] = [

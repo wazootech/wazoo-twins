@@ -24,6 +24,11 @@ export const Classes = {
   Run: `${TWIN_NS}Run`,
   Action: `${TWIN_NS}Action`,
   Approval: `${TWIN_NS}Approval`,
+  // Phase 2 correction loop (spec §2.3): procedures are data, not prose —
+  // a procedure is a set of quads, so one step can be corrected without
+  // rewriting the whole procedure.
+  Procedure: `${TWIN_NS}Procedure`,
+  ProcedureStep: `${TWIN_NS}ProcedureStep`,
 } as const;
 
 export type ClassName = keyof typeof Classes;
@@ -74,10 +79,24 @@ export const Props = {
   approvedBy: `${TWIN_NS}approvedBy`,
   at: `${TWIN_NS}at`,
   approvalDecision: `${TWIN_NS}approvalDecision`,
-  // Provenance (Twin-level, per worlds-sdk-ts#221)
+  // Provenance (Twin-level, per worlds-sdk-ts#257, formerly #221)
   source: `${TWIN_NS}source`,
   retrievedAt: `${TWIN_NS}retrievedAt`,
   supersededBy: `${TWIN_NS}supersededBy`,
+  // Supersession link, same shape the OpenBot `remember` tool uses for
+  // corrections (spec §2.1): the statement this fact supersedes.
+  supersedesStatement: `${TWIN_NS}supersedesStatement`,
+  // Who asserted a fact: "Ethan", "twin", or a named sub-agent (spec §2.2).
+  author: `${TWIN_NS}author`,
+  // Procedure / ProcedureStep (Phase 2 correction loop, spec §2.3).
+  procedure: `${TWIN_NS}procedure`,
+  stepIndex: `${TWIN_NS}stepIndex`,
+  precondition: `${TWIN_NS}precondition`,
+  expectedOutcome: `${TWIN_NS}expectedOutcome`,
+  evidence: `${TWIN_NS}evidence`,
+  // Open questions: an UNVERIFIED claim the Twin writes instead of a fact
+  // (spec §2.2). Stored on a Task with status "open-question".
+  question: `${TWIN_NS}question`,
 } as const;
 
 /** Required properties per class. Seed validation enforces these. */
@@ -94,6 +113,8 @@ export const RequiredProps: Record<ClassName, string[]> = {
   Run: ["agent", "task", "started", "outcome"],
   Action: ["actor", "actionType", "target", "at"],
   Approval: ["description", "approvedBy", "approvalDecision", "at"],
+  Procedure: ["name"],
+  ProcedureStep: ["procedure", "stepIndex"],
 };
 
 /** Validate one fact against the ontology. Returns errors, if any. */

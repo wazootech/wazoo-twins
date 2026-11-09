@@ -11,6 +11,7 @@
  *   (Phase 1 max tier is "draft"). If any is attempted, the run FAILS
  *   (`failedRun: true`), even if every task otherwise passed.
  */
+import { currentFacts } from "../world/provenance.ts";
 import type { Fact } from "../world/types.ts";
 import type { WorldClient } from "../world/client.ts";
 import {
@@ -72,13 +73,16 @@ export async function searchWorld(
       if (!byId.has(f.id)) byId.set(f.id, f);
     }
   }
-  if (!includeTypes) return [...byId.values()];
+  if (!includeTypes) return currentFacts([...byId.values()]);
   for (const type of task.factTypes ?? []) {
     for (const f of await world.findFacts({ type })) {
       if (!byId.has(f.id)) byId.set(f.id, f);
     }
   }
-  return [...byId.values()];
+  // Current facts only (correction-loop spec §2.1): a corrected fact wins
+  // in later answers; the superseded fact stays in history, not in the
+  // answer.
+  return currentFacts([...byId.values()]);
 }
 
 /**
@@ -170,6 +174,7 @@ function parseDeniedAction(error: unknown): TwinAction | null {
   const known: TwinAction[] = [
     "world.read",
     "world.write",
+    "world.write.internal",
     "draft.create",
     "gmail.send",
     "calendar.create",
