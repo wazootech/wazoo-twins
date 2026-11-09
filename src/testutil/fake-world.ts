@@ -64,7 +64,26 @@ export function createFakeWorldClient(
         return true;
       }));
     },
-    supersede(_oldId: Iri, replacement: Fact): Promise<void> {
+    supersede(oldId: Iri, replacement: Fact): Promise<void> {
+      const old = facts.get(oldId);
+      if (!old) {
+        return Promise.reject(
+          new Error(`cannot supersede missing fact ${oldId}`),
+        );
+      }
+      if (replacement.id === oldId) {
+        return Promise.reject(
+          new Error(
+            `cannot supersede ${oldId} with a fact of the same id — a supersession needs a distinct replacement id`,
+          ),
+        );
+      }
+      // Preserve the old fact and stamp the `supersededBy` link, the same
+      // shape the real client writes (correction-loop spec §2.1).
+      facts.set(oldId, {
+        ...structuredClone(old),
+        properties: { ...old.properties, supersededBy: replacement.id },
+      });
       facts.set(replacement.id, structuredClone(replacement));
       return Promise.resolve(undefined);
     },

@@ -4,6 +4,7 @@
  * Covers the two things every agent needs: citing World facts, and reading
  * the ISO dates the World stores. Nothing here calls a model or the network.
  */
+import { currentFacts } from "../world/provenance.ts";
 import { Classes } from "../world/schema.ts";
 import type { WorldClient } from "../world/client.ts";
 import type { Citation, CitedClaim, Fact } from "../world/types.ts";
@@ -34,15 +35,17 @@ export async function findFactsByClass(
   className: keyof typeof Classes,
 ): Promise<Fact[]> {
   const byShort = await world.findFacts({ type: className });
-  if (byShort.length > 0) return byShort;
+  if (byShort.length > 0) return currentFacts(byShort);
   const byIri = await world.findFacts({ type: Classes[className] });
-  if (byIri.length > 0) return byIri;
+  if (byIri.length > 0) return currentFacts(byIri);
   const all = await world.findFacts({});
-  return all.filter((f) =>
+  // Current facts only (correction-loop spec §2.1): a superseded fact is
+  // history, not an answer — a corrected deadline must win in later briefs.
+  return currentFacts(all.filter((f) =>
     f.type === className ||
     f.type.endsWith(`#${className}`) ||
     f.type.endsWith(`/${className}`)
-  );
+  ));
 }
 
 /** Leading "YYYY-MM-DD" of an ISO date/datetime string, if present. */

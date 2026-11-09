@@ -12,6 +12,7 @@
  * than inventing content.
  */
 import { createModelClient, type ModelClient } from "../service/model.ts";
+import { currentFacts } from "../world/provenance.ts";
 import type { WorldClient } from "../world/client.ts";
 import type { CitedClaim, Fact } from "../world/types.ts";
 import type { AgentContext, AgentResult, SubAgent } from "./types.ts";
@@ -320,6 +321,37 @@ export async function buildEveningSummary(
     `No Run facts for ${today} in the World.`,
   );
 
+  // Correction loop (spec §5, §8): today's internal writes and any
+  // unresolved conflicts surface here, batched, not one card each.
+  const correctionActions = (await findFactsByClass(world, "Action"))
+    .filter((f) =>
+      (f.properties.actionType ?? "").startsWith("world.") ||
+      (f.properties.actionType ?? "").startsWith("procedure.")
+    )
+    .filter((f) =>
+      (datePart(f.provenance.retrievedAt ?? "") ??
+        datePartPT(f.provenance.retrievedAt ?? "")) === today
+    )
+    .sort(byProvenanceDesc);
+  const openQuestions = (await findFactsByClass(world, "Task"))
+    .filter((f) =>
+      (f.properties.status ?? "").toLowerCase() === "open-question"
+    )
+    .sort(byProvenanceDesc);
+  const correctionLines: Fact[] = [...correctionActions, ...openQuestions];
+  section(
+    lines,
+    claims,
+    "Corrections & open questions",
+    correctionLines,
+    (f) =>
+      f.type === "Task"
+        ? `Open question: ${f.properties.question ?? f.label}`
+        : `${f.label} — ${f.properties.outcome ?? ""}`,
+    "No corrections or open questions today.",
+    notes,
+  );
+
   const { shown: shownCommitments, hidden: hiddenCommitments } =
     openCommitments(await findFactsByClass(world, "Commitment"));
   section(
@@ -426,6 +458,9 @@ async function answerQuestion(
     }
     facts = facts.slice(0, 5);
   }
+  // Current facts only (correction-loop spec §2.1): a corrected fact wins
+  // in later answers.
+  facts = currentFacts(facts);
   if (facts.length === 0) {
     return {
       agent: "briefing",

@@ -146,7 +146,7 @@ Deno.test("memory: search finds facts by keyword", async () => {
   }
 });
 
-Deno.test("memory: supersede replaces the old fact and records the marker", async () => {
+Deno.test("memory: supersede keeps the old fact and records the marker", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     const oldFact = commitment("twin:commitment/old", "old wording", {
@@ -161,8 +161,13 @@ Deno.test("memory: supersede replaces the old fact and records the marker", asyn
       (await world.getFact("twin:commitment/new"))?.properties["description"],
       "new wording",
     );
-    assertEquals(await world.getFact("twin:commitment/old"), undefined);
-    assertEquals(await world.count(), 1);
+    // Correction-loop spec §2.1: the old fact stays in the World, marked
+    // superseded, with its original content queryable in history. An
+    // earlier version of this test asserted the old fact was deleted;
+    // that was a silent overwrite, and the spec forbids it.
+    const old = await world.getFact("twin:commitment/old");
+    assertEquals(old?.properties["description"], "old wording");
+    assertEquals(await world.count(), 2);
     // The supersession marker lives on the old id's quads: query it raw.
     const rows = await world.query(
       `SELECT ?o WHERE { <https://wazoo.dev/twins/fact/commitment/old> <https://wazoo.dev/twins#supersededBy> ?o }`,

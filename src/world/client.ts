@@ -432,21 +432,21 @@ class WorldClientImpl implements WorldClient {
         }`,
       );
     }
+    // Correction-loop spec §2.1: the old fact's quads STAY in the World —
+    // a supersession adds a marker, it never deletes. (An earlier version
+    // DELETEd the old fact's quads here; that was a silent overwrite in
+    // all but name, and the Nov 8 spec explicitly forbids it.)
     const oldFact = await this.getFact(oldId);
-    // DELETE the old fact's quads, INSERT the replacement, then record the
-    // supersession marker (supersededBy) — nothing is silently overwritten.
-    await this.#sdk.sparql({
-      query: `DELETE WHERE { ${sparqlIri(expandIri(oldId))} ?p ?o }`,
-    });
+    if (!oldFact) {
+      throw new Error(`cannot supersede missing fact ${oldId}`);
+    }
+    if (replacement.id === oldId) {
+      throw new Error(
+        `cannot supersede ${oldId} with a fact of the same id — a supersession needs a distinct replacement id`,
+      );
+    }
     await this.addFacts([replacement]);
-    const markerSource: Fact = oldFact ?? {
-      id: oldId,
-      type: "Commitment",
-      label: oldId,
-      properties: { description: oldId, status: "superseded" },
-      provenance: replacement.provenance,
-    };
-    const marker = supersessionQuads(markerSource, replacement);
+    const marker = supersessionQuads(oldFact, replacement);
     const triples = marker.map((q) => quadToTriple(q)).join("\n");
     await this.#sdk.sparql({ query: `INSERT DATA { ${triples} }` });
   }
