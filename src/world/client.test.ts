@@ -40,6 +40,29 @@ Deno.test("memory: addFacts round-trips through getFact", async () => {
   }
 });
 
+Deno.test("memory: the typed provenance author round-trips through getFact", async () => {
+  const world = await createWorldClient({ backend: "memory" });
+  try {
+    const fact = commitment(
+      "twin:commitment/mozilla",
+      "Mozilla deadline Nov 22",
+    );
+    fact.provenance = { ...fact.provenance, author: "Ethan" };
+    await world.addFacts([fact]);
+    const reloaded = await world.getFact("twin:commitment/mozilla");
+    assert(reloaded !== undefined);
+    assertEquals(reloaded.provenance.author, "Ethan");
+    // A fact written without an author reads back without one (pre-author facts).
+    const plain = commitment("twin:commitment/plain", "no author yet");
+    await world.addFacts([plain]);
+    const reloadedPlain = await world.getFact("twin:commitment/plain");
+    assert(reloadedPlain !== undefined);
+    assertEquals(reloadedPlain.provenance.author, undefined);
+  } finally {
+    await world.close();
+  }
+});
+
 Deno.test("memory: addFacts is idempotent (fact-ID dedup, no duplicates)", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {

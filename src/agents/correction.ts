@@ -18,9 +18,11 @@
  * source), retracts a whole procedure, or is low-confidence (spec §3).
  * External writes are NOT in this slice — they stay approval-card only.
  *
- * "A fact Ethan asserted directly" is operationalized as a fact whose
- * provenance source starts with "Ethan" (the Twin records Ethan's chat
- * corrections that way). Everything else is a Twin or import assertion.
+ * "A fact Ethan asserted directly" is decided by the typed author field
+ * on the fact's provenance (`author: "Ethan"`), populated at write time
+ * by the correction loop (issue #6). The free-text check (source starts
+ * with "Ethan") survives only as a migration fallback for facts written
+ * before the field existed.
  */
 import { SyntheticWorldClient } from "../eval/synthetic-world.ts";
 import {
@@ -32,12 +34,13 @@ import { gateFactWrite, openQuestionFact } from "../orchestrator/verifier.ts";
 import { type CorrectionAuditKind, recordWriteAudit } from "../world/audit.ts";
 import type { WorldClient } from "../world/client.ts";
 import {
+  authorFromSource,
   chainContaining,
   currentHead,
   history,
   supersede,
 } from "../world/provenance.ts";
-import type { Fact, Iri } from "../world/types.ts";
+import type { Fact, FactAuthor, Iri } from "../world/types.ts";
 import { claimFor } from "./common.ts";
 import type { AgentContext, AgentResult, SubAgent } from "./types.ts";
 
@@ -82,9 +85,16 @@ export interface CorrectionResult {
   details?: string[];
 }
 
-/** True when a fact was asserted directly by Ethan (provenance source). */
+/**
+ * True when a fact was asserted directly by Ethan. Reads the typed
+ * `provenance.author` field when present; facts written before the field
+ * existed fall back to the old string-prefix convention (issue #6).
+ */
 export function assertedByEthan(fact: Fact): boolean {
-  return fact.provenance.source.trim().toLowerCase().startsWith("ethan");
+  if (fact.provenance.author !== undefined) {
+    return fact.provenance.author === "Ethan";
+  }
+  return authorFromSource(fact.provenance.source) === "Ethan";
 }
 
 /** One-line rendering of a fact for messages ("label: key=value; ..."). */
@@ -230,7 +240,10 @@ export async function applyCorrection(
     req.replacement.properties["supersedesStatement"] = head.id;
   }
 
-  // 6. Apply: supersede, or add when this is a brand-new fact.
+  // 6. Apply: supersede, or add when this is a brand-new fact. The typed
+  // author is stamped here, at write time (issue #6) — "who asserted this"
+  // is recorded on the fact itself, not inferred later from the source.
+  req.replacement.provenance.author = req.author as FactAuthor;
   if (head) {
     await world.supersede(head.id, req.replacement);
   } else {
@@ -328,6 +341,7 @@ export async function undoCorrection(
         ? `Ethan, in chat ${now}`
         : `twin:undo ${now}`,
       retrievedAt: now,
+      author: input.author as FactAuthor,
     },
   };
   delete restoration.properties["supersededBy"];
@@ -390,7 +404,6 @@ export async function resolveConflict(
   const candidateIsEthan = input.candidateAuthor === "Ethan" ||
     assertedByEthan(input.candidate);
   const oldIsEthan = assertedByEthan(oldFact);
-
   if (oldIsEthan && !candidateIsEthan) {
     // Rule 2: Ethan wins. A non-Ethan candidate contradicting Ethan is
     // ask-first, never auto.

@@ -12,13 +12,44 @@
  * `history` walks it back to the original.
  */
 import { Props } from "./schema.ts";
-import type { Fact, Iri, Provenance, Quad } from "./types.ts";
+import type { Fact, FactAuthor, Iri, Provenance, Quad } from "./types.ts";
 
 export function provenance(
   source: string,
   retrievedAt: string = new Date().toISOString(),
+  author?: FactAuthor,
 ): Provenance {
-  return { source, retrievedAt };
+  return author === undefined ? { source, retrievedAt } : {
+    source,
+    retrievedAt,
+    author,
+  };
+}
+
+/**
+ * Derive the typed author from a pre-author fact's source string — the
+ * migration fallback for facts written before `Provenance.author` existed
+ * (issue #6). Returns undefined when the source is ambiguous (an importer
+ * or public URL), never guesses.
+ */
+export function authorFromSource(source: string): FactAuthor | undefined {
+  const s = source.trim().toLowerCase();
+  if (s.startsWith("ethan")) return "Ethan";
+  if (s.startsWith("twin:")) return "twin";
+  return undefined;
+}
+
+/**
+ * Backfill the typed author onto a fact written before the field existed,
+ * leaving an already-typed fact and an ambiguous source untouched.
+ */
+export function backfillAuthor(fact: Fact): Fact {
+  if (fact.provenance.author !== undefined) return fact;
+  const author = authorFromSource(fact.provenance.source);
+  return author === undefined ? fact : {
+    ...fact,
+    provenance: { ...fact.provenance, author },
+  };
 }
 
 /** Serialize a Fact to quads: one per property, plus type + provenance quads. */
@@ -56,6 +87,15 @@ export function factToQuads(fact: Fact): Quad[] {
     objectIsIri: false,
     provenance: fact.provenance,
   });
+  if (fact.provenance.author !== undefined) {
+    quads.push({
+      subject: fact.id,
+      predicate: Props.author,
+      object: fact.provenance.author,
+      objectIsIri: false,
+      provenance: fact.provenance,
+    });
+  }
   return quads;
 }
 
