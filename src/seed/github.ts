@@ -28,7 +28,7 @@ export const GITHUB_REPOS: Array<{ owner: string; repo: string }> = [
   { owner: "wazootech", repo: "wazoobench" },
   { owner: "wazootech", repo: "wazoo.dev" },
   { owner: "wazootech", repo: "blog.wazoo.dev" },
-  { owner: "wazootech", repo: "computer-agent" },
+  { owner: "wazootech", repo: "computer-eve" },
   { owner: "wazootech", repo: "reasoner" },
   { owner: "wazootech", repo: "docs.wazoo.dev" },
 ];
