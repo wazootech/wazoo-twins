@@ -509,11 +509,11 @@ Deno.test("correction: retracting a whole procedure is ask-first", async () => {
 });
 
 // ---------------------------------------------------------------------------
-// Typed author field (issue #6): provenance.author decides "Ethan wins",
+// Typed blame field (issue #6): provenance.blame decides "Ethan wins",
 // the string-prefix check survives only as a migration fallback.
 // ---------------------------------------------------------------------------
 
-Deno.test("correction: applyCorrection stamps the typed author at write time", async () => {
+Deno.test("correction: applyCorrection stamps the typed blame at write time", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
   ]);
@@ -531,11 +531,11 @@ Deno.test("correction: applyCorrection stamps the typed author at write time", a
   );
   assertEquals(result.status, "applied");
   const written = await world.getFact("twin:commitment/mozilla-v2");
-  assertEquals(written?.provenance.author, "Ethan");
+  assertEquals(written?.provenance.blame, "Ethan");
   await world.close();
 });
 
-Deno.test("correction: a sub-agent author is stamped verbatim and is not Ethan", async () => {
+Deno.test("correction: a sub-agent blame is stamped verbatim and is not Ethan", async () => {
   const world = createFakeWorldClient();
   const replacement = commitment(
     "twin:commitment/x",
@@ -551,32 +551,32 @@ Deno.test("correction: a sub-agent author is stamped verbatim and is not Ethan",
   );
   assertEquals(result.status, "applied");
   const written = await world.getFact("twin:commitment/x");
-  assertEquals(written?.provenance.author, "research");
+  assertEquals(written?.provenance.blame, "research");
   assertEquals(assertedByEthan(written!), false);
   await world.close();
 });
 
 Deno.test("correction: assertedByEthan reads the typed field, not the source string", () => {
-  // Typed author wins even when the source string looks like Ethan's.
+  // Typed blame wins even when the source string looks like Ethan's.
   const typedTwin: Fact = {
-    ...commitment("twin:commitment/a", "typed twin author"),
+    ...commitment("twin:commitment/a", "typed twin blame"),
     provenance: {
       source: `Ethan, in chat ${NOW}`,
       retrievedAt: NOW,
-      author: "twin",
+      blame: "twin",
     },
   };
   assertEquals(assertedByEthan(typedTwin), false);
-  // Typed author is enough even with a neutral source.
+  // Typed blame is enough even with a neutral source.
   const typedEthan: Fact = {
-    ...commitment("twin:commitment/b", "typed ethan author"),
-    provenance: { source: "audit-log", retrievedAt: NOW, author: "Ethan" },
+    ...commitment("twin:commitment/b", "typed ethan blame"),
+    provenance: { source: "audit-log", retrievedAt: NOW, blame: "Ethan" },
   };
   assertEquals(assertedByEthan(typedEthan), true);
 });
 
-Deno.test("correction: the string-prefix check still covers pre-author facts", async () => {
-  // An old-style Ethan fact (no author field) is still protected: the
+Deno.test("correction: the string-prefix check still covers pre-blame facts", async () => {
+  // An old-style Ethan fact (no blame field) is still protected: the
   // migration fallback keeps contradicting it ask-first.
   const world = createFakeWorldClient([
     commitment(
@@ -587,7 +587,7 @@ Deno.test("correction: the string-prefix check still covers pre-author facts", a
     ),
   ]);
   const oldStyle = (await world.getFact("twin:commitment/mozilla"))!;
-  assertEquals(oldStyle.provenance.author, undefined);
+  assertEquals(oldStyle.provenance.blame, undefined);
   assert(assertedByEthan(oldStyle));
   const replacement = commitment(
     "twin:commitment/mozilla-v2",
@@ -611,7 +611,7 @@ Deno.test("correction: the string-prefix check still covers pre-author facts", a
   await world.close();
 });
 
-Deno.test("correction: undoCorrection stamps the typed author on the restoration", async () => {
+Deno.test("correction: undoCorrection stamps the typed blame on the restoration", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
   ]);
@@ -636,6 +636,6 @@ Deno.test("correction: undoCorrection stamps the typed author on the restoration
   });
   assertEquals(result.status, "applied");
   const restoration = await world.getFact(result.newFactId!);
-  assertEquals(restoration?.provenance.author, "Ethan");
+  assertEquals(restoration?.provenance.blame, "Ethan");
   await world.close();
 });

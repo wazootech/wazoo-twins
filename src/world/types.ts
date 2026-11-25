@@ -15,7 +15,7 @@ export type Iri = string;
  * named sub-agent. Sub-agents are an open string, kept literal-compatible
  * so `"Ethan"` and `"twin"` still autocomplete in editors.
  */
-export type FactAuthor = "Ethan" | "twin" | (string & Record<never, never>);
+export type FactBlame = "Ethan" | "twin" | (string & Record<never, never>);
 
 /** Where a fact came from, who asserted it, and when the Twin read it. */
 export interface Provenance {
@@ -26,10 +26,10 @@ export interface Provenance {
   /**
    * Who asserted the fact (spec §2.2). Populated at write time by the
    * correction loop and the seed importers. Facts written before this
-   * field existed carry no author; `authorFromSource()` is the migration
+   * field existed carry no blame; `blameFromSource()` is the migration
    * fallback for them (correction-loop issue #6).
    */
-  author?: FactAuthor;
+  blame?: FactBlame;
 }
 
 /** One RDF quad, with Twin-level provenance attached. */

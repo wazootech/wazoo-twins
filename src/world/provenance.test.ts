@@ -7,8 +7,8 @@
 import { assert, assertEquals, assertThrows } from "@std/assert";
 import { Props } from "./schema.ts";
 import {
-  authorFromSource,
-  backfillAuthor,
+  blameFromSource,
+  stampBlame,
   chainContaining,
   currentFacts,
   currentHead,
@@ -175,17 +175,17 @@ Deno.test("provenance: normalizeIri unifies twin: and expanded forms", () => {
   );
 });
 
-Deno.test("provenance: authorFromSource derives the author only where unambiguous", () => {
+Deno.test("provenance: blameFromSource derives the blame only where unambiguous", () => {
   assertEquals(
-    authorFromSource(`Ethan, in chat 2026-11-08T12:00:00.000Z`),
+    blameFromSource(`Ethan, in chat 2026-11-08T12:00:00.000Z`),
     "Ethan",
   );
-  assertEquals(authorFromSource("twin:correction-loop"), "twin");
-  assertEquals(authorFromSource("MEMORY.md#L41"), undefined);
-  assertEquals(authorFromSource("https://example.com/post"), undefined);
+  assertEquals(blameFromSource("twin:correction-loop"), "twin");
+  assertEquals(blameFromSource("MEMORY.md#L41"), undefined);
+  assertEquals(blameFromSource("https://example.com/post"), undefined);
 });
 
-Deno.test("provenance: backfillAuthor stamps unambiguous pre-author facts, touches nothing else", () => {
+Deno.test("provenance: stampBlame stamps unambiguous pre-blame facts, touches nothing else", () => {
   const ethan: Fact = {
     id: "twin:commitment/a",
     type: "Commitment",
@@ -196,8 +196,8 @@ Deno.test("provenance: backfillAuthor stamps unambiguous pre-author facts, touch
       retrievedAt: "2026-11-08T12:00:00.000Z",
     },
   };
-  const stamped = backfillAuthor(ethan);
-  assertEquals(stamped.provenance.author, "Ethan");
+  const stamped = stampBlame(ethan);
+  assertEquals(stamped.provenance.blame, "Ethan");
   // Already-typed facts are left alone, even when the source disagrees.
   const typed: Fact = {
     ...ethan,
@@ -205,11 +205,11 @@ Deno.test("provenance: backfillAuthor stamps unambiguous pre-author facts, touch
     provenance: {
       source: `Ethan, in chat`,
       retrievedAt: "2026-11-08T12:00:00.000Z",
-      author: "twin",
+      blame: "twin",
     },
   };
-  assertEquals(backfillAuthor(typed), typed);
-  // Ambiguous sources stay authorless.
+  assertEquals(stampBlame(typed), typed);
+  // Ambiguous sources stay blameless.
   const imported: Fact = {
     ...ethan,
     id: "twin:commitment/c",
@@ -218,10 +218,10 @@ Deno.test("provenance: backfillAuthor stamps unambiguous pre-author facts, touch
       retrievedAt: "2026-11-08T12:00:00.000Z",
     },
   };
-  assertEquals(backfillAuthor(imported), imported);
+  assertEquals(stampBlame(imported), imported);
 });
 
-Deno.test("provenance: factToQuads emits the author quad when typed, none when absent", () => {
+Deno.test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
   const base: Fact = {
     id: "twin:commitment/a",
     type: "Commitment",
@@ -230,16 +230,16 @@ Deno.test("provenance: factToQuads emits the author quad when typed, none when a
     provenance: { source: "test", retrievedAt: "2026-11-08T12:00:00.000Z" },
   };
   assertEquals(
-    factToQuads(base).some((q) => q.predicate === Props.author),
+    factToQuads(base).some((q) => q.predicate === Props.blame),
     false,
   );
-  const authored: Fact = {
+  const blamed: Fact = {
     ...base,
-    provenance: { ...base.provenance, author: "Ethan" },
+    provenance: { ...base.provenance, blame: "Ethan" },
   };
-  const authorQuads = factToQuads(authored).filter((q) =>
-    q.predicate === Props.author
+  const blameQuads = factToQuads(blamed).filter((q) =>
+    q.predicate === Props.blame
   );
-  assertEquals(authorQuads.length, 1);
-  assertEquals(authorQuads[0].object, "Ethan");
+  assertEquals(blameQuads.length, 1);
+  assertEquals(blameQuads[0].object, "Ethan");
 });
