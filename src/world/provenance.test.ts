@@ -184,7 +184,6 @@ Deno.test("provenance: blameFromSource derives the blame only where unambiguous"
   assertEquals(blameFromSource("https://example.com/post"), undefined);
 });
 
-
 Deno.test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
   const base: Fact = {
     id: "twin:commitment/a",
