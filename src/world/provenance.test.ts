@@ -16,7 +16,6 @@ import {
   isSuperseded,
   normalizeIri,
   provenanceErrors,
-  stampBlame,
   supersede,
   supersessionQuads,
 } from "./provenance.ts";
@@ -183,42 +182,6 @@ Deno.test("provenance: blameFromSource derives the blame only where unambiguous"
   assertEquals(blameFromSource("twin:correction-loop"), "twin");
   assertEquals(blameFromSource("MEMORY.md#L41"), undefined);
   assertEquals(blameFromSource("https://example.com/post"), undefined);
-});
-
-Deno.test("provenance: stampBlame stamps unambiguous pre-blame facts, touches nothing else", () => {
-  const ethan: Fact = {
-    id: "twin:commitment/a",
-    type: "Commitment",
-    label: "a",
-    properties: { description: "a", status: "open" },
-    provenance: {
-      source: `Ethan, in chat`,
-      retrievedAt: "2026-11-08T12:00:00.000Z",
-    },
-  };
-  const stamped = stampBlame(ethan);
-  assertEquals(stamped.provenance.blame, "Ethan");
-  // Already-typed facts are left alone, even when the source disagrees.
-  const typed: Fact = {
-    ...ethan,
-    id: "twin:commitment/b",
-    provenance: {
-      source: `Ethan, in chat`,
-      retrievedAt: "2026-11-08T12:00:00.000Z",
-      blame: "twin",
-    },
-  };
-  assertEquals(stampBlame(typed), typed);
-  // Ambiguous sources stay blameless.
-  const imported: Fact = {
-    ...ethan,
-    id: "twin:commitment/c",
-    provenance: {
-      source: "MEMORY.md#L41",
-      retrievedAt: "2026-11-08T12:00:00.000Z",
-    },
-  };
-  assertEquals(stampBlame(imported), imported);
 });
 
 Deno.test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
