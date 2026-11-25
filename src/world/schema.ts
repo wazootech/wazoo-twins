@@ -87,7 +87,7 @@ export const Props = {
   // corrections (spec §2.1): the statement this fact supersedes.
   supersedesStatement: `${TWIN_NS}supersedesStatement`,
   // Who asserted a fact: "Ethan", "twin", or a named sub-agent (spec §2.2).
-  author: `${TWIN_NS}author`,
+  blame: `${TWIN_NS}blame`,
   // Procedure / ProcedureStep (Phase 2 correction loop, spec §2.3).
   procedure: `${TWIN_NS}procedure`,
   stepIndex: `${TWIN_NS}stepIndex`,

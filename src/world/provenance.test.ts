@@ -5,14 +5,18 @@
  * queryable in history, and "current" queries read only live heads.
  */
 import { assert, assertEquals, assertThrows } from "@std/assert";
+import { Props } from "./schema.ts";
 import {
+  blameFromSource,
   chainContaining,
   currentFacts,
   currentHead,
+  factToQuads,
   history,
   isSuperseded,
   normalizeIri,
   provenanceErrors,
+  stampBlame,
   supersede,
   supersessionQuads,
 } from "./provenance.ts";
@@ -169,4 +173,73 @@ Deno.test("provenance: normalizeIri unifies twin: and expanded forms", () => {
     currentHead([expanded, v2], "twin:commitment/x")?.id,
     "twin:commitment/x-v2",
   );
+});
+
+Deno.test("provenance: blameFromSource derives the blame only where unambiguous", () => {
+  assertEquals(
+    blameFromSource(`Ethan, in chat 2026-11-08T12:00:00.000Z`),
+    "Ethan",
+  );
+  assertEquals(blameFromSource("twin:correction-loop"), "twin");
+  assertEquals(blameFromSource("MEMORY.md#L41"), undefined);
+  assertEquals(blameFromSource("https://example.com/post"), undefined);
+});
+
+Deno.test("provenance: stampBlame stamps unambiguous pre-blame facts, touches nothing else", () => {
+  const ethan: Fact = {
+    id: "twin:commitment/a",
+    type: "Commitment",
+    label: "a",
+    properties: { description: "a", status: "open" },
+    provenance: {
+      source: `Ethan, in chat`,
+      retrievedAt: "2026-11-08T12:00:00.000Z",
+    },
+  };
+  const stamped = stampBlame(ethan);
+  assertEquals(stamped.provenance.blame, "Ethan");
+  // Already-typed facts are left alone, even when the source disagrees.
+  const typed: Fact = {
+    ...ethan,
+    id: "twin:commitment/b",
+    provenance: {
+      source: `Ethan, in chat`,
+      retrievedAt: "2026-11-08T12:00:00.000Z",
+      blame: "twin",
+    },
+  };
+  assertEquals(stampBlame(typed), typed);
+  // Ambiguous sources stay blameless.
+  const imported: Fact = {
+    ...ethan,
+    id: "twin:commitment/c",
+    provenance: {
+      source: "MEMORY.md#L41",
+      retrievedAt: "2026-11-08T12:00:00.000Z",
+    },
+  };
+  assertEquals(stampBlame(imported), imported);
+});
+
+Deno.test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
+  const base: Fact = {
+    id: "twin:commitment/a",
+    type: "Commitment",
+    label: "a",
+    properties: { description: "a", status: "open" },
+    provenance: { source: "test", retrievedAt: "2026-11-08T12:00:00.000Z" },
+  };
+  assertEquals(
+    factToQuads(base).some((q) => q.predicate === Props.blame),
+    false,
+  );
+  const blamed: Fact = {
+    ...base,
+    provenance: { ...base.provenance, blame: "Ethan" },
+  };
+  const blameQuads = factToQuads(blamed).filter((q) =>
+    q.predicate === Props.blame
+  );
+  assertEquals(blameQuads.length, 1);
+  assertEquals(blameQuads[0].object, "Ethan");
 });
