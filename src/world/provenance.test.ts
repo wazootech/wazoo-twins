@@ -8,7 +8,6 @@ import { assert, assertEquals, assertThrows } from "@std/assert";
 import { Props } from "./schema.ts";
 import {
   blameFromSource,
-  stampBlame,
   chainContaining,
   currentFacts,
   currentHead,
@@ -17,6 +16,7 @@ import {
   isSuperseded,
   normalizeIri,
   provenanceErrors,
+  stampBlame,
   supersede,
   supersessionQuads,
 } from "./provenance.ts";
