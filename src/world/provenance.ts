@@ -39,19 +39,6 @@ export function blameFromSource(source: string): FactBlame | undefined {
   return undefined;
 }
 
-/**
- * Backfill the typed blame onto a fact written before the field existed,
- * leaving an already-typed fact and an ambiguous source untouched.
- */
-export function stampBlame(fact: Fact): Fact {
-  if (fact.provenance.blame !== undefined) return fact;
-  const blame = blameFromSource(fact.provenance.source);
-  return blame === undefined ? fact : {
-    ...fact,
-    provenance: { ...fact.provenance, blame },
-  };
-}
-
 /** Serialize a Fact to quads: one per property, plus type + provenance quads. */
 export function factToQuads(fact: Fact): Quad[] {
   const quads: Quad[] = [];
