@@ -1,7 +1,8 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals, assertRejects } from "../testutil/assert.ts";
 import { GitHubConnector, GitHubNotConfiguredError } from "./github.ts";
 
-Deno.test("github: reads throw an explicit error when no token is set", async () => {
+test("github: reads throw an explicit error when no token is set", async () => {
   const conn = new GitHubConnector({ token: "" });
   assertEquals(conn.isConfigured(), false);
   await assertRejects(
@@ -15,7 +16,7 @@ Deno.test("github: reads throw an explicit error when no token is set", async ()
   );
 });
 
-Deno.test("github: invalid repo names are rejected before any fetch", async () => {
+test("github: invalid repo names are rejected before any fetch", async () => {
   const conn = new GitHubConnector({ token: "t" });
   await assertRejects(
     () => conn.listIssues("not-a-repo"),
@@ -24,7 +25,7 @@ Deno.test("github: invalid repo names are rejected before any fetch", async () =
   );
 });
 
-Deno.test("github: listIssues excludes PRs, listPullRequests returns PRs (injected fetch)", async () => {
+test("github: listIssues excludes PRs, listPullRequests returns PRs (injected fetch)", async () => {
   const fetchFn = (async (input: string | URL | Request): Promise<Response> => {
     await Promise.resolve();
     const url = String(input);

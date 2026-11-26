@@ -1,3 +1,4 @@
+import { test } from "node:test";
 /**
  * Correction-loop tests (correction-loop spec §2–§5, §8).
  *
@@ -6,7 +7,7 @@
  * rejected in the fork; undo restores the previous head; the guards —
  * missing provenance, silent overwrite, unapproved ask-first writes.
  */
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { currentHead, history } from "../world/provenance.ts";
 import type { Fact } from "../world/types.ts";
@@ -52,7 +53,7 @@ function ethanCorrection(
   };
 }
 
-Deno.test("correction: Ethan correction supersedes and the old fact stays in history", async () => {
+test("correction: Ethan correction supersedes and the old fact stays in history", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
   ]);
@@ -101,7 +102,7 @@ Deno.test("correction: Ethan correction supersedes and the old fact stays in his
   await world.close();
 });
 
-Deno.test("correction: a write without provenance is blocked, never a fact", async () => {
+test("correction: a write without provenance is blocked, never a fact", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20"),
   ]);
@@ -128,7 +129,7 @@ Deno.test("correction: a write without provenance is blocked, never a fact", asy
   await world.close();
 });
 
-Deno.test("correction: an untraceable claim is blocked and becomes an open question", async () => {
+test("correction: an untraceable claim is blocked and becomes an open question", async () => {
   const world = createFakeWorldClient();
   const replacement = commitment(
     "twin:commitment/x",
@@ -147,7 +148,7 @@ Deno.test("correction: an untraceable claim is blocked and becomes an open quest
   await world.close();
 });
 
-Deno.test("correction: contradicting Ethan without approval is ask-first and writes nothing", async () => {
+test("correction: contradicting Ethan without approval is ask-first and writes nothing", async () => {
   const world = createFakeWorldClient([
     commitment(
       "twin:commitment/mozilla",
@@ -201,7 +202,7 @@ Deno.test("correction: contradicting Ethan without approval is ask-first and wri
   await world.close();
 });
 
-Deno.test("correction: correcting a missing fact is blocked", async () => {
+test("correction: correcting a missing fact is blocked", async () => {
   const world = createFakeWorldClient();
   const result = await applyCorrection(
     world,
@@ -215,7 +216,7 @@ Deno.test("correction: correcting a missing fact is blocked", async () => {
   await world.close();
 });
 
-Deno.test("correction: undo restores the previous head and states what it undid", async () => {
+test("correction: undo restores the previous head and states what it undid", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20"),
   ]);
@@ -253,7 +254,7 @@ Deno.test("correction: undo restores the previous head and states what it undid"
   await world.close();
 });
 
-Deno.test("correction: undo with nothing to undo is blocked", async () => {
+test("correction: undo with nothing to undo is blocked", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20"),
   ]);
@@ -266,7 +267,7 @@ Deno.test("correction: undo with nothing to undo is blocked", async () => {
   await world.close();
 });
 
-Deno.test("correction: sync conflict — fresher source wins, Ethan wins over sync", async () => {
+test("correction: sync conflict — fresher source wins, Ethan wins over sync", async () => {
   const world = createFakeWorldClient([
     commitment(
       "twin:commitment/nbis-eapp",
@@ -320,7 +321,7 @@ Deno.test("correction: sync conflict — fresher source wins, Ethan wins over sy
   await world2.close();
 });
 
-Deno.test("correction: unresolvable conflict writes an open question, neither fact current", async () => {
+test("correction: unresolvable conflict writes an open question, neither fact current", async () => {
   const world = createFakeWorldClient([
     commitment(
       "twin:commitment/x",
@@ -389,7 +390,7 @@ function procedureWorld(): ReturnType<typeof createFakeWorldClient> {
   ]);
 }
 
-Deno.test("correction: a non-regressing procedure patch promotes after fork eval", async () => {
+test("correction: a non-regressing procedure patch promotes after fork eval", async () => {
   const world = procedureWorld();
   const result = await applyProcedurePatch(world, {
     procedureId: "twin:procedure/call-prep",
@@ -444,7 +445,7 @@ Deno.test("correction: a non-regressing procedure patch promotes after fork eval
   await world.close();
 });
 
-Deno.test("correction: a regressing procedure patch is rejected in the fork, never promoted", async () => {
+test("correction: a regressing procedure patch is rejected in the fork, never promoted", async () => {
   const world = procedureWorld();
   const result = await applyProcedurePatch(world, {
     procedureId: "twin:procedure/call-prep",
@@ -492,7 +493,7 @@ Deno.test("correction: a regressing procedure patch is rejected in the fork, nev
   await world.close();
 });
 
-Deno.test("correction: retracting a whole procedure is ask-first", async () => {
+test("correction: retracting a whole procedure is ask-first", async () => {
   const world = procedureWorld();
   const result = await applyProcedurePatch(world, {
     procedureId: "twin:procedure/call-prep",
@@ -513,7 +514,7 @@ Deno.test("correction: retracting a whole procedure is ask-first", async () => {
 // the string-prefix check survives only as a migration fallback.
 // ---------------------------------------------------------------------------
 
-Deno.test("correction: applyCorrection stamps the typed blame at write time", async () => {
+test("correction: applyCorrection stamps the typed blame at write time", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
   ]);
@@ -535,7 +536,7 @@ Deno.test("correction: applyCorrection stamps the typed blame at write time", as
   await world.close();
 });
 
-Deno.test("correction: a sub-agent blame is stamped verbatim and is not Ethan", async () => {
+test("correction: a sub-agent blame is stamped verbatim and is not Ethan", async () => {
   const world = createFakeWorldClient();
   const replacement = commitment(
     "twin:commitment/x",
@@ -556,7 +557,7 @@ Deno.test("correction: a sub-agent blame is stamped verbatim and is not Ethan", 
   await world.close();
 });
 
-Deno.test("correction: assertedByEthan reads the typed field, not the source string", () => {
+test("correction: assertedByEthan reads the typed field, not the source string", () => {
   // Typed blame wins even when the source string looks like Ethan's.
   const typedTwin: Fact = {
     ...commitment("twin:commitment/a", "typed twin blame"),
@@ -575,7 +576,7 @@ Deno.test("correction: assertedByEthan reads the typed field, not the source str
   assertEquals(assertedByEthan(typedEthan), true);
 });
 
-Deno.test("correction: the string-prefix check still covers pre-blame facts", async () => {
+test("correction: the string-prefix check still covers pre-blame facts", async () => {
   // An old-style Ethan fact (no blame field) is still protected: the
   // migration fallback keeps contradicting it ask-first.
   const world = createFakeWorldClient([
@@ -611,7 +612,7 @@ Deno.test("correction: the string-prefix check still covers pre-blame facts", as
   await world.close();
 });
 
-Deno.test("correction: undoCorrection stamps the typed blame on the restoration", async () => {
+test("correction: undoCorrection stamps the typed blame on the restoration", async () => {
   const world = createFakeWorldClient([
     commitment("twin:commitment/mozilla", "Mozilla deadline Nov 20", "open"),
   ]);

@@ -1,10 +1,11 @@
+import { test } from "node:test";
 /**
  * Verifier write-gate tests (correction-loop spec §2.2).
  *
  * A write with an untraceable claim is BLOCKED, not just marked.
  * UNVERIFIED claims become open questions, never facts.
  */
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { gateFactWrite, gateWrite, openQuestionFact } from "./verifier.ts";
 import type { Fact } from "../world/types.ts";
 
@@ -22,7 +23,7 @@ function fact(id: string, source: string): Fact {
 
 const WORLD = [fact("twin:commitment/mozilla", "MEMORY.md — Mozilla")];
 
-Deno.test("verifier: a claim citing an existing World fact passes the gate", () => {
+test("verifier: a claim citing an existing World fact passes the gate", () => {
   const result = gateWrite(
     {
       text: "Mozilla deadline is Nov 20",
@@ -37,7 +38,7 @@ Deno.test("verifier: a claim citing an existing World fact passes the gate", () 
   assertEquals(result.blocked, false);
 });
 
-Deno.test("verifier: a claim citing a public URL passes the gate", () => {
+test("verifier: a claim citing a public URL passes the gate", () => {
   const result = gateWrite(
     {
       text: "KGC demo repo exists",
@@ -51,7 +52,7 @@ Deno.test("verifier: a claim citing a public URL passes the gate", () => {
   assertEquals(result.allowed, true);
 });
 
-Deno.test("verifier: a claim with no citations is blocked and becomes an open question", () => {
+test("verifier: a claim with no citations is blocked and becomes an open question", () => {
   const result = gateWrite(
     { text: "The deadline moved", citations: [] },
     WORLD,
@@ -62,7 +63,7 @@ Deno.test("verifier: a claim with no citations is blocked and becomes an open qu
   assertEquals(result.openQuestion, "Needs verification: The deadline moved");
 });
 
-Deno.test("verifier: a claim citing a missing World fact is blocked", () => {
+test("verifier: a claim citing a missing World fact is blocked", () => {
   const result = gateWrite(
     {
       text: "Something about a missing fact",
@@ -77,7 +78,7 @@ Deno.test("verifier: a claim citing a missing World fact is blocked", () => {
   assertEquals(result.blocked, true);
 });
 
-Deno.test("verifier: a fact without provenance is blocked", () => {
+test("verifier: a fact without provenance is blocked", () => {
   const bad = fact("twin:commitment/x", "");
   const result = gateFactWrite(bad, WORLD);
   assertEquals(result.allowed, false);
@@ -85,7 +86,7 @@ Deno.test("verifier: a fact without provenance is blocked", () => {
   assert(result.openQuestion?.includes("no provenance recorded"));
 });
 
-Deno.test("verifier: a fact with a Gmail source passes — the source IS the trace", () => {
+test("verifier: a fact with a Gmail source passes — the source IS the trace", () => {
   const result = gateFactWrite(
     fact("twin:commitment/x", "gmail:msg-123"),
     WORLD,
@@ -93,7 +94,7 @@ Deno.test("verifier: a fact with a Gmail source passes — the source IS the tra
   assertEquals(result.allowed, true);
 });
 
-Deno.test("verifier: a fact with an Ethan chat source passes", () => {
+test("verifier: a fact with an Ethan chat source passes", () => {
   const result = gateFactWrite(
     fact("twin:commitment/x", `Ethan, in chat ${AT}`),
     WORLD,
@@ -101,7 +102,7 @@ Deno.test("verifier: a fact with an Ethan chat source passes", () => {
   assertEquals(result.allowed, true);
 });
 
-Deno.test("verifier: openQuestionFact is a Task with status open-question", () => {
+test("verifier: openQuestionFact is a Task with status open-question", () => {
   const q = openQuestionFact(
     "Needs verification: X?",
     "twin:correction-loop",

@@ -1,4 +1,5 @@
-import { assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals } from "../testutil/assert.ts";
 import {
   classifyIntent,
   extractDate,
@@ -7,7 +8,7 @@ import {
   planIntent,
 } from "./planner.ts";
 
-Deno.test("planner: brief intents route to the briefing agent", () => {
+test("planner: brief intents route to the briefing agent", () => {
   assertEquals(classifyIntent("give me the morning brief"), "brief");
   assertEquals(classifyIntent("evening summary please"), "brief");
   const plan = planIntent("give me the morning brief");
@@ -17,7 +18,7 @@ Deno.test("planner: brief intents route to the briefing agent", () => {
   ]);
 });
 
-Deno.test("planner: questions route to briefing question mode", () => {
+test("planner: questions route to briefing question mode", () => {
   assertEquals(classifyIntent("what do I owe RTX?"), "jobs-status"); // RTX is a jobs keyword
   assertEquals(classifyIntent("when is the Mozilla deadline?"), "question");
   const plan = planIntent("when is the Mozilla deadline?");
@@ -25,13 +26,13 @@ Deno.test("planner: questions route to briefing question mode", () => {
   assertEquals(plan.calls[0].agent, "briefing");
 });
 
-Deno.test("planner: draft-reply intents route to inbox", () => {
+test("planner: draft-reply intents route to inbox", () => {
   assertEquals(classifyIntent("draft a reply to Travis"), "draft-reply");
   assertEquals(classifyIntent("send an email to Travis"), "draft-reply");
   assertEquals(planIntent("draft a reply to Travis").calls[0].agent, "inbox");
 });
 
-Deno.test("planner: schedule intents route to calendar, with date extraction", () => {
+test("planner: schedule intents route to calendar, with date extraction", () => {
   assertEquals(classifyIntent("when am I free tomorrow?"), "schedule");
   assertEquals(extractDate("what is on 2026-11-06?"), "2026-11-06");
   assertEquals(extractDate("when am I free?"), undefined);
@@ -41,7 +42,7 @@ Deno.test("planner: schedule intents route to calendar, with date extraction", (
   );
 });
 
-Deno.test("planner: prep intents route to research + calendar", () => {
+test("planner: prep intents route to research + calendar", () => {
   assertEquals(classifyIntent("prep me for Ernest"), "research");
   const plan = planIntent("prep me for Ernest");
   assertEquals(plan.calls.map((c) => c.agent), ["research", "calendar"]);
@@ -52,7 +53,7 @@ Deno.test("planner: prep intents route to research + calendar", () => {
   );
 });
 
-Deno.test("planner: github-watch extracts repos", () => {
+test("planner: github-watch extracts repos", () => {
   assertEquals(
     classifyIntent("any new PRs on wazootech/wazoo-twins?"),
     "github-watch",
@@ -66,7 +67,7 @@ Deno.test("planner: github-watch extracts repos", () => {
   );
 });
 
-Deno.test("planner: jobs-status keywords route to jobs", () => {
+test("planner: jobs-status keywords route to jobs", () => {
   for (
     const intent of [
       "what is the status of my job applications?",
@@ -79,7 +80,7 @@ Deno.test("planner: jobs-status keywords route to jobs", () => {
   }
 });
 
-Deno.test("planner: unknown intents fall back to question, deterministically", () => {
+test("planner: unknown intents fall back to question, deterministically", () => {
   assertEquals(classifyIntent("flibberty gibbet"), "question");
   assertEquals(planIntent("flibberty gibbet"), planIntent("flibberty gibbet"));
 });

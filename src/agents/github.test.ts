@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { GitHubConnector } from "../connectors/github.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
@@ -49,7 +54,7 @@ function fakeGitHubFetch(): typeof fetch {
   }) as typeof fetch;
 }
 
-Deno.test("github agent: live read lists issues and PRs with URL citations", async () => {
+test("github agent: live read lists issues and PRs with URL citations", async () => {
   const agent = createGitHubAgent(
     new GitHubConnector({ token: "fake-token", fetchFn: fakeGitHubFetch() }),
   );
@@ -66,7 +71,7 @@ Deno.test("github agent: live read lists issues and PRs with URL citations", asy
   );
 });
 
-Deno.test("github agent: no token falls back to World facts and says so", async () => {
+test("github agent: no token falls back to World facts and says so", async () => {
   const agent = createGitHubAgent(noToken);
   const result = await agent.run({ repos: ["wazootech/wazoo-twins"] }, ctx());
   assert(result.notes.some((n) => n.includes("GITHUB_TOKEN not set")));
@@ -74,7 +79,7 @@ Deno.test("github agent: no token falls back to World facts and says so", async 
   assertStringIncludes(result.summary.join(" "), "live read unavailable");
 });
 
-Deno.test("github agent: no repos specified reports the gap", async () => {
+test("github agent: no repos specified reports the gap", async () => {
   const agent = createGitHubAgent(noToken);
   const result = await agent.run({}, ctx());
   assertEquals(result.claims, []);
