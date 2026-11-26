@@ -209,7 +209,7 @@ export async function runIntent(
   opts: OrchestratorOptions = {},
 ): Promise<OrchestratorResult> {
   const started = new Date().toISOString();
-  const agents = { ...DEFAULT_AGENTS, ...(opts.agents ?? {}) };
+  const agents = { ...DEFAULT_AGENTS, ...opts.agents };
   const notes: string[] = [];
 
   // Phase 1 tier clamp: no agent may hold a tier above "draft".
