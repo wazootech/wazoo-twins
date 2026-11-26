@@ -19,3 +19,15 @@ jobs:
           deno-version: v2.9.8
       - run: deno install --frozen
       - run: deno task ci
+  # The tests also run on Bun (node:test through bun test), the toolchain this
+  # repo is moving to (wazootech/workspace#50). Bun floats on 1.x on purpose so
+  # a Bun regression surfaces early.
+  bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: "1.x"
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun test
