@@ -12,6 +12,7 @@
  * - DEEPSEEK_API_KEY / FRONTIER_API_KEY: provider keys (never committed)
  * - TWIN_MODEL_NAME: optional model name override
  */
+import process from "node:process";
 
 export interface ModelClient {
   /** Complete a short prose passage (draft reply, brief wording). Returns null when no model is configured. */
@@ -21,11 +22,7 @@ export interface ModelClient {
 }
 
 function env(name: string): string | undefined {
-  try {
-    return Deno.env.get(name);
-  } catch {
-    return undefined;
-  }
+  return process.env[name];
 }
 
 /**

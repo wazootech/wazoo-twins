@@ -10,6 +10,7 @@
  * `src/world/client.ts`); if it is not ready yet, this exits non-zero with
  * a clear message.
  */
+import process from "node:process";
 import { runIntent } from "../orchestrator/loop.ts";
 import { createWorldClient, type WorldClient } from "../world/client.ts";
 import { buildContext, formatResult, runChatLoop } from "./chat.ts";
@@ -24,7 +25,7 @@ export function parseServerArgs(args: string[]): { once?: string } {
 }
 
 async function main(): Promise<void> {
-  const { once } = parseServerArgs(Deno.args);
+  const { once } = parseServerArgs(process.argv.slice(2));
   let world: WorldClient | undefined;
   try {
     world = await createWorldClient();
@@ -37,9 +38,9 @@ async function main(): Promise<void> {
     console.error(
       "The World backend is implemented by the World/seed builder (src/world/client.ts).",
     );
-    Deno.exit(1);
+    process.exit(1);
   }
-  if (!world) Deno.exit(1);
+  if (!world) process.exit(1);
   const ctx = buildContext(world);
   try {
     if (once) {

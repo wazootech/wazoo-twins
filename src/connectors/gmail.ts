@@ -16,6 +16,7 @@
  * drafts in memory and presents them to Ethan; nothing is created or sent
  * through Google.
  */
+import process from "node:process";
 
 export const GMAIL_SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly",
@@ -48,11 +49,7 @@ export interface GmailMessage extends GmailMessageSummary {
 type FetchFn = typeof fetch;
 
 function env(name: string): string | undefined {
-  try {
-    return Deno.env.get(name);
-  } catch {
-    return undefined;
-  }
+  return process.env[name];
 }
 
 function header(headers: Record<string, unknown>[], name: string): string {

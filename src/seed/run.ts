@@ -17,6 +17,7 @@
  * absence is NOT a hard failure: those importers warn and are skipped
  * until Google OAuth is set up (see docs/runbook.md).
  */
+import process from "node:process";
 import { createWorldClient } from "../world/client.ts";
 import { GOOGLE_OAUTH_NOT_SETUP } from "./calendar.ts";
 import { dedupFacts, writeQuarantine } from "./common.ts";
@@ -38,9 +39,9 @@ const IMPORTERS: Array<
 ];
 
 async function main(): Promise<number> {
-  const incremental = Deno.args.includes("--incremental");
+  const incremental = process.argv.slice(2).includes("--incremental");
   const retrievedAt = new Date().toISOString();
-  const backend = Deno.env.get("TWIN_WORLD_BACKEND") ?? "libsql";
+  const backend = process.env.TWIN_WORLD_BACKEND ?? "libsql";
   console.log(
     `Twin seed ${
       incremental ? "(incremental)" : "(full)"
@@ -126,5 +127,5 @@ async function main(): Promise<number> {
 }
 
 if (import.meta.main) {
-  Deno.exit(await main());
+  process.exit(await main());
 }

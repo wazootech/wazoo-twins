@@ -15,6 +15,7 @@
  * "requires approved tier (Phase 2)". In Phase 1 the calendar agent proposes
  * slots from World facts; nothing is created through Google.
  */
+import process from "node:process";
 
 export const CALENDAR_SCOPES = [
   "https://www.googleapis.com/auth/calendar.readonly",
@@ -43,11 +44,7 @@ export interface CalendarEventItem {
 type FetchFn = typeof fetch;
 
 function env(name: string): string | undefined {
-  try {
-    return Deno.env.get(name);
-  } catch {
-    return undefined;
-  }
+  return process.env[name];
 }
 
 export class CalendarConnector {

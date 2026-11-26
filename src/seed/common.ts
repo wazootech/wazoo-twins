@@ -6,6 +6,8 @@
  * here, centrally, with `validateFact()` from the ontology — an invalid
  * fact is quarantined, never half-landed.
  */
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import process from "node:process";
 import { validateFact } from "../world/schema.ts";
 import type { Fact, Provenance } from "../world/types.ts";
 
@@ -31,7 +33,7 @@ export function emptyResult(source: string): SeedResult {
 
 /** The Twin's data dir (outside the repo — seed data is never committed). */
 export function dataDir(): string {
-  const home = Deno.env.get("HOME") ?? "";
+  const home = process.env.HOME ?? "";
   return `${home}/workspace/wazoo-twins-data`;
 }
 
@@ -45,9 +47,9 @@ export async function writeQuarantine(
   quarantined: QuarantinedFact[],
 ): Promise<string> {
   const dir = quarantineDir();
-  await Deno.mkdir(dir, { recursive: true });
+  await mkdir(dir, { recursive: true });
   const path = `${dir}/${source}.json`;
-  await Deno.writeTextFile(
+  await writeFile(
     path,
     JSON.stringify(
       { source, quarantinedAt: new Date().toISOString(), quarantined },
@@ -289,17 +291,23 @@ export function deadlineDate(text: string): string | undefined {
   return before.length > 0 ? before[before.length - 1].date : undefined;
 }
 
+/** True for the error a missing file or directory raises (`ENOENT`). */
+export function isNotFound(error: unknown): boolean {
+  return typeof error === "object" && error !== null &&
+    (error as { code?: unknown }).code === "ENOENT";
+}
+
 /** Read a file as text; returns undefined when it does not exist. */
 export async function readIfExists(path: string): Promise<string | undefined> {
   try {
-    return await Deno.readTextFile(path);
+    return await readFile(path, "utf8");
   } catch (error) {
-    if (error instanceof Deno.errors.NotFound) return undefined;
+    if (isNotFound(error)) return undefined;
     throw error;
   }
 }
 
 export function homePath(relative: string): string {
-  const home = Deno.env.get("HOME") ?? "";
+  const home = process.env.HOME ?? "";
   return `${home}/${relative}`;
 }

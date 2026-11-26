@@ -17,6 +17,8 @@
  * The interface below is the contract the orchestrator and agents code
  * against; do not change it without updating src/agents/types.ts.
  */
+import { mkdir } from "node:fs/promises";
+import process from "node:process";
 import { createMemoryWorldsSdk } from "@worlds/sdk/memory";
 import { createLibsqlWorldsSdk } from "@worlds/libsql";
 import { createClient } from "@libsql/client";
@@ -163,11 +165,7 @@ function sparqlIri(iri: string): string {
 }
 
 function env(name: string): string | undefined {
-  try {
-    return Deno.env.get(name);
-  } catch {
-    return undefined;
-  }
+  return process.env[name];
 }
 
 function expandHome(path: string): string {
@@ -522,7 +520,7 @@ export async function createWorldClient(
         options?.libsqlPath ?? env("TWIN_WORLD_PATH") ?? DEFAULT_LIBSQL_PATH,
       );
       const dir = path.slice(0, path.lastIndexOf("/"));
-      if (dir) await Deno.mkdir(dir, { recursive: true });
+      if (dir) await mkdir(dir, { recursive: true });
       client = createClient({ url: `file:${path}` });
     }
     const sdk = await createLibsqlWorldsSdk({ client }) as unknown as SdkLike;

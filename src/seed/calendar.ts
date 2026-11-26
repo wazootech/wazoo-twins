@@ -15,6 +15,7 @@
  * an access token and reads the primary calendar over plain REST (no
  * googleapis SDK dependency).
  */
+import process from "node:process";
 import {
   dedupFacts,
   emptyResult,
@@ -31,9 +32,9 @@ export const CALENDAR_WINDOW_DAYS = 90;
 
 export function googleOAuthConfigured(): boolean {
   return Boolean(
-    Deno.env.get("GOOGLE_CLIENT_ID") &&
-      Deno.env.get("GOOGLE_CLIENT_SECRET") &&
-      Deno.env.get("GOOGLE_REFRESH_TOKEN"),
+    process.env.GOOGLE_CLIENT_ID &&
+      process.env.GOOGLE_CLIENT_SECRET &&
+      process.env.GOOGLE_REFRESH_TOKEN,
   );
 }
 
@@ -45,9 +46,9 @@ export function requireGoogleOAuth(): void {
 export async function googleAccessToken(): Promise<string> {
   requireGoogleOAuth();
   const body = new URLSearchParams({
-    client_id: Deno.env.get("GOOGLE_CLIENT_ID")!,
-    client_secret: Deno.env.get("GOOGLE_CLIENT_SECRET")!,
-    refresh_token: Deno.env.get("GOOGLE_REFRESH_TOKEN")!,
+    client_id: process.env.GOOGLE_CLIENT_ID!,
+    client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN!,
     grant_type: "refresh_token",
   });
   const response = await fetch("https://oauth2.googleapis.com/token", {

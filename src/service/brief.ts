@@ -9,6 +9,7 @@
  * World/seed builder in `src/world/client.ts`). If the backend is not ready
  * yet, this exits non-zero with a clear message instead of a stack trace.
  */
+import process from "node:process";
 import {
   type BriefResult,
   buildEveningSummary,
@@ -51,7 +52,7 @@ export async function buildBrief(
 }
 
 async function main(): Promise<void> {
-  const { kind } = parseBriefArgs(Deno.args);
+  const { kind } = parseBriefArgs(process.argv.slice(2));
   let world: WorldClient | undefined;
   try {
     world = await createWorldClient();
@@ -64,9 +65,9 @@ async function main(): Promise<void> {
     console.error(
       "The World backend is implemented by the World/seed builder (src/world/client.ts).",
     );
-    Deno.exit(1);
+    process.exit(1);
   }
-  if (!world) Deno.exit(1);
+  if (!world) process.exit(1);
   try {
     const brief = await buildBrief(world, kind, todayPT());
     console.log(brief.markdown);

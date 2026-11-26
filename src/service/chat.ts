@@ -6,6 +6,8 @@
  * transport is deliberately the terminal so the Twin is testable with zero
  * accounts. `server.ts` reuses this loop as its long-running entrypoint.
  */
+import process from "node:process";
+import { Readable } from "node:stream";
 import { type OrchestratorResult, runIntent } from "../orchestrator/loop.ts";
 import { renderClaim } from "../orchestrator/verifier.ts";
 import { todayPT } from "../agents/common.ts";
@@ -72,7 +74,8 @@ export function buildContext(
 
 /** Read intent lines from stdin until EOF, answering each in turn. */
 export async function runChatLoop(ctx: AgentContext): Promise<void> {
-  for await (const line of readLines(Deno.stdin.readable)) {
+  const stdin = Readable.toWeb(process.stdin) as ReadableStream<Uint8Array>;
+  for await (const line of readLines(stdin)) {
     const intent = line.trim();
     if (!intent) continue;
     console.log(await handleIntentLine(intent, ctx));
@@ -92,9 +95,9 @@ async function main(): Promise<void> {
     console.error(
       "The World backend is implemented by the World/seed builder (src/world/client.ts).",
     );
-    Deno.exit(1);
+    process.exit(1);
   }
-  if (!world) Deno.exit(1);
+  if (!world) process.exit(1);
   try {
     await runChatLoop(buildContext(world));
   } finally {

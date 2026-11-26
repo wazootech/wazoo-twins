@@ -31,7 +31,10 @@
  * A low pass@1 alone does not fail the run — the Phase 0 baseline is
  * expected to be low; that is the point.
  */
-import { join } from "@std/path";
+import { stat, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 import type { WorldClient } from "../world/client.ts";
 import { answerFromWorld, runEval } from "./harness.ts";
 import {
@@ -43,7 +46,9 @@ import {
 import { seedSyntheticWorld } from "./synthetic-world.ts";
 import { ALL_TASKS, HELD_OUT_TASKS, toTaskJson } from "./tasks/index.ts";
 
-const EVAL_DATA_DIR = new URL("../../eval-data/", import.meta.url).pathname;
+const EVAL_DATA_DIR = fileURLToPath(
+  new URL("../../eval-data/", import.meta.url),
+);
 const BASELINE_PATH = join(EVAL_DATA_DIR, "baseline.json");
 const LATEST_PATH = join(EVAL_DATA_DIR, "latest.json");
 const TASKS_PATH = join(EVAL_DATA_DIR, "tasks.json");
@@ -62,7 +67,7 @@ export const SYNTHETIC_WORLD_NOTE =
 
 async function fileExists(path: string): Promise<boolean> {
   try {
-    await Deno.stat(path);
+    await stat(path);
     return true;
   } catch {
     return false;
@@ -93,7 +98,7 @@ async function buildWorld(kind: "synthetic" | "real"): Promise<WorldClient> {
 }
 
 async function main(): Promise<number> {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
   const withSmoke = args.includes("--smoke");
   const forceBaseline = args.includes("--force-baseline");
   const worldArg = flagValue(args, "--world") ?? "synthetic";
@@ -139,7 +144,7 @@ async function main(): Promise<number> {
   });
 
   // The task definitions (serializable form) are the single source of truth.
-  await Deno.writeTextFile(
+  await writeFile(
     TASKS_PATH,
     JSON.stringify(tasks.map(toTaskJson), null, 2) + "\n",
   );
@@ -207,5 +212,5 @@ async function main(): Promise<number> {
 }
 
 if (import.meta.main) {
-  Deno.exit(await main());
+  process.exit(await main());
 }
