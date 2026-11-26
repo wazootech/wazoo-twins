@@ -12,15 +12,15 @@
 
 ## Commands (run from the repo root)
 
-| Command                              | What it does                                                                                                                        |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `bun run seed`                     | Full seed import: MEMORY.md, daily notes, trackers, GitHub open state (Gmail/Calendar skipped with a warning until OAuth is set up) |
-| `bun run seed --incremental`       | Overnight sync: deltas only                                                                                                         |
-| `bun run smoke`                    | 20 smoke-test questions answered from the World, with citations                                                                     |
-| `bun run eval`                     | Held-out eval set + baseline scores                                                                                                 |
-| `bun run brief --kind morning`     | Morning brief (dry run writes to stdout only — never delivered anywhere by the Twin itself)                                         |
-| `bun run brief --kind evening`     | Evening summary                                                                                                                     |
-| `bun run server`                   | Long-running service entrypoint (Phase 1+)                                                                                          |
+| Command                          | What it does                                                                                                                        |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run seed`                   | Full seed import: MEMORY.md, daily notes, trackers, GitHub open state (Gmail/Calendar skipped with a warning until OAuth is set up) |
+| `bun run seed --incremental`     | Overnight sync: deltas only                                                                                                         |
+| `bun run smoke`                  | 20 smoke-test questions answered from the World, with citations                                                                     |
+| `bun run eval`                   | Held-out eval set + baseline scores                                                                                                 |
+| `bun run brief --kind morning`   | Morning brief (dry run writes to stdout only — never delivered anywhere by the Twin itself)                                         |
+| `bun run brief --kind evening`   | Evening summary                                                                                                                     |
+| `bun run server`                 | Long-running service entrypoint (Phase 1+)                                                                                          |
 | `bun run check` / `bun run test` | Type-check / tests                                                                                                                  |
 | `bun run lint` / `bun run fmt`   | Lint / format                                                                                                                       |
 

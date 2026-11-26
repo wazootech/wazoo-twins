@@ -27,10 +27,12 @@ test("verifier: a claim citing an existing World fact passes the gate", () => {
   const result = gateWrite(
     {
       text: "Mozilla deadline is Nov 20",
-      citations: [{
-        factId: "twin:commitment/mozilla",
-        source: "MEMORY.md — Mozilla",
-      }],
+      citations: [
+        {
+          factId: "twin:commitment/mozilla",
+          source: "MEMORY.md — Mozilla",
+        },
+      ],
     },
     WORLD,
   );
@@ -42,10 +44,12 @@ test("verifier: a claim citing a public URL passes the gate", () => {
   const result = gateWrite(
     {
       text: "KGC demo repo exists",
-      citations: [{
-        factId: "https://github.com/wazootech/kgc-demo",
-        source: "https://github.com/wazootech/kgc-demo",
-      }],
+      citations: [
+        {
+          factId: "https://github.com/wazootech/kgc-demo",
+          source: "https://github.com/wazootech/kgc-demo",
+        },
+      ],
     },
     WORLD,
   );
@@ -67,10 +71,12 @@ test("verifier: a claim citing a missing World fact is blocked", () => {
   const result = gateWrite(
     {
       text: "Something about a missing fact",
-      citations: [{
-        factId: "twin:commitment/does-not-exist",
-        source: "twin:commitment/does-not-exist",
-      }],
+      citations: [
+        {
+          factId: "twin:commitment/does-not-exist",
+          source: "twin:commitment/does-not-exist",
+        },
+      ],
     },
     WORLD,
   );

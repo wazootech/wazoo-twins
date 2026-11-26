@@ -23,18 +23,18 @@ test("research: World facts cited, web results cited to URLs, nothing invented",
         url: "https://example.com/ernest",
         snippet: "VP of Engineering",
       },
-    ])
+    ]),
   );
   const result = await agent.run({ person: "Ernest McCarter" }, ctx());
   assert(result.claims.length >= 2);
   assert(
     result.claims.some((c) =>
-      c.citations.some((x) => x.factId === "twin:person/ernest-mccarter")
+      c.citations.some((x) => x.factId === "twin:person/ernest-mccarter"),
     ),
   );
   assert(
     result.claims.some((c) =>
-      c.citations.some((x) => x.factId === "https://example.com/ernest")
+      c.citations.some((x) => x.factId === "https://example.com/ernest"),
     ),
   );
   assert(result.claims.every((c) => c.verified));

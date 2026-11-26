@@ -146,9 +146,10 @@ async function mergeClaims(
     ]);
     if (b > a) byText.set(key, claim);
     notes.push(
-      `Merged duplicate claim, kept most recent provenance: "${
-        claim.text.slice(0, 80)
-      }"`,
+      `Merged duplicate claim, kept most recent provenance: "${claim.text.slice(
+        0,
+        80,
+      )}"`,
     );
   }
   return [...byText.values()];
@@ -172,10 +173,12 @@ async function verifyMergedClaims(
   const factIds = [
     ...new Set(splits.flatMap((s) => s.worldCitations.map((x) => x.factId))),
   ];
-  const facts = (await Promise.all(factIds.map((id) => ctx.world.getFact(id))))
-    .filter((f): f is Fact => f !== undefined);
+  const facts = (
+    await Promise.all(factIds.map((id) => ctx.world.getFact(id)))
+  ).filter((f): f is Fact => f !== undefined);
   const verification = verifyClaims(
-    splits.filter((s) => s.worldCitations.length > 0)
+    splits
+      .filter((s) => s.worldCitations.length > 0)
       .map((s) => ({ text: s.text, citations: s.worldCitations })),
     facts,
   );
@@ -236,7 +239,9 @@ export async function runIntent(
   let researchDispatched = plan.calls.some((c) => c.agent === "research");
   let followUpDone = false;
   while (
-    rounds < MAX_ROUNDS && pendingCalls.length > 0 && toolCalls < MAX_TOOL_CALLS
+    rounds < MAX_ROUNDS &&
+    pendingCalls.length > 0 &&
+    toolCalls < MAX_TOOL_CALLS
   ) {
     rounds++;
     const roundNotes: string[] = [];
@@ -270,10 +275,12 @@ export async function runIntent(
     // One follow-up round at most: if a result reports missing context and
     // research has not run yet, dispatch it once with the original intent.
     const missingContext = roundNotes.some((n) =>
-      /no .* (record|facts|results)|missing context/i.test(n)
+      /no .* (record|facts|results)|missing context/i.test(n),
     );
     if (
-      missingContext && !followUpDone && !researchDispatched &&
+      missingContext &&
+      !followUpDone &&
+      !researchDispatched &&
       rounds < MAX_ROUNDS
     ) {
       followUpDone = true;
@@ -296,13 +303,14 @@ export async function runIntent(
   let question: string | undefined;
   let approvalCard: string | undefined;
   const external = EXTERNAL_ACTIONS.find((e) =>
-    e.pattern.test(intent.toLowerCase())
+    e.pattern.test(intent.toLowerCase()),
   );
   if (external) {
     action = "needs-approval";
     try {
       requirePermission(external.action, effectiveTier);
-      approvalCard = `Approval requested: ${external.label} — "${intent}". ` +
+      approvalCard =
+        `Approval requested: ${external.label} — "${intent}". ` +
         `Phase 1 cannot perform this yet; approval would be recorded and the action deferred to Phase 2.`;
     } catch (err) {
       notes.push(
@@ -310,13 +318,11 @@ export async function runIntent(
           err instanceof Error ? err.message : String(err)
         }`,
       );
-      approvalCard =
-        `Approval required (not granted in Phase 1): ${external.label} — "${intent}". No external action was taken.`;
+      approvalCard = `Approval required (not granted in Phase 1): ${external.label} — "${intent}". No external action was taken.`;
     }
   } else if (claims.length === 0) {
     action = "ask";
-    question =
-      `I don't have that in the World yet. Can you tell me more about "${intent}"?`;
+    question = `I don't have that in the World yet. Can you tell me more about "${intent}"?`;
   }
 
   // 6. Audit: Run + Action quads in the World itself.
@@ -337,8 +343,7 @@ export async function runIntent(
         task: intent.slice(0, 200),
         started,
         ended,
-        outcome:
-          `${action} — ${claims.length} claim(s), ${unverifiedCount} unverified, ${toolCalls} tool call(s)`,
+        outcome: `${action} — ${claims.length} claim(s), ${unverifiedCount} unverified, ${toolCalls} tool call(s)`,
       },
       auditProvenance,
     ),
@@ -349,11 +354,12 @@ export async function runIntent(
       {
         id: actionId,
         actor: "orchestrator",
-        actionType: action === "present"
-          ? "present"
-          : action === "needs-approval"
-          ? "request-approval"
-          : "ask",
+        actionType:
+          action === "present"
+            ? "present"
+            : action === "needs-approval"
+              ? "request-approval"
+              : "ask",
         target: intent.slice(0, 200),
         at: ended,
       },

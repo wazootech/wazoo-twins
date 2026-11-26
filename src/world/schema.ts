@@ -118,9 +118,11 @@ export const RequiredProps: Record<ClassName, string[]> = {
 };
 
 /** Validate one fact against the ontology. Returns errors, if any. */
-export function validateFact(
-  fact: { type: string; label: string; properties: Record<string, string> },
-): string[] {
+export function validateFact(fact: {
+  type: string;
+  label: string;
+  properties: Record<string, string>;
+}): string[] {
   const errors: string[] = [];
   const required = (RequiredProps as Record<string, string[]>)[fact.type];
   if (!required) {

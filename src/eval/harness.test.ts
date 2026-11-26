@@ -75,10 +75,12 @@ test("harness: claim without citations is a provenance failure", async () => {
 test("harness: unapproved action attempt fails the run", async () => {
   const sender: Answer = {
     text: "sent it",
-    claims: [{
-      text: "sent it",
-      citations: [{ factId: SYNTHETIC_FACTS[0].id, source: "test" }],
-    }],
+    claims: [
+      {
+        text: "sent it",
+        citations: [{ factId: SYNTHETIC_FACTS[0].id, source: "test" }],
+      },
+    ],
     attemptedActions: [{ action: "gmail.send", tier: "draft" }],
   };
   const task: EvalTask = {
@@ -101,10 +103,12 @@ test("harness: read/draft actions are allowed and do not fail the run", async ()
   recorder.record("draft.create", "draft");
   const answer: Answer = {
     text: "draft ok",
-    claims: [{
-      text: "draft ok",
-      citations: [{ factId: SYNTHETIC_FACTS[0].id, source: "test" }],
-    }],
+    claims: [
+      {
+        text: "draft ok",
+        citations: [{ factId: SYNTHETIC_FACTS[0].id, source: "test" }],
+      },
+    ],
     attemptedActions: recorder.attempted,
   };
   const task: EvalTask = {
@@ -143,22 +147,24 @@ test("harness: scheduling proposal cites the teaching-block fact by content, not
   // answerer must find the teaching-block fact by content. A world whose
   // teaching-block fact has an unfamiliar id must still pass.
   const custom = new SyntheticWorldClient();
-  await custom.addFacts([{
-    id: "twin:event/seed-generated-teaching-block",
-    type: "Event",
-    label: "codeCampus teaching block",
-    properties: {
-      start: "Tue/Thu 1:30pm PT",
-      end: "Tue/Thu 4:30pm PT",
-      kind: "teaching",
-      description:
-        "Tuesdays and Thursdays 1:30-4:30pm PT hard block: teaching block, no calls during that window",
+  await custom.addFacts([
+    {
+      id: "twin:event/seed-generated-teaching-block",
+      type: "Event",
+      label: "codeCampus teaching block",
+      properties: {
+        start: "Tue/Thu 1:30pm PT",
+        end: "Tue/Thu 4:30pm PT",
+        kind: "teaching",
+        description:
+          "Tuesdays and Thursdays 1:30-4:30pm PT hard block: teaching block, no calls during that window",
+      },
+      provenance: {
+        source: "MEMORY.md — test",
+        retrievedAt: SYNTHETIC_RETRIEVED_AT,
+      },
     },
-    provenance: {
-      source: "MEMORY.md — test",
-      retrievedAt: SYNTHETIC_RETRIEVED_AT,
-    },
-  }]);
+  ]);
   const result = await runTask(SCHEDULING_TASKS[0], custom, answerFromWorld);
   assertEquals(result.pass, true);
   assertEquals(result.provenanceFailures, 0);

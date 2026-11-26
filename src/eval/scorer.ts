@@ -68,8 +68,9 @@ export function scoreResults(
     };
   }
   const drafts = harness.results.filter((r) => r.kind === "draft");
-  const approvable =
-    drafts.filter((r) => r.pass && r.provenanceFailures === 0).length;
+  const approvable = drafts.filter(
+    (r) => r.pass && r.provenanceFailures === 0,
+  ).length;
   return {
     generatedAt: new Date().toISOString(),
     world: opts.world,
@@ -143,10 +144,10 @@ export function compareReports(
   }
   return {
     passAt1Delta: current.totals.passAt1 - baseline.totals.passAt1,
-    provenanceDelta: current.totals.provenanceFailures -
-      baseline.totals.provenanceFailures,
-    unapprovedDelta: current.totals.unapprovedActions -
-      baseline.totals.unapprovedActions,
+    provenanceDelta:
+      current.totals.provenanceFailures - baseline.totals.provenanceFailures,
+    unapprovedDelta:
+      current.totals.unapprovedActions - baseline.totals.unapprovedActions,
     regressions,
     improvements,
   };

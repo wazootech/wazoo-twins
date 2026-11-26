@@ -66,11 +66,7 @@ export interface CorrectionRequest {
 }
 
 export type CorrectionStatus =
-  | "applied"
-  | "ask-first"
-  | "blocked"
-  | "open-question"
-  | "rejected";
+  "applied" | "ask-first" | "blocked" | "open-question" | "rejected";
 
 export interface CorrectionResult {
   status: CorrectionStatus;
@@ -144,8 +140,8 @@ export async function applyCorrection(
   // 1. Write gate (spec §2.2): an untraceable claim is BLOCKED, never a fact.
   const gate = gateFactWrite(req.replacement, allFacts);
   if (!gate.allowed) {
-    const question = gate.openQuestion ??
-      `Needs verification: ${req.replacement.label}`;
+    const question =
+      gate.openQuestion ?? `Needs verification: ${req.replacement.label}`;
     const openFact = openQuestionFact(
       question,
       req.replacement.provenance.source || "twin:correction-loop",
@@ -164,8 +160,7 @@ export async function applyCorrection(
       status: "open-question",
       newFactId: openFact.id,
       auditIds,
-      message:
-        `I could not verify "${req.replacement.label}", so I did not write it as a fact. I recorded it as an open question instead.`,
+      message: `I could not verify "${req.replacement.label}", so I did not write it as a fact. I recorded it as an open question instead.`,
       question,
       details: gate.reason ? [gate.reason] : [],
     };
@@ -175,8 +170,10 @@ export async function applyCorrection(
   // directly, with no fresh source, is ask-first even when the request
   // did not say so — the old fact's provenance is the evidence.
   const oldFact = req.oldId ? await world.getFact(req.oldId) : undefined;
-  const contradictsEthan = req.contradictsEthanAssertedFact ??
-    (oldFact !== undefined && assertedByEthan(oldFact) &&
+  const contradictsEthan =
+    req.contradictsEthanAssertedFact ??
+    (oldFact !== undefined &&
+      assertedByEthan(oldFact) &&
       req.source !== "ethan");
   const classification = classifyInternalWrite({
     contradictsEthanAssertedFact: contradictsEthan,
@@ -186,9 +183,9 @@ export async function applyCorrection(
   });
   if (classification === "ask-first" && !req.approved) {
     const question = oldFact
-      ? `This would change "${describeFact(oldFact)}" to "${
-        describeFact(req.replacement)
-      }". Should I apply it?`
+      ? `This would change "${describeFact(oldFact)}" to "${describeFact(
+          req.replacement,
+        )}". Should I apply it?`
       : `Should I write "${describeFact(req.replacement)}" to the World?`;
     return {
       status: "ask-first",
@@ -300,8 +297,7 @@ export async function undoCorrection(
       status: "blocked",
       oldId: input.factId,
       auditIds: [],
-      message:
-        `Nothing to undo for ${input.factId} — it has never been corrected.`,
+      message: `Nothing to undo for ${input.factId} — it has never been corrected.`,
       details: [`chain length ${chain.length}`],
     };
   }
@@ -312,16 +308,16 @@ export async function undoCorrection(
   // himself asked for the undo in chat. The Twin must not silently
   // override Ethan, but Ethan overriding his own correction is his call.
   const classification = classifyInternalWrite({
-    contradictsEthanAssertedFact: assertedByEthan(head) &&
-      input.author !== "Ethan",
+    contradictsEthanAssertedFact:
+      assertedByEthan(head) && input.author !== "Ethan",
     retractsWholeProcedure: false,
     lowConfidence: false,
     hasFreshSource: false,
   });
   if (classification === "ask-first" && !input.approved) {
-    const question = `Undoing this would restore "${
-      describeFact(previous)
-    }" over "${describeFact(head)}". Should I undo it?`;
+    const question = `Undoing this would restore "${describeFact(
+      previous,
+    )}" over "${describeFact(head)}". Should I undo it?`;
     return {
       status: "ask-first",
       oldId: head.id,
@@ -337,9 +333,8 @@ export async function undoCorrection(
     id: `${previous.id}-undo-${crypto.randomUUID().slice(0, 8)}`,
     properties: { ...previous.properties },
     provenance: {
-      source: input.author === "Ethan"
-        ? `Ethan, in chat ${now}`
-        : `twin:undo ${now}`,
+      source:
+        input.author === "Ethan" ? `Ethan, in chat ${now}` : `twin:undo ${now}`,
       retrievedAt: now,
       blame: input.author as FactBlame,
     },
@@ -361,9 +356,9 @@ export async function undoCorrection(
     newFactId: restoration.id,
     oldId: head.id,
     auditIds,
-    message: `Undid the correction to ${previous.label}: restored "${
-      describeFact(previous)
-    }" (was "${describeFact(head)}").`,
+    message: `Undid the correction to ${previous.label}: restored "${describeFact(
+      previous,
+    )}" (was "${describeFact(head)}").`,
   };
 }
 
@@ -396,34 +391,41 @@ export async function resolveConflict(
       status: "blocked",
       oldId: input.oldId,
       auditIds: [],
-      message:
-        `Cannot resolve a conflict for ${input.oldId}: no such fact in the World.`,
+      message: `Cannot resolve a conflict for ${input.oldId}: no such fact in the World.`,
       details: [`no fact with id ${input.oldId}`],
     };
   }
-  const candidateIsEthan = input.candidateAuthor === "Ethan" ||
-    assertedByEthan(input.candidate);
+  const candidateIsEthan =
+    input.candidateAuthor === "Ethan" || assertedByEthan(input.candidate);
   const oldIsEthan = assertedByEthan(oldFact);
   if (oldIsEthan && !candidateIsEthan) {
     // Rule 2: Ethan wins. A non-Ethan candidate contradicting Ethan is
     // ask-first, never auto.
-    return await applyCorrection(world, {
-      oldId: input.oldId,
-      replacement: input.candidate,
-      source: "sync",
-      author: input.candidateAuthor,
-      contradictsEthanAssertedFact: true,
-      approved: input.approved,
-    }, { tier: input.tier, now });
+    return await applyCorrection(
+      world,
+      {
+        oldId: input.oldId,
+        replacement: input.candidate,
+        source: "sync",
+        author: input.candidateAuthor,
+        contradictsEthanAssertedFact: true,
+        approved: input.approved,
+      },
+      { tier: input.tier, now },
+    );
   }
   if (candidateIsEthan) {
-    return await applyCorrection(world, {
-      oldId: input.oldId,
-      replacement: input.candidate,
-      source: "ethan",
-      author: "Ethan",
-      approved: input.approved,
-    }, { tier: input.tier, now });
+    return await applyCorrection(
+      world,
+      {
+        oldId: input.oldId,
+        replacement: input.candidate,
+        source: "ethan",
+        author: "Ethan",
+        approved: input.approved,
+      },
+      { tier: input.tier, now },
+    );
   }
   const candidateIsFresher =
     input.candidate.provenance.retrievedAt > oldFact.provenance.retrievedAt;
@@ -432,20 +434,24 @@ export async function resolveConflict(
   );
   if (candidateIsFresher || candidateIsPublic) {
     // Rules 1 and 3: recency wins; a fresh public source wins over stale.
-    return await applyCorrection(world, {
-      oldId: input.oldId,
-      replacement: input.candidate,
-      source: "sync",
-      author: input.candidateAuthor,
-      approved: input.approved,
-    }, { tier: input.tier, now });
+    return await applyCorrection(
+      world,
+      {
+        oldId: input.oldId,
+        replacement: input.candidate,
+        source: "sync",
+        author: input.candidateAuthor,
+        approved: input.approved,
+      },
+      { tier: input.tier, now },
+    );
   }
   // Rule 4: unresolvable — write neither as current, ask Ethan one question.
-  const question = `Conflict on ${oldFact.label}: the World says "${
-    describeFact(oldFact)
-  }" [${oldFact.provenance.source}], but a newer import says "${
-    describeFact(input.candidate)
-  }" [${input.candidate.provenance.source}]. Which is right?`;
+  const question = `Conflict on ${oldFact.label}: the World says "${describeFact(
+    oldFact,
+  )}" [${oldFact.provenance.source}], but a newer import says "${describeFact(
+    input.candidate,
+  )}" [${input.candidate.provenance.source}]. Which is right?`;
   const openFact = openQuestionFact(question, "twin:correction-loop", now);
   await world.addFacts([openFact]);
   const auditIds = await auditCorrection(world, {
@@ -461,8 +467,7 @@ export async function resolveConflict(
     newFactId: openFact.id,
     oldId: input.oldId,
     auditIds,
-    message:
-      `I found a conflict on ${oldFact.label} and could not resolve it, so I wrote neither value as current. I recorded it as an open question for the evening summary.`,
+    message: `I found a conflict on ${oldFact.label} and could not resolve it, so I wrote neither value as current. I recorded it as an open question for the evening summary.`,
     question,
   };
 }
@@ -511,17 +516,21 @@ function buildProcedureVersion(
   now: string,
 ): Fact[] {
   const provenance = { source: req.source, retrievedAt: now };
-  const facts: Fact[] = [{
-    id: versionId,
-    type: "Procedure",
-    label: req.procedureName,
-    properties: {
-      name: req.procedureName,
-      description: req.procedureName,
-      ...(req.evidence.length > 0 ? { evidence: req.evidence.join("; ") } : {}),
+  const facts: Fact[] = [
+    {
+      id: versionId,
+      type: "Procedure",
+      label: req.procedureName,
+      properties: {
+        name: req.procedureName,
+        description: req.procedureName,
+        ...(req.evidence.length > 0
+          ? { evidence: req.evidence.join("; ") }
+          : {}),
+      },
+      provenance,
     },
-    provenance,
-  }];
+  ];
   req.steps.forEach((step, i) => {
     facts.push({
       id: `${versionId}-step-${i + 1}`,
@@ -563,8 +572,7 @@ export async function applyProcedurePatch(
       status: "blocked",
       oldId: req.procedureId,
       auditIds: [],
-      message:
-        `Cannot patch procedure ${req.procedureId}: no such procedure in the World.`,
+      message: `Cannot patch procedure ${req.procedureId}: no such procedure in the World.`,
       details: [`no procedure with id ${req.procedureId}`],
     };
   }
@@ -581,11 +589,11 @@ export async function applyProcedurePatch(
       status: "ask-first",
       oldId: req.procedureId,
       auditIds: [],
-      message: req.steps.length === 0
-        ? `This would retract the whole "${req.procedureName}" procedure. Should I retract it?`
-        : `This procedure patch was flagged low-confidence. Should I apply it?`,
-      question:
-        `Apply the proposed change to procedure "${req.procedureName}"?`,
+      message:
+        req.steps.length === 0
+          ? `This would retract the whole "${req.procedureName}" procedure. Should I retract it?`
+          : `This procedure patch was flagged low-confidence. Should I apply it?`,
+      question: `Apply the proposed change to procedure "${req.procedureName}"?`,
     };
   }
   requireInternalWrite(tier, classification, req.approved ?? false);
@@ -613,9 +621,9 @@ export async function applyProcedurePatch(
   // Fork eval: clone the World, apply the patch there, run the checks.
   const fork = new SyntheticWorldClient();
   await fork.addFacts(allFacts);
-  const oldSteps = allFacts.filter((f) =>
-    f.type === "ProcedureStep" &&
-    f.properties["procedure"] === procedure.id
+  const oldSteps = allFacts.filter(
+    (f) =>
+      f.type === "ProcedureStep" && f.properties["procedure"] === procedure.id,
   );
   await fork.supersede(procedure.id, newFacts[0]);
   const newSteps = newFacts.slice(1);
@@ -670,8 +678,7 @@ export async function applyProcedurePatch(
       status: "rejected",
       oldId: req.procedureId,
       auditIds,
-      message:
-        `Procedure patch ${versionId} was rejected in the fork eval and was not promoted.`,
+      message: `Procedure patch ${versionId} was rejected in the fork eval and was not promoted.`,
       evalDetails,
       details: evalDetails,
     };
@@ -716,8 +723,7 @@ export async function applyProcedurePatch(
     newFactId: versionId,
     oldId: req.procedureId,
     auditIds,
-    message:
-      `Procedure "${req.procedureName}" updated to ${versionId} — fork eval passed, no regression.`,
+    message: `Procedure "${req.procedureName}" updated to ${versionId} — fork eval passed, no regression.`,
     evalDetails,
   };
 }
@@ -736,23 +742,26 @@ export async function applyProcedurePatch(
 export type CorrectionAgentInput =
   | ({ kind: "correct" } & CorrectionRequest)
   | {
-    kind: "undo";
-    factId: Iri;
-    author: string;
-    approved?: boolean;
-  }
+      kind: "undo";
+      factId: Iri;
+      author: string;
+      approved?: boolean;
+    }
   | ({ kind: "procedure-patch" } & ProcedurePatchRequest)
   | {
-    kind: "sync-conflict";
-    oldId: Iri;
-    candidate: Fact;
-    candidateAuthor: string;
-    approved?: boolean;
-  };
+      kind: "sync-conflict";
+      oldId: Iri;
+      candidate: Fact;
+      candidateAuthor: string;
+      approved?: boolean;
+    };
 
 function isCorrectionAgentInput(input: unknown): input is CorrectionAgentInput {
-  return input !== null && typeof input === "object" &&
-    typeof (input as Record<string, unknown>)["kind"] === "string";
+  return (
+    input !== null &&
+    typeof input === "object" &&
+    typeof (input as Record<string, unknown>)["kind"] === "string"
+  );
 }
 
 async function resultToAgentResult(

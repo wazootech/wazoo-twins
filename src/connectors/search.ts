@@ -33,7 +33,8 @@ function decodeEntities(text: string): string {
 }
 
 function stripTags(html: string): string {
-  return decodeEntities(html.replace(/<[^>]*>/g, "")).replace(/\s+/g, " ")
+  return decodeEntities(html.replace(/<[^>]*>/g, ""))
+    .replace(/\s+/g, " ")
     .trim();
 }
 

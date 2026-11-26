@@ -19,11 +19,13 @@ export function provenance(
   retrievedAt: string = new Date().toISOString(),
   blame?: FactBlame,
 ): Provenance {
-  return blame === undefined ? { source, retrievedAt } : {
-    source,
-    retrievedAt,
-    blame,
-  };
+  return blame === undefined
+    ? { source, retrievedAt }
+    : {
+        source,
+        retrievedAt,
+        blame,
+      };
 }
 
 /**
@@ -92,13 +94,15 @@ export function factToQuads(fact: Fact): Quad[] {
  * deleted silently. Returns the quads to write for the supersession marker.
  */
 export function supersessionQuads(oldFact: Fact, replacement: Fact): Quad[] {
-  return [{
-    subject: oldFact.id,
-    predicate: Props.supersededBy,
-    object: replacement.id,
-    objectIsIri: true,
-    provenance: replacement.provenance,
-  }];
+  return [
+    {
+      subject: oldFact.id,
+      predicate: Props.supersededBy,
+      object: replacement.id,
+      objectIsIri: true,
+      provenance: replacement.provenance,
+    },
+  ];
 }
 
 /**
@@ -243,11 +247,13 @@ export function supersede(oldId: Iri, replacement: Fact): Quad[] {
       `cannot supersede ${oldId} with a fact of the same id — a supersession needs a distinct replacement id`,
     );
   }
-  return [{
-    subject: oldId,
-    predicate: Props.supersededBy,
-    object: replacement.id,
-    objectIsIri: true,
-    provenance: replacement.provenance,
-  }];
+  return [
+    {
+      subject: oldId,
+      predicate: Props.supersededBy,
+      object: replacement.id,
+      objectIsIri: true,
+      provenance: replacement.provenance,
+    },
+  ];
 }

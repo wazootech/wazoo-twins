@@ -37,9 +37,11 @@ export const TEACHING_BLOCK: {
 /** True when `minutes` (since midnight PT) on `dateStr` falls in the teaching block. */
 export function isTeachingBlock(dateStr: string, minutes: number): boolean {
   const day = new Date(`${dateStr}T12:00:00Z`).getUTCDay();
-  return TEACHING_BLOCK.days.includes(day) &&
+  return (
+    TEACHING_BLOCK.days.includes(day) &&
     minutes >= TEACHING_BLOCK.startMinutes &&
-    minutes < TEACHING_BLOCK.endMinutes;
+    minutes < TEACHING_BLOCK.endMinutes
+  );
 }
 
 export interface FreeSlot {
@@ -108,7 +110,7 @@ export function findFreeSlots(events: Fact[], dateStr: string): FreeSlot[] {
 /** Overlapping event pairs on the same day. */
 export function findConflicts(events: Fact[]): [Fact, Fact][] {
   const sorted = [...events].sort((a, b) =>
-    (a.properties.start ?? "").localeCompare(b.properties.start ?? "")
+    (a.properties.start ?? "").localeCompare(b.properties.start ?? ""),
   );
   const conflicts: [Fact, Fact][] = [];
   for (let i = 0; i < sorted.length; i++) {
@@ -157,12 +159,13 @@ export function createCalendarAgent(calendar?: CalendarConnector): SubAgent {
       }
 
       const events = (await findFactsByClass(ctx.world, "Event"))
-        .filter((f) =>
-          (datePart(f.properties.start ?? "") ??
-            datePartPT(f.properties.start ?? "")) === date
+        .filter(
+          (f) =>
+            (datePart(f.properties.start ?? "") ??
+              datePartPT(f.properties.start ?? "")) === date,
         )
         .sort((a, b) =>
-          (a.properties.start ?? "").localeCompare(b.properties.start ?? "")
+          (a.properties.start ?? "").localeCompare(b.properties.start ?? ""),
         );
 
       const claims = events.map((e) => {
@@ -177,12 +180,13 @@ export function createCalendarAgent(calendar?: CalendarConnector): SubAgent {
         );
       });
 
-      const summary: string[] = events.length === 0
-        ? [`No events recorded in the World for ${date}.`]
-        : events.map((e) => {
-          const time = formatTimePT(e.properties.start ?? "");
-          return `${time ? `${time} ` : ""}${e.label}`;
-        });
+      const summary: string[] =
+        events.length === 0
+          ? [`No events recorded in the World for ${date}.`]
+          : events.map((e) => {
+              const time = formatTimePT(e.properties.start ?? "");
+              return `${time ? `${time} ` : ""}${e.label}`;
+            });
 
       for (const [a, b] of findConflicts(events)) {
         claims.push(
@@ -197,9 +201,9 @@ export function createCalendarAgent(calendar?: CalendarConnector): SubAgent {
       const slots = findFreeSlots(events, date);
       if (slots.length > 0) {
         summary.push(
-          `Free slots ${date}: ${
-            slots.map((s) => `${s.start}–${s.end}`).join(", ")
-          }.`,
+          `Free slots ${date}: ${slots
+            .map((s) => `${s.start}–${s.end}`)
+            .join(", ")}.`,
         );
       } else {
         summary.push(`No free 30-minute slots 9am–5pm PT on ${date}.`);

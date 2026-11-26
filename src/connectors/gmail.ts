@@ -53,8 +53,8 @@ function env(name: string): string | undefined {
 }
 
 function header(headers: Record<string, unknown>[], name: string): string {
-  const found = headers.find((h) =>
-    String(h["name"] ?? "").toLowerCase() === name
+  const found = headers.find(
+    (h) => String(h["name"] ?? "").toLowerCase() === name,
   );
   return found ? String(found["value"] ?? "") : "";
 }
@@ -66,12 +66,14 @@ export class GmailConnector {
   private readonly fetchFn: FetchFn;
   private accessToken: string | undefined;
 
-  constructor(options: {
-    clientId?: string;
-    clientSecret?: string;
-    refreshToken?: string;
-    fetchFn?: FetchFn;
-  } = {}) {
+  constructor(
+    options: {
+      clientId?: string;
+      clientSecret?: string;
+      refreshToken?: string;
+      fetchFn?: FetchFn;
+    } = {},
+  ) {
     this.clientId = options.clientId ?? env("GOOGLE_CLIENT_ID");
     this.clientSecret = options.clientSecret ?? env("GOOGLE_CLIENT_SECRET");
     this.refreshToken = options.refreshToken ?? env("GOOGLE_REFRESH_TOKEN");
@@ -79,8 +81,9 @@ export class GmailConnector {
   }
 
   isConfigured(): boolean {
-    return [this.clientId, this.clientSecret, this.refreshToken]
-      .every((v) => v !== undefined && v !== "");
+    return [this.clientId, this.clientSecret, this.refreshToken].every(
+      (v) => v !== undefined && v !== "",
+    );
   }
 
   private requireConfigured(): void {
@@ -103,11 +106,10 @@ export class GmailConnector {
     });
     if (!response.ok) {
       throw new Error(
-        `Google token exchange failed (${response.status}): ${await response
-          .text()}`,
+        `Google token exchange failed (${response.status}): ${await response.text()}`,
       );
     }
-    const data = await response.json() as { access_token?: string };
+    const data = (await response.json()) as { access_token?: string };
     if (!data.access_token) {
       throw new Error("Google token exchange returned no access token");
     }
@@ -118,14 +120,14 @@ export class GmailConnector {
   private async api(path: string): Promise<unknown> {
     const token = await this.getAccessToken();
     const response = await this.fetchFn(`https://gmail.googleapis.com${path}`, {
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(
         `Gmail API ${response.status} for ${path}: ${await response.text()}`,
       );
     }
-    return await response.json() as unknown;
+    return (await response.json()) as unknown;
   }
 
   /** List recent messages matching a Gmail search query (default: inbox). */
@@ -135,14 +137,14 @@ export class GmailConnector {
   ): Promise<GmailMessageSummary[]> {
     const params = new URLSearchParams({ maxResults: String(maxResults) });
     if (query.trim()) params.set("q", query.trim());
-    const list = await this.api(`/gmail/v1/users/me/messages?${params}`) as {
+    const list = (await this.api(`/gmail/v1/users/me/messages?${params}`)) as {
       messages?: { id: string; threadId: string }[];
     };
     const summaries: GmailMessageSummary[] = [];
     for (const m of list.messages ?? []) {
-      const full = await this.api(
+      const full = (await this.api(
         `/gmail/v1/users/me/messages/${m.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`,
-      ) as {
+      )) as {
         snippet?: string;
         payload?: { headers?: Record<string, unknown>[] };
       };
@@ -161,9 +163,9 @@ export class GmailConnector {
 
   /** Fetch one message with its plain-text body (best effort). */
   async getMessage(id: string): Promise<GmailMessage> {
-    const full = await this.api(
+    const full = (await this.api(
       `/gmail/v1/users/me/messages/${id}?format=full`,
-    ) as {
+    )) as {
       id?: string;
       threadId?: string;
       snippet?: string;
@@ -184,11 +186,7 @@ export class GmailConnector {
   }
 
   /** Phase 2 only: creating a Gmail draft requires the approved tier. */
-  createDraft(
-    _to: string,
-    _subject: string,
-    _body: string,
-  ): Promise<never> {
+  createDraft(_to: string, _subject: string, _body: string): Promise<never> {
     return Promise.reject(
       new Error(
         "creating a Gmail draft requires approved tier (Phase 2) — " +
@@ -220,7 +218,8 @@ function decodeBody(data: string): string {
 function extractText(payload: Record<string, unknown>): string {
   const mime = String(payload["mimeType"] ?? "");
   if (
-    mime === "text/plain" && typeof payload["body"] === "object" &&
+    mime === "text/plain" &&
+    typeof payload["body"] === "object" &&
     payload["body"] !== null
   ) {
     const data = (payload["body"] as Record<string, unknown>)["data"];

@@ -124,9 +124,10 @@ async function main(): Promise<number> {
 
   const report = scoreResults(harness, {
     world: worldKind,
-    worldNote: worldKind === "synthetic"
-      ? SYNTHETIC_WORLD_NOTE
-      : "Real World via createWorldClient (env-selected backend).",
+    worldNote:
+      worldKind === "synthetic"
+        ? SYNTHETIC_WORLD_NOTE
+        : "Real World via createWorldClient (env-selected backend).",
     taskSet,
   });
 
@@ -147,9 +148,9 @@ async function main(): Promise<number> {
       `(${(report.totals.passAt1 * 100).toFixed(1)}%) | ` +
       `provenance failures: ${report.totals.provenanceFailures} | ` +
       `unapproved actions: ${report.totals.unapprovedActions} | ` +
-      `draft approval proxy: ${
-        (report.draftApprovalProxy.score * 100).toFixed(1)
-      }%`,
+      `draft approval proxy: ${(report.draftApprovalProxy.score * 100).toFixed(
+        1,
+      )}%`,
   );
 
   if (report.failedRun) {

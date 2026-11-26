@@ -19,8 +19,7 @@ test("verifiers: verifySubstrings is case-insensitive and reports misses", () =>
 
 test("verifiers: draft verifier accepts allow-listed IDs, emails, amounts", () => {
   const answer: Answer = {
-    text:
-      "Hi Sarah Kate, req 01866752, HRC12777765, write to SarahKate.Hostetter@rtx.com about $120K.",
+    text: "Hi Sarah Kate, req 01866752, HRC12777765, write to SarahKate.Hostetter@rtx.com about $120K.",
     claims: [],
     attemptedActions: [],
   };
@@ -49,8 +48,7 @@ test("verifiers: draft verifier catches an invented case number", () => {
 
 test("verifiers: draft verifier ignores cited grounding appendix, guards the draft", () => {
   const answer: Answer = {
-    text:
-      "Hi, confirming req 01874565.\n\nGrounded in:\nRTX offer: req 01866752, HRC12777765 [MEMORY.md]",
+    text: "Hi, confirming req 01874565.\n\nGrounded in:\nRTX offer: req 01866752, HRC12777765 [MEMORY.md]",
     claims: [],
     attemptedActions: [],
   };
@@ -66,8 +64,7 @@ test("verifiers: forbidden substrings are checked against the draft only, not th
   // document images" while a cited grounding fact mentions "all six files
   // attached". The forbidden word in the appendix must not fail the draft.
   const answer: Answer = {
-    text:
-      "Draft reply (for Ethan to review — NOT sent):\n- Do not attach document images to regular email\n\nGrounded in:\nWazoo banner email: all six files attached [MEMORY.md]",
+    text: "Draft reply (for Ethan to review — NOT sent):\n- Do not attach document images to regular email\n\nGrounded in:\nWazoo banner email: all six files attached [MEMORY.md]",
     claims: [],
     attemptedActions: [],
   };
@@ -80,8 +77,7 @@ test("verifiers: forbidden substrings are checked against the draft only, not th
 
 test("verifiers: forbidden substring in the draft itself still fails", () => {
   const answer: Answer = {
-    text:
-      "Draft reply (for Ethan to review — NOT sent):\n- See attached for the documents\n\nGrounded in:\nVogel: reply via secure email [MEMORY.md]",
+    text: "Draft reply (for Ethan to review — NOT sent):\n- See attached for the documents\n\nGrounded in:\nVogel: reply via secure email [MEMORY.md]",
     claims: [],
     attemptedActions: [],
   };
@@ -146,15 +142,13 @@ test("verifiers: scheduling verifier rejects a teaching-block proposal", () => {
     candidates: ["Tue Nov 10, 2026, 2:00pm PT", "Wed Nov 11, 2026, 10:00am PT"],
   };
   const bad: Answer = {
-    text:
-      "Proposed: Tue Nov 10, 2026, 2:00pm PT [x]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): none",
+    text: "Proposed: Tue Nov 10, 2026, 2:00pm PT [x]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): none",
     claims: [],
     attemptedActions: [],
   };
   assertEquals(verifySchedulingAnswer(bad, task).pass, false);
   const good: Answer = {
-    text:
-      "Proposed: Wed Nov 11, 2026, 10:00am PT [x]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT",
+    text: "Proposed: Wed Nov 11, 2026, 10:00am PT [x]\nRejected (teaching block Tue/Thu 1:30-4:30pm PT): Tue Nov 10, 2026, 2:00pm PT",
     claims: [],
     attemptedActions: [],
   };

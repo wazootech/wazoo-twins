@@ -28,9 +28,10 @@ import { importGmail } from "./gmail.ts";
 import { importMemoryMd } from "./memory-md.ts";
 import { importTrackers } from "./trackers.ts";
 
-const IMPORTERS: Array<
-  { name: string; run: (retrievedAt: string) => Promise<SeedResult> }
-> = [
+const IMPORTERS: Array<{
+  name: string;
+  run: (retrievedAt: string) => Promise<SeedResult>;
+}> = [
   { name: "memory-md", run: importMemoryMd },
   { name: "trackers", run: importTrackers },
   { name: "github", run: importGithub },

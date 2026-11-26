@@ -96,10 +96,14 @@ test("dedupFacts keeps the first occurrence", () => {
     properties: { description: "a", status: "open" },
     provenance: { source: "test", retrievedAt: "2026-11-06T00:00:00.000Z" },
   };
-  const { facts, duplicates } = dedupFacts([fact, { ...fact }, {
-    ...fact,
-    id: "twin:commitment/b",
-  }]);
+  const { facts, duplicates } = dedupFacts([
+    fact,
+    { ...fact },
+    {
+      ...fact,
+      id: "twin:commitment/b",
+    },
+  ]);
   assertEquals(facts.length, 2);
   assertEquals(duplicates, 1);
 });

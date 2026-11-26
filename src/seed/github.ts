@@ -110,8 +110,9 @@ async function listViaMcp(
   const data = parseMcpResult(stdout);
   const raw: unknown[] = Array.isArray(data)
     ? data
-    : (data as { issues?: unknown[] }).issues ??
-      (data as { pull_requests?: unknown[] }).pull_requests ?? [];
+    : ((data as { issues?: unknown[] }).issues ??
+      (data as { pull_requests?: unknown[] }).pull_requests ??
+      []);
   return raw.map((item) => {
     const it = item as Record<string, unknown>;
     return {
@@ -119,17 +120,18 @@ async function listViaMcp(
       title: String(it["title"] ?? ""),
       state: String(it["state"] ?? "open").toLowerCase(),
       kind,
-      url: typeof it["html_url"] === "string"
-        ? it["html_url"]
-        : `https://github.com/${owner}/${repo}/${
-          kind === "pr" ? "pull" : "issues"
-        }/${it["number"]}`,
-      createdAt: typeof it["created_at"] === "string"
-        ? it["created_at"]
-        : undefined,
-      author: typeof it["user"] === "object" && it["user"] !== null
-        ? String((it["user"] as Record<string, unknown>)["login"] ?? "")
-        : undefined,
+      url:
+        typeof it["html_url"] === "string"
+          ? it["html_url"]
+          : `https://github.com/${owner}/${repo}/${
+              kind === "pr" ? "pull" : "issues"
+            }/${it["number"]}`,
+      createdAt:
+        typeof it["created_at"] === "string" ? it["created_at"] : undefined,
+      author:
+        typeof it["user"] === "object" && it["user"] !== null
+          ? String((it["user"] as Record<string, unknown>)["login"] ?? "")
+          : undefined,
     };
   });
 }
@@ -164,12 +166,12 @@ async function listViaGh(
     state: "open",
     kind,
     url: typeof it["url"] === "string" ? it["url"] : undefined,
-    createdAt: typeof it["createdAt"] === "string"
-      ? it["createdAt"]
-      : undefined,
-    author: typeof it["author"] === "object" && it["author"] !== null
-      ? String((it["author"] as Record<string, unknown>)["login"] ?? "")
-      : undefined,
+    createdAt:
+      typeof it["createdAt"] === "string" ? it["createdAt"] : undefined,
+    author:
+      typeof it["author"] === "object" && it["author"] !== null
+        ? String((it["author"] as Record<string, unknown>)["login"] ?? "")
+        : undefined,
   }));
 }
 
@@ -224,17 +226,15 @@ export async function importGithub(
       const prs = await listViaMcp(owner, repo, "pr");
       items = [...issues, ...prs];
     } catch (mcpError) {
-      const mcpMessage = mcpError instanceof Error
-        ? mcpError.message
-        : String(mcpError);
+      const mcpMessage =
+        mcpError instanceof Error ? mcpError.message : String(mcpError);
       try {
         const issues = await listViaGh(owner, repo, "issue");
         const prs = await listViaGh(owner, repo, "pr");
         items = [...issues, ...prs];
       } catch (ghError) {
-        const ghMessage = ghError instanceof Error
-          ? ghError.message
-          : String(ghError);
+        const ghMessage =
+          ghError instanceof Error ? ghError.message : String(ghError);
         reposFailed++;
         blockers.push(
           `${owner}/${repo}: MCP failed (${mcpMessage}); gh fallback failed (${ghMessage})`,
@@ -250,9 +250,9 @@ export async function importGithub(
 
   if (reposOk === 0) {
     throw new Error(
-      `GitHub import failed for every repo — no items fetched. Blockers:\n${
-        blockers.join("\n")
-      }`,
+      `GitHub import failed for every repo — no items fetched. Blockers:\n${blockers.join(
+        "\n",
+      )}`,
     );
   }
   const deduped = dedupFacts(candidates);

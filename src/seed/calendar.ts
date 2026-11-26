@@ -33,8 +33,8 @@ export const CALENDAR_WINDOW_DAYS = 90;
 export function googleOAuthConfigured(): boolean {
   return Boolean(
     process.env.GOOGLE_CLIENT_ID &&
-      process.env.GOOGLE_CLIENT_SECRET &&
-      process.env.GOOGLE_REFRESH_TOKEN,
+    process.env.GOOGLE_CLIENT_SECRET &&
+    process.env.GOOGLE_REFRESH_TOKEN,
   );
 }
 
@@ -58,11 +58,10 @@ export async function googleAccessToken(): Promise<string> {
   });
   if (!response.ok) {
     throw new Error(
-      `Google token exchange failed (${response.status}): ${await response
-        .text()}`,
+      `Google token exchange failed (${response.status}): ${await response.text()}`,
     );
   }
-  const data = await response.json() as { access_token?: string };
+  const data = (await response.json()) as { access_token?: string };
   if (!data.access_token) {
     throw new Error("Google token exchange returned no access_token");
   }
@@ -100,7 +99,7 @@ export function calendarEventsToFacts(
         start,
         kind: "calendar",
         description: truncate(summary, 500),
-        ...(event.end?.dateTime ?? event.end?.date
+        ...((event.end?.dateTime ?? event.end?.date)
           ? { end: event.end!.dateTime ?? event.end!.date! }
           : {}),
         ...(attendees ? { attendees } : {}),
@@ -118,10 +117,12 @@ export async function importCalendar(
   requireGoogleOAuth();
   const accessToken = await googleAccessToken();
   const now = new Date();
-  const timeMin = new Date(now.getTime() - CALENDAR_WINDOW_DAYS * 86400_000)
-    .toISOString();
-  const timeMax = new Date(now.getTime() + CALENDAR_WINDOW_DAYS * 86400_000)
-    .toISOString();
+  const timeMin = new Date(
+    now.getTime() - CALENDAR_WINDOW_DAYS * 86400_000,
+  ).toISOString();
+  const timeMax = new Date(
+    now.getTime() + CALENDAR_WINDOW_DAYS * 86400_000,
+  ).toISOString();
   const url = new URL(
     "https://www.googleapis.com/calendar/v3/calendars/primary/events",
   );
@@ -135,11 +136,10 @@ export async function importCalendar(
   });
   if (!response.ok) {
     throw new Error(
-      `Google Calendar list failed (${response.status}): ${await response
-        .text()}`,
+      `Google Calendar list failed (${response.status}): ${await response.text()}`,
     );
   }
-  const data = await response.json() as { items?: CalendarEventLike[] };
+  const data = (await response.json()) as { items?: CalendarEventLike[] };
   const parsed = calendarEventsToFacts(data.items ?? [], retrievedAt);
   const deduped = dedupFacts(parsed);
   validateAndSplit(result, deduped.facts);

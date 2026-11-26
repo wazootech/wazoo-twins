@@ -43,9 +43,10 @@ class HttpModelClient implements ModelClient {
   constructor(provider: string, baseUrl: string) {
     this.provider = provider;
     this.baseUrl = baseUrl;
-    this.apiKey = provider === "deepseek"
-      ? env("DEEPSEEK_API_KEY")
-      : env("FRONTIER_API_KEY");
+    this.apiKey =
+      provider === "deepseek"
+        ? env("DEEPSEEK_API_KEY")
+        : env("FRONTIER_API_KEY");
     this.model = env("TWIN_MODEL_NAME");
     this.configured = this.apiKey !== undefined && this.apiKey !== "";
   }
@@ -55,11 +56,12 @@ class HttpModelClient implements ModelClient {
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${this.apiKey}`,
+        Authorization: `Bearer ${this.apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: this.model ??
+        model:
+          this.model ??
           (this.provider === "deepseek"
             ? "deepseek-chat"
             : "claude-sonnet-4-5"),
@@ -68,7 +70,7 @@ class HttpModelClient implements ModelClient {
       }),
     });
     if (!response.ok) return null;
-    const data = await response.json() as {
+    const data = (await response.json()) as {
       choices?: { message?: { content?: string } }[];
     };
     return data.choices?.[0]?.message?.content ?? null;

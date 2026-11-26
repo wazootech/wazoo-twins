@@ -66,8 +66,9 @@ export function classifyIntent(intent: string): IntentKind {
     return "draft-reply";
   }
   if (
-    /\b(schedule|book a|free|available|conflict|when am i free|what'?s on|what is on|calendar)\b/
-      .test(text)
+    /\b(schedule|book a|free|available|conflict|when am i free|what'?s on|what is on|calendar)\b/.test(
+      text,
+    )
   ) {
     return "schedule";
   }
@@ -79,8 +80,9 @@ export function classifyIntent(intent: string): IntentKind {
     return "github-watch";
   }
   if (
-    /\b(job|opportunity|rtx|general translation|lm studio|benchmark|eclerx|intuit|application|offer|interview)\b/
-      .test(text)
+    /\b(job|opportunity|rtx|general translation|lm studio|benchmark|eclerx|intuit|application|offer|interview)\b/.test(
+      text,
+    )
   ) {
     return "jobs-status";
   }
@@ -95,19 +97,23 @@ export function planIntent(intent: string): Plan {
       const evening = /\bevening\b/i.test(intent);
       return {
         kind,
-        calls: [{
-          agent: "briefing",
-          input: { kind: evening ? "evening" : "morning" },
-        }],
+        calls: [
+          {
+            agent: "briefing",
+            input: { kind: evening ? "evening" : "morning" },
+          },
+        ],
       };
     }
     case "question":
       return {
         kind,
-        calls: [{
-          agent: "briefing",
-          input: { kind: "question", query: intent },
-        }],
+        calls: [
+          {
+            agent: "briefing",
+            input: { kind: "question", query: intent },
+          },
+        ],
       };
     case "draft-reply":
       return { kind, calls: [{ agent: "inbox", input: { query: intent } }] };

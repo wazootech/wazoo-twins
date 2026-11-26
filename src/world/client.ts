@@ -57,9 +57,11 @@ export interface WorldClient {
   /** Fetch one fact by IRI. */
   getFact(id: Iri): Promise<Fact | undefined>;
   /** Find facts by class and optional property/value filters. */
-  findFacts(
-    filter: { type?: string; property?: string; value?: string },
-  ): Promise<Fact[]>;
+  findFacts(filter: {
+    type?: string;
+    property?: string;
+    value?: string;
+  }): Promise<Fact[]>;
   /** Supersede an old fact with a replacement (never silently overwritten). */
   supersede(oldId: Iri, replacement: Fact): Promise<void>;
   /** Total fact count (for seed reporting and eval). */
@@ -89,13 +91,13 @@ export interface WorldClient {
 /** Minimal structural view of a WorldsSdk (0.6.1 and 0.9.0 alike). */
 interface SdkLike {
   sparql(req: { query: string }): Promise<SparqlResponseLike>;
-  search(req: {
-    query: string;
-    topK?: number;
-  }): Promise<{
-    results?: Array<
-      { subject: string; predicate: string; text: string; score: number }
-    >;
+  search(req: { query: string; topK?: number }): Promise<{
+    results?: Array<{
+      subject: string;
+      predicate: string;
+      text: string;
+      score: number;
+    }>;
   }>;
   reindex(req?: unknown): Promise<unknown>;
 }
@@ -104,9 +106,9 @@ type SparqlValueLike = { type: string; value: string };
 
 type SparqlResponseLike =
   | {
-    kind: "select";
-    data: { results: { bindings: Array<Record<string, SparqlValueLike>> } };
-  }
+      kind: "select";
+      data: { results: { bindings: Array<Record<string, SparqlValueLike>> } };
+    }
   | { kind: "ask"; data: { boolean: boolean } }
   | { kind: "construct"; data: { quads: unknown[] } }
   | { kind: "void" };
@@ -154,10 +156,12 @@ function expandTypeObject(value: string): string {
 
 /** Escape a value for use as a SPARQL double-quoted string literal. */
 function sparqlLiteral(value: string): string {
-  return `"${
-    value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n")
-      .replace(/\r/g, "\\r").replace(/\t/g, "\\t")
-  }"`;
+  return `"${value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")}"`;
 }
 
 function sparqlIri(iri: string): string {
@@ -187,24 +191,23 @@ export const DEFAULT_LIBSQL_PATH = `${DEFAULT_DATA_DIR}/world.db`;
  * quad is added here (factToQuads does not emit one) so getFact() can
  * round-trip a Fact's label.
  */
-function quadToTriple(
-  quad: {
-    subject: string;
-    predicate: string;
-    object: string;
-    objectIsIri: boolean;
-  },
-): string {
+function quadToTriple(quad: {
+  subject: string;
+  predicate: string;
+  object: string;
+  objectIsIri: boolean;
+}): string {
   const s = sparqlIri(expandIri(quad.subject));
-  const p = quad.predicate === RDF_TYPE
-    ? sparqlIri(RDF_TYPE)
-    : sparqlIri(expandPredicate(quad.predicate));
+  const p =
+    quad.predicate === RDF_TYPE
+      ? sparqlIri(RDF_TYPE)
+      : sparqlIri(expandPredicate(quad.predicate));
   const o = quad.objectIsIri
     ? sparqlIri(
-      quad.predicate === RDF_TYPE
-        ? expandTypeObject(quad.object)
-        : expandIri(quad.object),
-    )
+        quad.predicate === RDF_TYPE
+          ? expandTypeObject(quad.object)
+          : expandIri(quad.object),
+      )
     : sparqlLiteral(quad.object);
   return `${s} ${p} ${o} .`;
 }
@@ -269,9 +272,9 @@ class WorldClientImpl implements WorldClient {
     }
     if (errors.length > 0) {
       throw new Error(
-        `addFacts validation failed (${errors.length} error(s)):\n${
-          errors.join("\n")
-        }`,
+        `addFacts validation failed (${errors.length} error(s)):\n${errors.join(
+          "\n",
+        )}`,
       );
     }
     // Deduplicate by id within the batch (last occurrence wins).
@@ -298,17 +301,16 @@ class WorldClientImpl implements WorldClient {
       // DELETE WHERE {...} pattern, but accepts it in the WHERE clause
       // of DELETE {...} WHERE {...} (verified Nov 6, 2026).
       await this.#sdk.sparql({
-        query:
-          `DELETE { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(?s IN (${filter})) }`,
+        query: `DELETE { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(?s IN (${filter})) }`,
       });
     }
     const triples: string[] = [];
     for (const fact of unique) {
       for (const quad of factToQuads(fact)) triples.push(quadToTriple(quad));
       triples.push(
-        `${sparqlIri(expandIri(fact.id))} ${sparqlIri(Props.label)} ${
-          sparqlLiteral(fact.label)
-        } .`,
+        `${sparqlIri(expandIri(fact.id))} ${sparqlIri(Props.label)} ${sparqlLiteral(
+          fact.label,
+        )} .`,
       );
     }
     // Chunk the insert so a large seed does not produce one giant update.
@@ -377,13 +379,15 @@ class WorldClientImpl implements WorldClient {
     return factFromBindings(id, bindings);
   }
 
-  async findFacts(
-    filter: { type?: string; property?: string; value?: string },
-  ): Promise<Fact[]> {
+  async findFacts(filter: {
+    type?: string;
+    property?: string;
+    value?: string;
+  }): Promise<Fact[]> {
     const patterns: string[] = [];
     if (filter.type) {
-      const typeIri = (Classes as Record<string, string>)[filter.type] ??
-        filter.type;
+      const typeIri =
+        (Classes as Record<string, string>)[filter.type] ?? filter.type;
       patterns.push(
         `?s ${sparqlIri(RDF_TYPE)} ${sparqlIri(expandTypeObject(typeIri))} .`,
       );
@@ -429,9 +433,9 @@ class WorldClientImpl implements WorldClient {
     const errors = validateFact(replacement);
     if (errors.length > 0) {
       throw new Error(
-        `supersede validation failed for ${replacement.id}: ${
-          errors.join("; ")
-        }`,
+        `supersede validation failed for ${replacement.id}: ${errors.join(
+          "; ",
+        )}`,
       );
     }
     // Correction-loop spec §2.1: the old fact's quads STAY in the World —
@@ -455,9 +459,9 @@ class WorldClientImpl implements WorldClient {
 
   async count(): Promise<number> {
     const rows = await this.query(
-      `SELECT (COUNT(DISTINCT ?s) AS ?c) WHERE { ?s ${
-        sparqlIri(RDF_TYPE)
-      } ?t }`,
+      `SELECT (COUNT(DISTINCT ?s) AS ?c) WHERE { ?s ${sparqlIri(
+        RDF_TYPE,
+      )} ?t }`,
     );
     return Number(rows[0]?.["c"] ?? 0);
   }
@@ -486,7 +490,8 @@ class WorldClientImpl implements WorldClient {
 export async function createWorldClient(
   options?: Partial<WorldClientOptions>,
 ): Promise<WorldClient> {
-  const backend: WorldBackend = options?.backend ??
+  const backend: WorldBackend =
+    options?.backend ??
     (env("TWIN_WORLD_BACKEND") as WorldBackend | undefined) ??
     "libsql";
 
@@ -510,8 +515,8 @@ export async function createWorldClient(
 
   if (backend === "libsql") {
     const libsqlUrl = options?.libsqlUrl ?? env("TWIN_WORLD_URL");
-    const libsqlAuthToken = options?.libsqlAuthToken ??
-      env("TWIN_WORLD_AUTH_TOKEN");
+    const libsqlAuthToken =
+      options?.libsqlAuthToken ?? env("TWIN_WORLD_AUTH_TOKEN");
     let client;
     if (libsqlUrl) {
       client = createClient({ url: libsqlUrl, authToken: libsqlAuthToken });
@@ -523,7 +528,7 @@ export async function createWorldClient(
       if (dir) await mkdir(dir, { recursive: true });
       client = createClient({ url: `file:${path}` });
     }
-    const sdk = await createLibsqlWorldsSdk({ client }) as unknown as SdkLike;
+    const sdk = (await createLibsqlWorldsSdk({ client })) as unknown as SdkLike;
     return new WorldClientImpl(sdk, () => {
       client.close();
       return Promise.resolve();

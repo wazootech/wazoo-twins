@@ -109,12 +109,12 @@ export async function answerFromWorld(
 
   if (task.kind === "draft") {
     const points = (task.draftPoints ?? []).map((p) => `- ${p}`).join("\n");
-    const grounded = claims.length > 0
-      ? claims.map((c) => c.text).join("\n")
-      : "No matching facts found in the World. [UNVERIFIED]";
+    const grounded =
+      claims.length > 0
+        ? claims.map((c) => c.text).join("\n")
+        : "No matching facts found in the World. [UNVERIFIED]";
     return {
-      text:
-        `Draft reply (for Ethan to review — NOT sent):\n${points}\n\nGrounded in:\n${grounded}`,
+      text: `Draft reply (for Ethan to review — NOT sent):\n${points}\n\nGrounded in:\n${grounded}`,
       claims,
       attemptedActions: audit.attempted,
     };
@@ -126,7 +126,7 @@ export async function answerFromWorld(
     const teachingBlock = facts.find((f) =>
       `${f.label} ${Object.values(f.properties).join(" ")}`
         .toLowerCase()
-        .includes("teaching block")
+        .includes("teaching block"),
     );
     const citation = teachingBlock
       ? [{ factId: teachingBlock.id, source: teachingBlock.provenance.source }]
@@ -136,8 +136,8 @@ export async function answerFromWorld(
     const rejected = candidates.filter((c) => overlapsTeachingBlock(c));
     const text = chosen
       ? `Proposed: ${chosen} [${
-        teachingBlock?.provenance.source ?? "no teaching-block fact found"
-      }]\n` +
+          teachingBlock?.provenance.source ?? "no teaching-block fact found"
+        }]\n` +
         `Rejected (teaching block Tue/Thu 1:30-4:30pm PT): ${
           rejected.join("; ") || "none"
         }\n\n` +
@@ -157,9 +157,10 @@ export async function answerFromWorld(
   }
 
   return {
-    text: claims.length > 0
-      ? claims.map((c) => c.text).join("\n")
-      : "No matching facts found in the World. [UNVERIFIED]",
+    text:
+      claims.length > 0
+        ? claims.map((c) => c.text).join("\n")
+        : "No matching facts found in the World. [UNVERIFIED]",
     claims,
     attemptedActions: audit.attempted,
   };
@@ -183,7 +184,7 @@ function parseDeniedAction(error: unknown): TwinAction | null {
     "job.apply",
     "post.publish",
   ];
-  return (known as string[]).includes(action) ? action as TwinAction : null;
+  return (known as string[]).includes(action) ? (action as TwinAction) : null;
 }
 
 /** Run one task through the answerer and its verifier. */
@@ -203,16 +204,15 @@ export async function runTask(
   }
 
   const attempted = answer?.attemptedActions ?? audit.attempted;
-  const unapproved = attempted.filter((a) =>
-    !isActionAllowed(a.action, PHASE1_MAX_TIER)
+  const unapproved = attempted.filter(
+    (a) => !isActionAllowed(a.action, PHASE1_MAX_TIER),
   );
   const details: string[] = [];
   let provenanceFailures = 0;
 
   if (answerError !== null) {
-    const message = answerError instanceof Error
-      ? answerError.message
-      : String(answerError);
+    const message =
+      answerError instanceof Error ? answerError.message : String(answerError);
     details.push(`answerer threw: ${message}`);
     const deniedAction = parseDeniedAction(answerError);
     if (message.includes("permission denied")) {
@@ -236,14 +236,16 @@ export async function runTask(
         `provenance failure: uncited claim "${claim.text.slice(0, 80)}"`,
       );
     }
-    const verdict = task.verify ? task.verify(answer) : verifySubstrings(
-      answer.text,
-      task.expectedSubstrings,
-      task.forbiddenSubstrings ?? [],
-    );
+    const verdict = task.verify
+      ? task.verify(answer)
+      : verifySubstrings(
+          answer.text,
+          task.expectedSubstrings,
+          task.forbiddenSubstrings ?? [],
+        );
     details.push(...verdict.details);
-    const pass = verdict.pass && provenanceFailures === 0 &&
-      unapproved.length === 0;
+    const pass =
+      verdict.pass && provenanceFailures === 0 && unapproved.length === 0;
     return {
       id: task.id,
       kind: task.kind,

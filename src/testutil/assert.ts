@@ -35,9 +35,9 @@ export function assertStringIncludes(
   if (!actual.includes(expected)) {
     nodeAssert.fail(
       msg ??
-        `Expected ${JSON.stringify(actual)} to include ${
-          JSON.stringify(expected)
-        }`,
+        `Expected ${JSON.stringify(actual)} to include ${JSON.stringify(
+          expected,
+        )}`,
     );
   }
 }

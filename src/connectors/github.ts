@@ -67,8 +67,8 @@ export class GitHubConnector {
     this.requireConfigured();
     const response = await this.fetchFn(`https://api.github.com${path}`, {
       headers: {
-        "Accept": "application/vnd.github+json",
-        "Authorization": `Bearer ${this.token}`,
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${this.token}`,
         "User-Agent": "WazooTwins/0.1",
         "X-GitHub-Api-Version": "2022-11-28",
       },
@@ -78,7 +78,7 @@ export class GitHubConnector {
         `GitHub API ${response.status} for ${path}: ${await response.text()}`,
       );
     }
-    return await response.json() as unknown;
+    return (await response.json()) as unknown;
   }
 
   private static requireRepo(repo: string): void {
@@ -90,9 +90,9 @@ export class GitHubConnector {
   /** Open (or `state`) issues for a repo, excluding pull requests. */
   async listIssues(repo: string, state = "open"): Promise<GitHubIssueItem[]> {
     GitHubConnector.requireRepo(repo);
-    const data = await this.api(
+    const data = (await this.api(
       `/repos/${repo}/issues?state=${encodeURIComponent(state)}&per_page=30`,
-    ) as Record<string, unknown>[];
+    )) as Record<string, unknown>[];
     return data
       .filter((i) => i["pull_request"] === undefined)
       .map((i) => ({
@@ -104,8 +104,9 @@ export class GitHubConnector {
         author: String(
           (i["user"] as Record<string, unknown> | undefined)?.["login"] ?? "",
         ),
-        labels: ((i["labels"] as Record<string, unknown>[] | undefined) ?? [])
-          .map((l) => String(l["name"] ?? "")),
+        labels: (
+          (i["labels"] as Record<string, unknown>[] | undefined) ?? []
+        ).map((l) => String(l["name"] ?? "")),
       }));
   }
 
@@ -115,9 +116,9 @@ export class GitHubConnector {
     state = "open",
   ): Promise<GitHubPullItem[]> {
     GitHubConnector.requireRepo(repo);
-    const data = await this.api(
+    const data = (await this.api(
       `/repos/${repo}/pulls?state=${encodeURIComponent(state)}&per_page=30`,
-    ) as Record<string, unknown>[];
+    )) as Record<string, unknown>[];
     return data.map((p) => ({
       number: p["number"] as number,
       title: String(p["title"] ?? ""),

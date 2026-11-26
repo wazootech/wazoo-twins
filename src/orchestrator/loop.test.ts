@@ -88,10 +88,12 @@ test("loop: duplicate claims merge, keeping the most recent provenance", async (
   const c = ctx();
   const oldClaim = {
     text: "Shared claim",
-    citations: [{
-      factId: "twin:commitment/nbis-eapp",
-      source: "test-fixture",
-    }],
+    citations: [
+      {
+        factId: "twin:commitment/nbis-eapp",
+        source: "test-fixture",
+      },
+    ],
     verified: true,
   };
   const newerFact = {
@@ -117,11 +119,13 @@ test("loop: duplicate claims merge, keeping the most recent provenance", async (
     run: (): Promise<AgentResult> =>
       Promise.resolve({
         agent: "b",
-        claims: [{
-          text: "Shared claim",
-          citations: [{ factId: newerFact.id, source: "test-fixture" }],
-          verified: true,
-        }],
+        claims: [
+          {
+            text: "Shared claim",
+            citations: [{ factId: newerFact.id, source: "test-fixture" }],
+            verified: true,
+          },
+        ],
         summary: [],
         notes: [],
       }),
@@ -149,11 +153,13 @@ test("loop: unverified claims are kept and labelled, never dropped", async () =>
     run: (): Promise<AgentResult> =>
       Promise.resolve({
         agent: "briefing",
-        claims: [{
-          text: "Ethan owes $1M to Zorg",
-          citations: [],
-          verified: false,
-        }],
+        claims: [
+          {
+            text: "Ethan owes $1M to Zorg",
+            citations: [],
+            verified: false,
+          },
+        ],
         summary: [],
         notes: [],
       }),

@@ -33,9 +33,6 @@ test("correction tasks: every held-out scenario passes", async () => {
   const results = await runCorrectionScenarios();
   assertEquals(results.length, 5);
   for (const result of results) {
-    assert(
-      result.pass,
-      `${result.id} failed:\n${result.details.join("\n")}`,
-    );
+    assert(result.pass, `${result.id} failed:\n${result.details.join("\n")}`);
   }
 });

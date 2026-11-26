@@ -36,16 +36,18 @@ test("planner: schedule intents route to calendar, with date extraction", () => 
   assertEquals(classifyIntent("when am I free tomorrow?"), "schedule");
   assertEquals(extractDate("what is on 2026-11-06?"), "2026-11-06");
   assertEquals(extractDate("when am I free?"), undefined);
-  assertEquals(
-    planIntent("what is on 2026-11-06?").calls,
-    [{ agent: "calendar", input: { date: "2026-11-06" } }],
-  );
+  assertEquals(planIntent("what is on 2026-11-06?").calls, [
+    { agent: "calendar", input: { date: "2026-11-06" } },
+  ]);
 });
 
 test("planner: prep intents route to research + calendar", () => {
   assertEquals(classifyIntent("prep me for Ernest"), "research");
   const plan = planIntent("prep me for Ernest");
-  assertEquals(plan.calls.map((c) => c.agent), ["research", "calendar"]);
+  assertEquals(
+    plan.calls.map((c) => c.agent),
+    ["research", "calendar"],
+  );
   assertEquals(extractResearchQuery("prep me for Ernest"), "Ernest");
   assertEquals(
     extractResearchQuery("who is Ernest McCarter?"),
@@ -60,22 +62,17 @@ test("planner: github-watch extracts repos", () => {
   );
   assertEquals(
     extractRepos("check wazootech/wazoo-twins and wazootech/worlds-sdk-ts"),
-    [
-      "wazootech/wazoo-twins",
-      "wazootech/worlds-sdk-ts",
-    ],
+    ["wazootech/wazoo-twins", "wazootech/worlds-sdk-ts"],
   );
 });
 
 test("planner: jobs-status keywords route to jobs", () => {
-  for (
-    const intent of [
-      "what is the status of my job applications?",
-      "what do I owe RTX?",
-      "General Translation next steps",
-      "LM Studio application",
-    ]
-  ) {
+  for (const intent of [
+    "what is the status of my job applications?",
+    "what do I owe RTX?",
+    "General Translation next steps",
+    "LM Studio application",
+  ]) {
     assertEquals(classifyIntent(intent), "jobs-status", intent);
   }
 });
