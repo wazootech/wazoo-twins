@@ -1,6 +1,6 @@
 /**
  * Assertion helpers for the test suite, built on `node:assert/strict` so the
- * same tests run under `deno test` and `bun test` (no `jsr:@std/assert`).
+ * same tests run under `bun test` (no `jsr:@std/assert`).
  *
  * The names and argument order match `@std/assert`, which keeps the test
  * bodies unchanged. Like std, `assertThrows` and `assertRejects` take an

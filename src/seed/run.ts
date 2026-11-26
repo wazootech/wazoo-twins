@@ -1,5 +1,5 @@
 /**
- * Seed runner: `deno task seed` (full) / `deno task seed --incremental`.
+ * Seed runner: `bun run seed` (full) / `bun run seed --incremental`.
  *
  * Runs every Phase 0.4 importer in order, validates every fact, writes
  * quarantined facts to `~/workspace/wazoo-twins-data/quarantine/<source>.json`,

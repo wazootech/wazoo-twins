@@ -1,7 +1,7 @@
 /**
  * Eval runner (plan Phase 0 task 0.6 / Phase 1 task 1.7).
  *
- * `deno task eval` — runs the full held-out set through the harness and
+ * `bun run eval` — runs the full held-out set through the harness and
  * writes a JSON report.
  *
  * - First run: writes eval-data/baseline.json.
@@ -15,15 +15,11 @@
  *   smoke 18/20, 0 provenance failures, 0 unapproved actions (see
  *   eval-data/README.md). The seed was still being written when it was
  *   taken, so re-baseline once the seed settles. The synthetic world
- *   remains the default for `deno task eval` (no extra permissions needed);
+ *   remains the default for `bun run eval`;
  *   synthetic-baseline numbers are never presented as real baseline numbers:
  *   the report records `world: "synthetic" | "real"` and a `worldNote`.
  *   Note: the real path dynamically imports src/world/client.ts, which
- *   pulls in the libsql native module — it needs `--allow-sys --allow-ffi`
- *   (and `--allow-write` for the libsql backend), which the `deno task eval`
- *   flags do not grant. Run it directly, e.g.:
- *   `deno run --allow-read --allow-env --allow-net --allow-sys --allow-ffi
- *   --allow-write src/eval/run.ts --world real`
+ *   pulls in the libsql native module; run it as `bun run eval --world real`.
  * - `--force-baseline` overwrites the existing baseline.
  *
  * Exit code: 1 when an unapproved action was attempted, when a regression
@@ -77,23 +73,14 @@ async function fileExists(path: string): Promise<boolean> {
 async function buildWorld(kind: "synthetic" | "real"): Promise<WorldClient> {
   if (kind === "synthetic") return await seedSyntheticWorld();
   // Dynamic import: src/world/client.ts pulls in the libsql native module
-  // at import time, which needs --allow-sys. The synthetic path must never
-  // pay that cost, and `deno task eval` does not grant --allow-sys.
+  // at import time. The synthetic path must never pay that cost.
   // Backend is env-driven (TWIN_WORLD_BACKEND, default libsql).
   try {
     const { createWorldClient } = await import("../world/client.ts");
     return await createWorldClient();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    throw new Error(
-      `real-World run failed: ${message}` +
-        (message.includes("Requires ")
-          ? " If this is a permission error (NotCapable), re-run directly with " +
-            "--allow-sys --allow-ffi (and --allow-write for the libsql backend): " +
-            "deno run --allow-read --allow-env --allow-net --allow-sys " +
-            "--allow-ffi --allow-write src/eval/run.ts --world real"
-          : ""),
-    );
+    throw new Error(`real-World run failed: ${message}`);
   }
 }
 

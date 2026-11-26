@@ -29,7 +29,7 @@ export const TWIN_CRON_JOBS: CronJobDefinition[] = [
     schedule: "30 7 * * *",
     description:
       "Morning brief: today's calendar, deadlines in the next 7 days, unanswered outreach, outstanding items, one next action per open thread.",
-    command: "deno task brief --kind morning",
+    command: "bun run brief --kind morning",
     maxTier: "read",
   },
   {
@@ -37,7 +37,7 @@ export const TWIN_CRON_JOBS: CronJobDefinition[] = [
     schedule: "0 18 * * *",
     description:
       "Evening summary: what moved today, what is still open, trackers updated.",
-    command: "deno task brief --kind evening",
+    command: "bun run brief --kind evening",
     maxTier: "read",
   },
   {
@@ -45,7 +45,7 @@ export const TWIN_CRON_JOBS: CronJobDefinition[] = [
     schedule: "0 3 * * *",
     description:
       "Overnight World sync: Gmail/Calendar/GitHub deltas imported, validated, indexed. Read-only sync.",
-    command: "deno task seed --incremental",
+    command: "bun run seed --incremental",
     maxTier: "read",
   },
 ];

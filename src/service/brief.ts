@@ -1,5 +1,5 @@
 /**
- * Brief CLI — `deno task brief --kind morning|evening`.
+ * Brief CLI — `bun run brief --kind morning|evening`.
  *
  * Builds the brief from the World and prints it to STDOUT ONLY. It never
  * delivers the brief anywhere: no chat send, no email, no other transport.

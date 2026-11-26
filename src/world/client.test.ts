@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 /**
  * Tests for the World client (memory + libsql backends, hosted guard).
- * Run: `deno task test src/world/client.test.ts`
+ * Run: `bun test src/world/client.test.ts`
  */
 import { assert, assertEquals, assertRejects } from "../testutil/assert.ts";
 import { createWorldClient } from "./client.ts";

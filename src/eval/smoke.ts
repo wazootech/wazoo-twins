@@ -1,7 +1,7 @@
 /**
  * Smoke runner (plan Phase 0 task 0.5).
  *
- * `deno task smoke` — answers the 20 hand-written smoke questions by
+ * `bun run smoke` — answers the 20 hand-written smoke questions by
  * querying the WorldClient (keyword search + findFacts) and composing a
  * cited answer, then verifies each one deterministically.
  *
@@ -11,11 +11,7 @@
  * baseline is 18/20 (Nov 6, 2026; see eval-data/README.md for the two gaps).
  *
  * Note: the real path dynamically imports src/world/client.ts, which
- * pulls in the libsql native module — it needs `--allow-sys` (and
- * `--allow-write` for the libsql backend), which the `deno task smoke`
- * flags do not grant. Run it directly, e.g.:
- * `deno run --allow-read --allow-env --allow-net --allow-sys --allow-write
- * src/eval/smoke.ts --world real`
+ * pulls in the libsql native module; run it as `bun run smoke --world real`.
  *
  * Exit code: 1 when any smoke question fails.
  */

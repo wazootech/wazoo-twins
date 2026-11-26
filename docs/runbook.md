@@ -2,7 +2,8 @@
 
 ## Prerequisites
 
-- Deno (see https://deno.land — `curl -fsSL https://deno.land/install.sh | sh`)
+- Bun (see https://bun.sh — `curl -fsSL https://bun.sh/install | bash`), then
+  `bun install`
 - The World database lives in `~/workspace/wazoo-twins-data/` (outside the repo
   by design). Never commit seed data.
 - Google OAuth (Gmail/Calendar) is **not** set up yet: the Gmail and Calendar
@@ -13,15 +14,15 @@
 
 | Command                              | What it does                                                                                                                        |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `deno task seed`                     | Full seed import: MEMORY.md, daily notes, trackers, GitHub open state (Gmail/Calendar skipped with a warning until OAuth is set up) |
-| `deno task seed --incremental`       | Overnight sync: deltas only                                                                                                         |
-| `deno task smoke`                    | 20 smoke-test questions answered from the World, with citations                                                                     |
-| `deno task eval`                     | Held-out eval set + baseline scores                                                                                                 |
-| `deno task brief --kind morning`     | Morning brief (dry run writes to stdout only — never delivered anywhere by the Twin itself)                                         |
-| `deno task brief --kind evening`     | Evening summary                                                                                                                     |
-| `deno task server`                   | Long-running service entrypoint (Phase 1+)                                                                                          |
-| `deno task check` / `deno task test` | Type-check / tests                                                                                                                  |
-| `deno task lint` / `deno task fmt`   | Lint / format                                                                                                                       |
+| `bun run seed`                     | Full seed import: MEMORY.md, daily notes, trackers, GitHub open state (Gmail/Calendar skipped with a warning until OAuth is set up) |
+| `bun run seed --incremental`       | Overnight sync: deltas only                                                                                                         |
+| `bun run smoke`                    | 20 smoke-test questions answered from the World, with citations                                                                     |
+| `bun run eval`                     | Held-out eval set + baseline scores                                                                                                 |
+| `bun run brief --kind morning`     | Morning brief (dry run writes to stdout only — never delivered anywhere by the Twin itself)                                         |
+| `bun run brief --kind evening`     | Evening summary                                                                                                                     |
+| `bun run server`                   | Long-running service entrypoint (Phase 1+)                                                                                          |
+| `bun run check` / `bun run test` | Type-check / tests                                                                                                                  |
+| `bun run lint` / `bun run fmt`   | Lint / format                                                                                                                       |
 
 ## Environment
 
@@ -43,7 +44,7 @@ overnight sync 3am PT. Registered as runtime crons by the parent agent.
 ## Recovery
 
 - World DB corrupt or suspect: delete `~/workspace/wazoo-twins-data/world.db`
-  and re-run `deno task seed`. The seed is reproducible from source files.
+  and re-run `bun run seed`. The seed is reproducible from source files.
 - Bad seed batch: the importer quarantines it (see `data/quarantine/` under the
   data dir) and reports; nothing half-lands.
 - Rotate keys: update `.env` (gitignored), restart the service.

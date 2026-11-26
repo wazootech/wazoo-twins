@@ -1,8 +1,8 @@
 /**
  * Server entrypoint — wires the orchestrator + agents + World client.
  *
- * - `deno task server` — reads intents from stdin in a loop (see `chat.ts`).
- * - `deno task server --once "<intent>"` — runs a single intent and exits.
+ * - `bun run server` — reads intents from stdin in a loop (see `chat.ts`).
+ * - `bun run server --once "<intent>"` — runs a single intent and exits.
  *
  * Phase 1 runs at the "draft" tier at most: briefs, answers, and drafts are
  * presented; nothing external is performed. The World backend comes from

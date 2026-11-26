@@ -63,7 +63,7 @@ function runCommand(
     child.stderr.setEncoding("utf8").on("data", (chunk: string) => {
       stderr += chunk;
     });
-    // A missing binary rejects (as Deno.Command did); a non-zero exit resolves.
+    // A missing binary rejects; a non-zero exit resolves.
     child.on("error", reject);
     child.on("close", (code) => resolve({ code: code ?? 1, stdout, stderr }));
   });
