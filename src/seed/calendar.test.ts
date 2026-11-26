@@ -1,10 +1,12 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import process from "node:process";
+import { test } from "node:test";
+import { assertEquals, assertRejects } from "../testutil/assert.ts";
 import { calendarEventsToFacts, importCalendar } from "./calendar.ts";
 import { GOOGLE_OAUTH_NOT_SETUP } from "./calendar.ts";
 
 const NOW = "2026-11-06T12:00:00.000Z";
 
-Deno.test("calendarEventsToFacts maps events, skips dateless ones", () => {
+test("calendarEventsToFacts maps events, skips dateless ones", () => {
   const facts = calendarEventsToFacts([
     {
       id: "abc123",
@@ -26,7 +28,7 @@ Deno.test("calendarEventsToFacts maps events, skips dateless ones", () => {
   assertEquals(facts[0].provenance.source, "google-calendar:abc123");
 });
 
-Deno.test("importCalendar throws the clear OAuth error when credentials are absent", async () => {
+test("importCalendar throws the clear OAuth error when credentials are absent", async () => {
   for (
     const name of [
       "GOOGLE_CLIENT_ID",
@@ -34,7 +36,7 @@ Deno.test("importCalendar throws the clear OAuth error when credentials are abse
       "GOOGLE_REFRESH_TOKEN",
     ]
   ) {
-    Deno.env.delete(name);
+    delete process.env[name];
   }
   await assertRejects(() => importCalendar(), Error, GOOGLE_OAUTH_NOT_SETUP);
 });

@@ -1,4 +1,5 @@
-import { assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals } from "../testutil/assert.ts";
 import {
   deadlineDate,
   dedupFacts,
@@ -9,7 +10,7 @@ import {
 import type { SeedResult } from "./common.ts";
 import { emptyResult } from "./common.ts";
 
-Deno.test("parseDateLoose handles ISO and long-form dates", () => {
+test("parseDateLoose handles ISO and long-form dates", () => {
   assertEquals(parseDateLoose("due 2026-11-08"), "2026-11-08");
   assertEquals(parseDateLoose("Fri Nov 6, 2026, 11:00am PT"), "2026-11-06");
   assertEquals(parseDateLoose("Dec 11, 2026"), "2026-12-11");
@@ -17,11 +18,11 @@ Deno.test("parseDateLoose handles ISO and long-form dates", () => {
   assertEquals(parseDateLoose("no date here"), undefined);
 });
 
-Deno.test("parseDateLoose reads a bare month+day as 2026 (seed corpus year)", () => {
+test("parseDateLoose reads a bare month+day as 2026 (seed corpus year)", () => {
   assertEquals(parseDateLoose("deadline Nov 20"), "2026-11-20");
 });
 
-Deno.test("deadlineDate picks the date the deadline language points at", () => {
+test("deadlineDate picks the date the deadline language points at", () => {
   const ccpa =
     "CCPA request SENT Fri Nov 6, 2026. Confirmation due Fri Nov 20, 2026; full response due Mon Dec 21, 2026.";
   assertEquals(deadlineDate(ccpa), "2026-11-20");
@@ -48,7 +49,7 @@ Deno.test("deadlineDate picks the date the deadline language points at", () => {
   );
 });
 
-Deno.test("slugify lowercases and joins words", () => {
+test("slugify lowercases and joins words", () => {
   assertEquals(
     slugify("NBIS eApp Due About Nov 8!"),
     "nbis-eapp-due-about-nov-8",
@@ -56,7 +57,7 @@ Deno.test("slugify lowercases and joins words", () => {
   assertEquals(slugify(""), "untitled");
 });
 
-Deno.test("validateAndSplit quarantines invalid facts, keeps valid ones", () => {
+test("validateAndSplit quarantines invalid facts, keeps valid ones", () => {
   const result: SeedResult = emptyResult("test");
   validateAndSplit(result, [
     {
@@ -87,7 +88,7 @@ Deno.test("validateAndSplit quarantines invalid facts, keeps valid ones", () => 
   assertEquals(result.quarantined[1].errors[0], "unknown class: Nope");
 });
 
-Deno.test("dedupFacts keeps the first occurrence", () => {
+test("dedupFacts keeps the first occurrence", () => {
   const fact = {
     id: "twin:commitment/a",
     type: "Commitment",

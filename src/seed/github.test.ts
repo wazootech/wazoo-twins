@@ -1,9 +1,10 @@
-import { assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals } from "../testutil/assert.ts";
 import { issuesToFacts } from "./github.ts";
 
 const NOW = "2026-11-06T12:00:00.000Z";
 
-Deno.test("issuesToFacts maps issues and PRs to Task facts with GitHub provenance", () => {
+test("issuesToFacts maps issues and PRs to Task facts with GitHub provenance", () => {
   const facts = issuesToFacts(
     [
       {

@@ -1,4 +1,5 @@
-import { assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals, assertStringIncludes } from "../testutil/assert.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
 import { formatResult, handleIntentLine, readLines } from "./chat.ts";
@@ -11,7 +12,7 @@ const ctx = () => ({
   today: TODAY,
 });
 
-Deno.test("chat: formatResult renders claims, summary, and notes", async () => {
+test("chat: formatResult renders claims, summary, and notes", async () => {
   const result = await runIntent("what's open?", ctx());
   const text = formatResult(result);
   assertStringIncludes(text, "## Answer — question");
@@ -19,7 +20,7 @@ Deno.test("chat: formatResult renders claims, summary, and notes", async () => {
   assertStringIncludes(text, "[test-fixture]");
 });
 
-Deno.test("chat: formatResult labels UNVERIFIED claims, never hides them", () => {
+test("chat: formatResult labels UNVERIFIED claims, never hides them", () => {
   const text = formatResult({
     intent: "x",
     kind: "question",
@@ -35,13 +36,13 @@ Deno.test("chat: formatResult labels UNVERIFIED claims, never hides them", () =>
   assertStringIncludes(text, "Untraceable claim [UNVERIFIED]");
 });
 
-Deno.test("chat: handleIntentLine answers an intent from the World", async () => {
+test("chat: handleIntentLine answers an intent from the World", async () => {
   const text = await handleIntentLine("what's open?", ctx());
   assertStringIncludes(text, "NBIS eApp");
   assertStringIncludes(text, "Vogel citizenship documents");
 });
 
-Deno.test("chat: readLines splits a stream into lines", async () => {
+test("chat: readLines splits a stream into lines", async () => {
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       controller.enqueue(new TextEncoder().encode("first line\nsecond"));

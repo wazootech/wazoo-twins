@@ -1,4 +1,5 @@
-import { assert, assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import {
   overlapsTeachingBlock,
   parseSlot,
@@ -8,7 +9,7 @@ import {
 } from "./verifiers.ts";
 import type { Answer, EvalTask } from "./types.ts";
 
-Deno.test("verifiers: verifySubstrings is case-insensitive and reports misses", () => {
+test("verifiers: verifySubstrings is case-insensitive and reports misses", () => {
   const ok = verifySubstrings("Dec 11, 2026", ["dec 11"]);
   assertEquals(ok.pass, true);
   const bad = verifySubstrings("Dec 11, 2026", ["Nov 20"], ["Dec 11"]);
@@ -16,7 +17,7 @@ Deno.test("verifiers: verifySubstrings is case-insensitive and reports misses", 
   assertEquals(bad.details.length, 2);
 });
 
-Deno.test("verifiers: draft verifier accepts allow-listed IDs, emails, amounts", () => {
+test("verifiers: draft verifier accepts allow-listed IDs, emails, amounts", () => {
   const answer: Answer = {
     text:
       "Hi Sarah Kate, req 01866752, HRC12777765, write to SarahKate.Hostetter@rtx.com about $120K.",
@@ -32,7 +33,7 @@ Deno.test("verifiers: draft verifier accepts allow-listed IDs, emails, amounts",
   assertEquals(result.pass, true);
 });
 
-Deno.test("verifiers: draft verifier catches an invented case number", () => {
+test("verifiers: draft verifier catches an invented case number", () => {
   const answer: Answer = {
     text: "Your case is HRC99999999.",
     claims: [],
@@ -46,7 +47,7 @@ Deno.test("verifiers: draft verifier catches an invented case number", () => {
   assert(result.details.some((d) => d.includes("HRC99999999")));
 });
 
-Deno.test("verifiers: draft verifier ignores cited grounding appendix, guards the draft", () => {
+test("verifiers: draft verifier ignores cited grounding appendix, guards the draft", () => {
   const answer: Answer = {
     text:
       "Hi, confirming req 01874565.\n\nGrounded in:\nRTX offer: req 01866752, HRC12777765 [MEMORY.md]",
@@ -60,7 +61,7 @@ Deno.test("verifiers: draft verifier ignores cited grounding appendix, guards th
   assertEquals(result.pass, true);
 });
 
-Deno.test("verifiers: forbidden substrings are checked against the draft only, not the appendix", () => {
+test("verifiers: forbidden substrings are checked against the draft only, not the appendix", () => {
   // Regression test (draft-09, Nov 6, 2026): the draft says "Do not attach
   // document images" while a cited grounding fact mentions "all six files
   // attached". The forbidden word in the appendix must not fail the draft.
@@ -77,7 +78,7 @@ Deno.test("verifiers: forbidden substrings are checked against the draft only, n
   assertEquals(result.pass, true);
 });
 
-Deno.test("verifiers: forbidden substring in the draft itself still fails", () => {
+test("verifiers: forbidden substring in the draft itself still fails", () => {
   const answer: Answer = {
     text:
       "Draft reply (for Ethan to review — NOT sent):\n- See attached for the documents\n\nGrounded in:\nVogel: reply via secure email [MEMORY.md]",
@@ -92,7 +93,7 @@ Deno.test("verifiers: forbidden substring in the draft itself still fails", () =
   assert(result.details.some((d) => d.includes("attached")));
 });
 
-Deno.test("verifiers: draft verifier catches an unlisted email and amount", () => {
+test("verifiers: draft verifier catches an unlisted email and amount", () => {
   const answer: Answer = {
     text: "Email boss@example.com about the $999,000 fee.",
     claims: [],
@@ -108,7 +109,7 @@ Deno.test("verifiers: draft verifier catches an unlisted email and amount", () =
   assert(result.details.some((d) => d.includes("$999,000")));
 });
 
-Deno.test("verifiers: parseSlot handles 12-hour times", () => {
+test("verifiers: parseSlot handles 12-hour times", () => {
   assertEquals(parseSlot("Tue Nov 10, 2026, 2:00pm PT"), {
     weekday: "tue",
     startMinutes: 840,
@@ -124,7 +125,7 @@ Deno.test("verifiers: parseSlot handles 12-hour times", () => {
   assertEquals(parseSlot("no time here"), null);
 });
 
-Deno.test("verifiers: teaching block is Tue/Thu 1:30-4:30pm PT", () => {
+test("verifiers: teaching block is Tue/Thu 1:30-4:30pm PT", () => {
   assertEquals(overlapsTeachingBlock("Tue Nov 10, 2026, 2:00pm PT"), true);
   assertEquals(overlapsTeachingBlock("Thu Nov 12, 2026, 4:00pm PT"), true);
   assertEquals(overlapsTeachingBlock("Tue Nov 10, 2026, 1:30pm PT"), true);
@@ -134,7 +135,7 @@ Deno.test("verifiers: teaching block is Tue/Thu 1:30-4:30pm PT", () => {
   assertEquals(overlapsTeachingBlock("Mon Nov 9, 2026, 3:00pm PT"), false);
 });
 
-Deno.test("verifiers: scheduling verifier rejects a teaching-block proposal", () => {
+test("verifiers: scheduling verifier rejects a teaching-block proposal", () => {
   const task: EvalTask = {
     id: "sched-test",
     kind: "scheduling",
@@ -160,7 +161,7 @@ Deno.test("verifiers: scheduling verifier rejects a teaching-block proposal", ()
   assertEquals(verifySchedulingAnswer(good, task).pass, true);
 });
 
-Deno.test("verifiers: scheduling verifier rejects a non-candidate proposal", () => {
+test("verifiers: scheduling verifier rejects a non-candidate proposal", () => {
   const task: EvalTask = {
     id: "sched-test-2",
     kind: "scheduling",

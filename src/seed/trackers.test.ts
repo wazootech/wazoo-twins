@@ -1,9 +1,10 @@
-import { assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals } from "../testutil/assert.ts";
 import { parseTracker } from "./trackers.ts";
 
 const NOW = "2026-11-06T12:00:00.000Z";
 
-Deno.test("parseTracker: named opportunities get stage, deadline facts for dated ones", () => {
+test("parseTracker: named opportunities get stage, deadline facts for dated ones", () => {
   const text = [
     "# Wazoo Opportunity Tracker",
     "## Active opportunities — in deadline order",
@@ -49,7 +50,7 @@ Deno.test("parseTracker: named opportunities get stage, deadline facts for dated
   );
 });
 
-Deno.test("parseTracker: unparseable lines are skipped", () => {
+test("parseTracker: unparseable lines are skipped", () => {
   const { facts, skipped } = parseTracker(
     "- just a dash line with no bold name\n- **OK Name** — has a real description here.\n",
     NOW,

@@ -1,10 +1,11 @@
+import { test } from "node:test";
 /**
  * Provenance + supersession tests (correction-loop spec §2).
  *
  * A supersession adds a link; it never deletes. The old fact stays
  * queryable in history, and "current" queries read only live heads.
  */
-import { assert, assertEquals, assertThrows } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "../testutil/assert.ts";
 import { Props } from "./schema.ts";
 import {
   blameFromSource,
@@ -49,7 +50,7 @@ const v1Superseded: Fact = {
   properties: { ...v1.properties, supersededBy: "twin:commitment/x-v2" },
 };
 
-Deno.test("provenance: missing source or retrievedAt blocks a write", () => {
+test("provenance: missing source or retrievedAt blocks a write", () => {
   assertEquals(
     provenanceErrors({ ...v1, provenance: { source: "", retrievedAt: "" } })
       .length,
@@ -65,7 +66,7 @@ Deno.test("provenance: missing source or retrievedAt blocks a write", () => {
   assertEquals(provenanceErrors(v1).length, 0);
 });
 
-Deno.test("provenance: supersede validates provenance and distinct id", () => {
+test("provenance: supersede validates provenance and distinct id", () => {
   const quads = supersede("twin:commitment/x", v2);
   assertEquals(quads.length, 1);
   assertEquals(quads[0].subject, "twin:commitment/x");
@@ -91,7 +92,7 @@ Deno.test("provenance: supersede validates provenance and distinct id", () => {
   );
 });
 
-Deno.test("provenance: currentHead walks the chain, history lists it oldest-first", () => {
+test("provenance: currentHead walks the chain, history lists it oldest-first", () => {
   const v3: Fact = {
     ...fact("twin:commitment/x-v3", { status: "done" }),
     properties: {
@@ -121,7 +122,7 @@ Deno.test("provenance: currentHead walks the chain, history lists it oldest-firs
   assertEquals(history(facts, "twin:commitment/x-v3").length, 1);
 });
 
-Deno.test("provenance: chainContaining finds the full chain from any link", () => {
+test("provenance: chainContaining finds the full chain from any link", () => {
   const v3: Fact = {
     ...fact("twin:commitment/x-v3", { status: "done" }),
     properties: {
@@ -146,7 +147,7 @@ Deno.test("provenance: chainContaining finds the full chain from any link", () =
   assertEquals(chainContaining(facts, "twin:commitment/missing"), []);
 });
 
-Deno.test("provenance: isSuperseded and currentFacts filter history out", () => {
+test("provenance: isSuperseded and currentFacts filter history out", () => {
   assert(isSuperseded(v1Superseded));
   assert(!isSuperseded(v1));
   assertEquals(currentFacts([v1Superseded, v2]).map((f) => f.id), [
@@ -154,7 +155,7 @@ Deno.test("provenance: isSuperseded and currentFacts filter history out", () => 
   ]);
 });
 
-Deno.test("provenance: normalizeIri unifies twin: and expanded forms", () => {
+test("provenance: normalizeIri unifies twin: and expanded forms", () => {
   assertEquals(
     normalizeIri("https://wazoo.dev/twins/fact/commitment/x"),
     "twin:commitment/x",
@@ -174,7 +175,7 @@ Deno.test("provenance: normalizeIri unifies twin: and expanded forms", () => {
   );
 });
 
-Deno.test("provenance: blameFromSource derives the blame only where unambiguous", () => {
+test("provenance: blameFromSource derives the blame only where unambiguous", () => {
   assertEquals(
     blameFromSource(`Ethan, in chat 2026-11-08T12:00:00.000Z`),
     "Ethan",
@@ -184,7 +185,7 @@ Deno.test("provenance: blameFromSource derives the blame only where unambiguous"
   assertEquals(blameFromSource("https://example.com/post"), undefined);
 });
 
-Deno.test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
+test("provenance: factToQuads emits the blame quad when typed, none when absent", () => {
   const base: Fact = {
     id: "twin:commitment/a",
     type: "Commitment",

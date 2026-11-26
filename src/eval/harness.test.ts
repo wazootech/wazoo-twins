@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { answerFromWorld, AuditRecorder, runEval, runTask } from "./harness.ts";
 import {
   seedSyntheticWorld,
@@ -12,14 +17,14 @@ import { SMOKE_TASKS } from "./tasks/smoke.ts";
 
 const world = await seedSyntheticWorld();
 
-Deno.test("harness: retrieval-only answerer passes a smoke question", async () => {
+test("harness: retrieval-only answerer passes a smoke question", async () => {
   const result = await runTask(SMOKE_TASKS[0], world, answerFromWorld);
   assertEquals(result.pass, true);
   assertEquals(result.provenanceFailures, 0);
   assertEquals(result.unapprovedActions, 0);
 });
 
-Deno.test("harness: missing expected substring fails the task", async () => {
+test("harness: missing expected substring fails the task", async () => {
   const task: EvalTask = {
     id: "test-missing",
     kind: "briefing",
@@ -33,7 +38,7 @@ Deno.test("harness: missing expected substring fails the task", async () => {
   assert(result.details.some((d) => d.includes("missing expected substring")));
 });
 
-Deno.test("harness: answer with no cited claims is a provenance failure", async () => {
+test("harness: answer with no cited claims is a provenance failure", async () => {
   const uncited: Answer = { text: "NBIS", claims: [], attemptedActions: [] };
   const task: EvalTask = {
     id: "test-uncited",
@@ -48,7 +53,7 @@ Deno.test("harness: answer with no cited claims is a provenance failure", async 
   assert(result.provenanceFailures >= 1);
 });
 
-Deno.test("harness: claim without citations is a provenance failure", async () => {
+test("harness: claim without citations is a provenance failure", async () => {
   const answer: Answer = {
     text: "NBIS HRC12777765",
     claims: [{ text: "NBIS HRC12777765", citations: [] }],
@@ -67,7 +72,7 @@ Deno.test("harness: claim without citations is a provenance failure", async () =
   assertEquals(result.provenanceFailures, 1);
 });
 
-Deno.test("harness: unapproved action attempt fails the run", async () => {
+test("harness: unapproved action attempt fails the run", async () => {
   const sender: Answer = {
     text: "sent it",
     claims: [{
@@ -90,7 +95,7 @@ Deno.test("harness: unapproved action attempt fails the run", async () => {
   assertEquals(result.results[0].pass, false);
 });
 
-Deno.test("harness: read/draft actions are allowed and do not fail the run", async () => {
+test("harness: read/draft actions are allowed and do not fail the run", async () => {
   const recorder = new AuditRecorder();
   recorder.record("world.read", "read");
   recorder.record("draft.create", "draft");
@@ -115,7 +120,7 @@ Deno.test("harness: read/draft actions are allowed and do not fail the run", asy
   assertEquals(result.failedRun, false);
 });
 
-Deno.test("harness: permission-denied throw counts as an unapproved attempt", async () => {
+test("harness: permission-denied throw counts as an unapproved attempt", async () => {
   const task: EvalTask = {
     id: "test-denied",
     kind: "draft",
@@ -133,7 +138,7 @@ Deno.test("harness: permission-denied throw counts as an unapproved attempt", as
   assertEquals(result.unapprovedActions, 1);
 });
 
-Deno.test("harness: scheduling proposal cites the teaching-block fact by content, not id", async () => {
+test("harness: scheduling proposal cites the teaching-block fact by content, not id", async () => {
   // Regression test: the real seeded World uses seed-generated ids, so the
   // answerer must find the teaching-block fact by content. A world whose
   // teaching-block fact has an unfamiliar id must still pass.
@@ -159,7 +164,7 @@ Deno.test("harness: scheduling proposal cites the teaching-block fact by content
   assertEquals(result.provenanceFailures, 0);
 });
 
-Deno.test("harness: answerFromWorld cites every claim it makes", async () => {
+test("harness: answerFromWorld cites every claim it makes", async () => {
   const answer = await answerFromWorld(
     SMOKE_TASKS[1],
     world,

@@ -1,3 +1,4 @@
+import { test } from "node:test";
 /**
  * Held-out correction-task runner tests (correction-loop spec §8).
  *
@@ -6,13 +7,13 @@
  * correction-loop failure, not a data problem — the scenarios were
  * written before the build.
  */
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import {
   CORRECTION_SCENARIOS,
   runCorrectionScenarios,
 } from "./tasks/corrections.ts";
 
-Deno.test("correction tasks: five frozen scenarios, unique ids", () => {
+test("correction tasks: five frozen scenarios, unique ids", () => {
   assertEquals(CORRECTION_SCENARIOS.length, 5);
   const ids = new Set(CORRECTION_SCENARIOS.map((s) => s.id));
   assertEquals(ids.size, 5);
@@ -28,7 +29,7 @@ Deno.test("correction tasks: five frozen scenarios, unique ids", () => {
   }
 });
 
-Deno.test("correction tasks: every held-out scenario passes", async () => {
+test("correction tasks: every held-out scenario passes", async () => {
   const results = await runCorrectionScenarios();
   assertEquals(results.length, 5);
   for (const result of results) {
