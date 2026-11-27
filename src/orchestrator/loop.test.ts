@@ -62,7 +62,12 @@ test("loop: tier above draft is clamped to the Phase 1 maximum", async () => {
 
 test("loop: unknown intent with no World facts asks one question", async () => {
   const c = ctx();
-  const result = await runIntent("flibberty gibbet zzz", c);
+  // Stub the web search: the default research agent would call DuckDuckGo,
+  // which makes this test depend on the network and on the runtime's fetch.
+  const research = createResearchAgent(() => Promise.resolve([]));
+  const result = await runIntent("flibberty gibbet zzz", c, {
+    agents: { research },
+  });
   assertEquals(result.action, "ask");
   assert(result.question !== undefined);
   assertStringIncludes(result.question, "flibberty gibbet zzz");
