@@ -120,10 +120,9 @@ test("tasks: full held-out + smoke set passes against the synthetic world", asyn
   assertEquals(
     result.failed,
     0,
-    `failing tasks: ${
-      result.results.filter((r) => !r.pass).map((r) =>
-        `${r.id} (${r.details.join("; ")})`
-      ).join(" | ")
-    }`,
+    `failing tasks: ${result.results
+      .filter((r) => !r.pass)
+      .map((r) => `${r.id} (${r.details.join("; ")})`)
+      .join(" | ")}`,
   );
 });

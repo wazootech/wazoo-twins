@@ -54,12 +54,14 @@ export class CalendarConnector {
   private readonly fetchFn: FetchFn;
   private accessToken: string | undefined;
 
-  constructor(options: {
-    clientId?: string;
-    clientSecret?: string;
-    refreshToken?: string;
-    fetchFn?: FetchFn;
-  } = {}) {
+  constructor(
+    options: {
+      clientId?: string;
+      clientSecret?: string;
+      refreshToken?: string;
+      fetchFn?: FetchFn;
+    } = {},
+  ) {
     this.clientId = options.clientId ?? env("GOOGLE_CLIENT_ID");
     this.clientSecret = options.clientSecret ?? env("GOOGLE_CLIENT_SECRET");
     this.refreshToken = options.refreshToken ?? env("GOOGLE_REFRESH_TOKEN");
@@ -67,8 +69,9 @@ export class CalendarConnector {
   }
 
   isConfigured(): boolean {
-    return [this.clientId, this.clientSecret, this.refreshToken]
-      .every((v) => v !== undefined && v !== "");
+    return [this.clientId, this.clientSecret, this.refreshToken].every(
+      (v) => v !== undefined && v !== "",
+    );
   }
 
   private requireConfigured(): void {
@@ -91,11 +94,10 @@ export class CalendarConnector {
     });
     if (!response.ok) {
       throw new Error(
-        `Google token exchange failed (${response.status}): ${await response
-          .text()}`,
+        `Google token exchange failed (${response.status}): ${await response.text()}`,
       );
     }
-    const data = await response.json() as { access_token?: string };
+    const data = (await response.json()) as { access_token?: string };
     if (!data.access_token) {
       throw new Error("Google token exchange returned no access token");
     }
@@ -106,14 +108,14 @@ export class CalendarConnector {
   private async api(path: string): Promise<unknown> {
     const token = await this.getAccessToken();
     const response = await this.fetchFn(`https://www.googleapis.com${path}`, {
-      headers: { "Authorization": `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!response.ok) {
       throw new Error(
         `Calendar API ${response.status} for ${path}: ${await response.text()}`,
       );
     }
-    return await response.json() as unknown;
+    return (await response.json()) as unknown;
   }
 
   /** List events in a time window (ISO datetimes) on the primary calendar. */
@@ -127,9 +129,9 @@ export class CalendarConnector {
       singleEvents: "true",
       orderBy: "startTime",
     });
-    const data = await this.api(
+    const data = (await this.api(
       `/calendar/v3/calendars/primary/events?${params}`,
-    ) as {
+    )) as {
       items?: Record<string, unknown>[];
     };
     return (data.items ?? []).map((e) => ({
@@ -137,15 +139,17 @@ export class CalendarConnector {
       summary: String(e["summary"] ?? ""),
       start: String(
         (e["start"] as Record<string, unknown> | undefined)?.["dateTime"] ??
-          (e["start"] as Record<string, unknown> | undefined)?.["date"] ?? "",
+          (e["start"] as Record<string, unknown> | undefined)?.["date"] ??
+          "",
       ),
       end: String(
         (e["end"] as Record<string, unknown> | undefined)?.["dateTime"] ??
-          (e["end"] as Record<string, unknown> | undefined)?.["date"] ?? "",
+          (e["end"] as Record<string, unknown> | undefined)?.["date"] ??
+          "",
       ),
-      attendees:
-        ((e["attendees"] as Record<string, unknown>[] | undefined) ?? [])
-          .map((a) => String(a["email"] ?? "")),
+      attendees: (
+        (e["attendees"] as Record<string, unknown>[] | undefined) ?? []
+      ).map((a) => String(a["email"] ?? "")),
       description: String(e["description"] ?? ""),
       htmlLink: String(e["htmlLink"] ?? ""),
     }));
@@ -153,35 +157,36 @@ export class CalendarConnector {
 
   /** Fetch one event by id. */
   async getEvent(id: string): Promise<CalendarEventItem> {
-    const e = await this.api(
+    const e = (await this.api(
       `/calendar/v3/calendars/primary/events/${encodeURIComponent(id)}`,
-    ) as Record<
-      string,
-      unknown
-    >;
+    )) as Record<string, unknown>;
     return {
       id: String(e["id"] ?? id),
       summary: String(e["summary"] ?? ""),
       start: String(
         (e["start"] as Record<string, unknown> | undefined)?.["dateTime"] ??
-          (e["start"] as Record<string, unknown> | undefined)?.["date"] ?? "",
+          (e["start"] as Record<string, unknown> | undefined)?.["date"] ??
+          "",
       ),
       end: String(
         (e["end"] as Record<string, unknown> | undefined)?.["dateTime"] ??
-          (e["end"] as Record<string, unknown> | undefined)?.["date"] ?? "",
+          (e["end"] as Record<string, unknown> | undefined)?.["date"] ??
+          "",
       ),
-      attendees:
-        ((e["attendees"] as Record<string, unknown>[] | undefined) ?? [])
-          .map((a) => String(a["email"] ?? "")),
+      attendees: (
+        (e["attendees"] as Record<string, unknown>[] | undefined) ?? []
+      ).map((a) => String(a["email"] ?? "")),
       description: String(e["description"] ?? ""),
       htmlLink: String(e["htmlLink"] ?? ""),
     };
   }
 
   /** Phase 2 only: creating a calendar event requires the approved tier. */
-  createEvent(
-    _event: { summary: string; start: string; end: string },
-  ): Promise<never> {
+  createEvent(_event: {
+    summary: string;
+    start: string;
+    end: string;
+  }): Promise<never> {
     return Promise.reject(
       new Error(
         "creating a calendar event requires approved tier (Phase 2) — " +

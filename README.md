@@ -6,7 +6,7 @@ Ethan Davidson's personal twin, a dogfood build. The World is the memory; the
 Twin is the agent that acts on it.
 
 **Owner:** [@EthanThatOneKid](https://github.com/EthanThatOneKid) · **License:**
-MIT · **Check and test:** `deno install && deno task ci`
+MIT · **Check and test:** `bun install && bun run ci`
 
 ## Status
 
@@ -81,7 +81,7 @@ flowchart LR
 
 ## Stack
 
-TypeScript + Deno. `@worlds/sdk` (`memory` in-memory backend for dev/tests,
+TypeScript + Bun. `@worlds/sdk` (`memory` in-memory backend for dev/tests,
 `@worlds/libsql` durable local backend, `worlds-api` hosted switch). Custom
 orchestrator loop. Model is pluggable (DeepSeek default, frontier switch);
 without a model key, draft prose falls back to deterministic templates. Runs on
@@ -90,11 +90,11 @@ this VM; scheduled by cron.
 ## Quickstart
 
 ```sh
-deno task ci      # format check, lint, typecheck, and tests
-deno task seed    # build the World from MEMORY.md, trackers, GitHub
-deno task smoke   # 20 smoke questions, answered with citations
-deno task eval    # held-out eval set + baseline scores
-deno task brief --kind morning   # dry-run morning brief (stdout only)
+bun run ci        # format check, lint, typecheck, and tests
+bun run seed      # build the World from MEMORY.md, trackers, GitHub
+bun run smoke     # 20 smoke questions, answered with citations
+bun run eval      # held-out eval set + baseline scores
+bun run brief --kind morning   # dry-run morning brief (stdout only)
 ```
 
 See `docs/runbook.md` for environment variables, cron jobs, and recovery.

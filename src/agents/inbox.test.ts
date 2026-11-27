@@ -47,8 +47,9 @@ test("inbox: run triages and drafts only for needs-reply threads", async () => {
 
 test("inbox: draft template quotes the last message, invents nothing", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
-  const thread = (await world.findFacts({ type: "Thread" }))
-    .find((t) => t.id === "twin:thread/travis-long")!;
+  const thread = (await world.findFacts({ type: "Thread" })).find(
+    (t) => t.id === "twin:thread/travis-long",
+  )!;
   const draft = await draftReplyForThread(thread, {
     complete: () => Promise.resolve(null),
     provider: "deepseek",
@@ -61,9 +62,5 @@ test("inbox: draft template quotes the last message, invents nothing", async () 
 });
 
 test("inbox: sending always throws (Phase 1 drafts only)", () => {
-  assertThrows(
-    () => sendReply(),
-    Error,
-    "requires approved tier (Phase 2)",
-  );
+  assertThrows(() => sendReply(), Error, "requires approved tier (Phase 2)");
 });

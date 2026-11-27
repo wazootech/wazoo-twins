@@ -51,16 +51,18 @@ export async function draftReplyForThread(
   const firstName = participants.split(/[,\s]+/).filter(Boolean)[0] ?? "there";
   const last = thread.properties.lastMessage ?? "";
   const template = last
-    ? `Hi ${firstName},\n\nThanks for your message. You wrote: "${
-      truncate(last, 120)
-    }"\n\nI'll follow up shortly.\n\nBest,\nEthan`
+    ? `Hi ${firstName},\n\nThanks for your message. You wrote: "${truncate(
+        last,
+        120,
+      )}"\n\nI'll follow up shortly.\n\nBest,\nEthan`
     : `Hi ${firstName},\n\nThanks for your message. I'll follow up shortly.\n\nBest,\nEthan`;
   try {
     const drafted = await model.complete(
       `Draft a short reply in Ethan Davidson's plain voice — a few short sentences, no hedging, no invented facts. ` +
-        `Thread participants: ${participants}. Last message: "${
-          truncate(last, 400)
-        }". ` +
+        `Thread participants: ${participants}. Last message: "${truncate(
+          last,
+          400,
+        )}". ` +
         `Sign off as Ethan.`,
     );
     if (drafted && drafted.trim()) {

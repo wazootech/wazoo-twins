@@ -142,8 +142,9 @@ export function isActionAllowed(
   tier: PermissionTier,
 ): boolean {
   if (FORBIDDEN_ALWAYS.has(action)) return false;
-  return TIER_ORDER.indexOf(tier) >=
-    TIER_ORDER.indexOf(ACTION_MIN_TIER[action]);
+  return (
+    TIER_ORDER.indexOf(tier) >= TIER_ORDER.indexOf(ACTION_MIN_TIER[action])
+  );
 }
 
 /**

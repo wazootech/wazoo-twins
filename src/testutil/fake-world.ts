@@ -29,9 +29,9 @@ export function createFakeWorldClient(
     search(keywords: string, limit = 10): Promise<Fact[]> {
       const q = keywords.toLowerCase();
       const hits = [...facts.values()].filter((f) => {
-        const hay = `${f.label} ${f.type} ${
-          Object.values(f.properties).join(" ")
-        }`.toLowerCase();
+        const hay = `${f.label} ${f.type} ${Object.values(f.properties).join(
+          " ",
+        )}`.toLowerCase();
         return q.split(/\s+/).every((w) => w === "" || hay.includes(w));
       });
       return Promise.resolve(hits.slice(0, limit));
@@ -40,29 +40,35 @@ export function createFakeWorldClient(
       const f = facts.get(id);
       return Promise.resolve(f ? structuredClone(f) : undefined);
     },
-    findFacts(
-      filter: { type?: string; property?: string; value?: string },
-    ): Promise<Fact[]> {
-      return Promise.resolve([...facts.values()].filter((f) => {
-        if (filter.type) {
-          const t = filter.type;
-          if (
-            !(f.type === t || f.type.endsWith(`#${t}`) ||
-              f.type.endsWith(`/${t}`))
-          ) return false;
-        }
-        if (filter.property) {
-          const v = f.properties[filter.property];
-          if (v === undefined) return false;
-          if (filter.value !== undefined && v !== filter.value) return false;
-        } else if (filter.value !== undefined) {
-          const needle = filter.value;
-          if (!Object.values(f.properties).some((v) => v.includes(needle))) {
-            return false;
+    findFacts(filter: {
+      type?: string;
+      property?: string;
+      value?: string;
+    }): Promise<Fact[]> {
+      return Promise.resolve(
+        [...facts.values()].filter((f) => {
+          if (filter.type) {
+            const t = filter.type;
+            if (!(
+              f.type === t ||
+              f.type.endsWith(`#${t}`) ||
+              f.type.endsWith(`/${t}`)
+            ))
+              return false;
           }
-        }
-        return true;
-      }));
+          if (filter.property) {
+            const v = f.properties[filter.property];
+            if (v === undefined) return false;
+            if (filter.value !== undefined && v !== filter.value) return false;
+          } else if (filter.value !== undefined) {
+            const needle = filter.value;
+            if (!Object.values(f.properties).some((v) => v.includes(needle))) {
+              return false;
+            }
+          }
+          return true;
+        }),
+      );
     },
     supersede(oldId: Iri, replacement: Fact): Promise<void> {
       const old = facts.get(oldId);

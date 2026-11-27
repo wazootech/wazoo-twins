@@ -49,20 +49,19 @@ test("gmailThreadsToFacts: one Thread per thread, needsReply from the latest sen
     true,
   );
   assertEquals(
-    facts.find((f) => f.id === "twin:thread/gmail-t2")
-      ?.properties["needsReply"],
+    facts.find((f) => f.id === "twin:thread/gmail-t2")?.properties[
+      "needsReply"
+    ],
     "no",
   );
 });
 
 test("importGmail throws the clear OAuth error when credentials are absent", async () => {
-  for (
-    const name of [
-      "GOOGLE_CLIENT_ID",
-      "GOOGLE_CLIENT_SECRET",
-      "GOOGLE_REFRESH_TOKEN",
-    ]
-  ) {
+  for (const name of [
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_REFRESH_TOKEN",
+  ]) {
     delete process.env[name];
   }
   await assertRejects(() => importGmail(), Error, GOOGLE_OAUTH_NOT_SETUP);

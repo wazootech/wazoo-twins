@@ -61,7 +61,9 @@ async function polishIntro(
       `Rewrite this greeting in one sentence, same meaning, no new facts: ${template}`,
     );
     if (
-      polished && !polished.includes("\n") && polished.trim().length > 0 &&
+      polished &&
+      !polished.includes("\n") &&
+      polished.trim().length > 0 &&
       polished.length < 300
     ) {
       return polished.trim();
@@ -114,14 +116,15 @@ function sourceDate(f: Fact): string {
  */
 const MAX_COMMITMENTS_SHOWN = 15;
 
-function openCommitments(
-  commitments: Fact[],
-): { shown: Fact[]; hidden: number } {
+function openCommitments(commitments: Fact[]): {
+  shown: Fact[];
+  hidden: number;
+} {
   const open = commitments
     .filter((f) => isOpenStatus(f.properties.status))
-    .sort((a, b) =>
-      sourceDate(b).localeCompare(sourceDate(a)) ||
-      byProvenanceDesc(a, b)
+    .sort(
+      (a, b) =>
+        sourceDate(b).localeCompare(sourceDate(a)) || byProvenanceDesc(a, b),
     );
   return {
     shown: open.slice(0, MAX_COMMITMENTS_SHOWN),
@@ -163,19 +166,20 @@ export async function buildMorningBrief(
   const lines: string[] = [];
   const intro = await polishIntro(
     model,
-    `Good morning, Ethan. Here is your brief for ${today} (${
-      weekdayPT(today)
-    }).`,
+    `Good morning, Ethan. Here is your brief for ${today} (${weekdayPT(
+      today,
+    )}).`,
   );
   lines.push(`# Morning brief — ${today}`, "", intro, "");
 
   const events = (await findFactsByClass(world, "Event"))
-    .filter((f) =>
-      (datePart(f.properties.start ?? "") ??
-        datePartPT(f.properties.start ?? "")) === today
+    .filter(
+      (f) =>
+        (datePart(f.properties.start ?? "") ??
+          datePartPT(f.properties.start ?? "")) === today,
     )
     .sort((a, b) =>
-      (a.properties.start ?? "").localeCompare(b.properties.start ?? "")
+      (a.properties.start ?? "").localeCompare(b.properties.start ?? ""),
     );
   section(
     lines,
@@ -195,7 +199,7 @@ export async function buildMorningBrief(
       return due !== undefined && due >= today && due <= weekEnd;
     })
     .sort((a, b) =>
-      (a.properties.due ?? "").localeCompare(b.properties.due ?? "")
+      (a.properties.due ?? "").localeCompare(b.properties.due ?? ""),
     );
   section(
     lines,
@@ -254,10 +258,10 @@ export async function buildMorningBrief(
     );
   }
 
-  const opportunities = (await findFactsByClass(world, "Opportunity"))
-    .sort((a, b) =>
-      (a.properties.due ?? "9999").localeCompare(b.properties.due ?? "9999")
-    );
+  const opportunities = (await findFactsByClass(world, "Opportunity")).sort(
+    (a, b) =>
+      (a.properties.due ?? "9999").localeCompare(b.properties.due ?? "9999"),
+  );
   const shownOpportunities = opportunities.slice(0, 10);
   section(
     lines,
@@ -298,16 +302,17 @@ export async function buildEveningSummary(
   const lines: string[] = [];
   const intro = await polishIntro(
     model,
-    `Good evening, Ethan. Here is what moved today, ${today} (${
-      weekdayPT(today)
-    }).`,
+    `Good evening, Ethan. Here is what moved today, ${today} (${weekdayPT(
+      today,
+    )}).`,
   );
   lines.push(`# Evening summary — ${today}`, "", intro, "");
 
   const runs = (await findFactsByClass(world, "Run"))
-    .filter((f) =>
-      (datePart(f.properties.started ?? "") ??
-        datePartPT(f.properties.started ?? "")) === today
+    .filter(
+      (f) =>
+        (datePart(f.properties.started ?? "") ??
+          datePartPT(f.properties.started ?? "")) === today,
     )
     .sort(byProvenanceDesc);
   section(
@@ -324,18 +329,20 @@ export async function buildEveningSummary(
   // Correction loop (spec §5, §8): today's internal writes and any
   // unresolved conflicts surface here, batched, not one card each.
   const correctionActions = (await findFactsByClass(world, "Action"))
-    .filter((f) =>
-      (f.properties.actionType ?? "").startsWith("world.") ||
-      (f.properties.actionType ?? "").startsWith("procedure.")
+    .filter(
+      (f) =>
+        (f.properties.actionType ?? "").startsWith("world.") ||
+        (f.properties.actionType ?? "").startsWith("procedure."),
     )
-    .filter((f) =>
-      (datePart(f.provenance.retrievedAt ?? "") ??
-        datePartPT(f.provenance.retrievedAt ?? "")) === today
+    .filter(
+      (f) =>
+        (datePart(f.provenance.retrievedAt ?? "") ??
+          datePartPT(f.provenance.retrievedAt ?? "")) === today,
     )
     .sort(byProvenanceDesc);
   const openQuestions = (await findFactsByClass(world, "Task"))
-    .filter((f) =>
-      (f.properties.status ?? "").toLowerCase() === "open-question"
+    .filter(
+      (f) => (f.properties.status ?? "").toLowerCase() === "open-question",
     )
     .sort(byProvenanceDesc);
   const correctionLines: Fact[] = [...correctionActions, ...openQuestions];
@@ -442,7 +449,10 @@ async function answerQuestion(
     ]);
     const words = [
       ...new Set(
-        q.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/)
+        q
+          .toLowerCase()
+          .replace(/[^a-z0-9\s]/g, " ")
+          .split(/\s+/)
           .filter((w) => w.length > 2 && !stopwords.has(w)),
       ),
     ];
@@ -492,9 +502,10 @@ export function createBriefingAgent(
       if (req.kind === "question") {
         return await answerQuestion(ctx.world, req.query ?? "");
       }
-      const brief = req.kind === "evening"
-        ? await buildEveningSummary(ctx.world, today, model)
-        : await buildMorningBrief(ctx.world, today, model);
+      const brief =
+        req.kind === "evening"
+          ? await buildEveningSummary(ctx.world, today, model)
+          : await buildMorningBrief(ctx.world, today, model);
       return {
         agent: "briefing",
         claims: brief.claims,

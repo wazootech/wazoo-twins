@@ -119,8 +119,9 @@ test("correction: a write without provenance is blocked, never a fact", async ()
   assertEquals(result.status, "open-question");
   assertEquals(await world.getFact("twin:commitment/mozilla-v2"), undefined);
   // An open-question Task was written instead, and the old fact is untouched.
-  const questions = (await world.findFacts({ type: "Task" }))
-    .filter((f) => f.properties["status"] === "open-question");
+  const questions = (await world.findFacts({ type: "Task" })).filter(
+    (f) => f.properties["status"] === "open-question",
+  );
   assertEquals(questions.length, 1);
   assertEquals(
     (await world.getFact("twin:commitment/mozilla"))?.properties["description"],
@@ -345,8 +346,9 @@ test("correction: unresolvable conflict writes an open question, neither fact cu
   });
   assertEquals(result.status, "open-question");
   assertEquals(await world.getFact("twin:commitment/x-v2"), undefined);
-  const questions = (await world.findFacts({ type: "Task" }))
-    .filter((f) => f.properties["status"] === "open-question");
+  const questions = (await world.findFacts({ type: "Task" })).filter(
+    (f) => f.properties["status"] === "open-question",
+  );
   assertEquals(questions.length, 1);
   assert(questions[0].properties["question"]?.includes("Conflict on"));
   await world.close();
@@ -392,43 +394,49 @@ function procedureWorld(): ReturnType<typeof createFakeWorldClient> {
 
 test("correction: a non-regressing procedure patch promotes after fork eval", async () => {
   const world = procedureWorld();
-  const result = await applyProcedurePatch(world, {
-    procedureId: "twin:procedure/call-prep",
-    procedureName: "Call prep",
-    steps: [
-      {
-        description: "Check the calendar",
-        precondition: "a call is scheduled",
-        expectedOutcome: "conflicts known",
-      },
-      {
-        description: "Read the thread",
-        precondition: "a thread exists",
-        expectedOutcome: "context known",
-      },
-      {
-        description: "Write three questions",
-        precondition: "context known",
-        expectedOutcome: "questions ready",
-      },
-    ],
-    evidence: ["twin:procedure/call-prep-step-1"],
-    source: "twin:procedure-patch",
-    author: "twin",
-    regressionChecks: [{
-      name: "calendar-step-present",
-      check: async (fork) => {
-        const steps = await fork.findFacts({ type: "ProcedureStep" });
-        const ok = steps.some((s) =>
-          s.properties["description"] === "Check the calendar"
-        );
-        return {
-          pass: ok,
-          details: ok ? [] : ["calendar step missing in fork"],
-        };
-      },
-    }],
-  }, { now: LATER });
+  const result = await applyProcedurePatch(
+    world,
+    {
+      procedureId: "twin:procedure/call-prep",
+      procedureName: "Call prep",
+      steps: [
+        {
+          description: "Check the calendar",
+          precondition: "a call is scheduled",
+          expectedOutcome: "conflicts known",
+        },
+        {
+          description: "Read the thread",
+          precondition: "a thread exists",
+          expectedOutcome: "context known",
+        },
+        {
+          description: "Write three questions",
+          precondition: "context known",
+          expectedOutcome: "questions ready",
+        },
+      ],
+      evidence: ["twin:procedure/call-prep-step-1"],
+      source: "twin:procedure-patch",
+      author: "twin",
+      regressionChecks: [
+        {
+          name: "calendar-step-present",
+          check: async (fork) => {
+            const steps = await fork.findFacts({ type: "ProcedureStep" });
+            const ok = steps.some(
+              (s) => s.properties["description"] === "Check the calendar",
+            );
+            return {
+              pass: ok,
+              details: ok ? [] : ["calendar step missing in fork"],
+            };
+          },
+        },
+      ],
+    },
+    { now: LATER },
+  );
   assertEquals(result.status, "applied");
   assertEquals(result.versionId, "twin:procedure/call-prep-v2");
   const head = currentHead(
@@ -436,45 +444,54 @@ test("correction: a non-regressing procedure patch promotes after fork eval", as
     "twin:procedure/call-prep",
   );
   assertEquals(head?.id, "twin:procedure/call-prep-v2");
-  const steps = (await world.findFacts({ type: "ProcedureStep" }))
-    .filter((s) => s.properties["procedure"] === "twin:procedure/call-prep-v2");
+  const steps = (await world.findFacts({ type: "ProcedureStep" })).filter(
+    (s) => s.properties["procedure"] === "twin:procedure/call-prep-v2",
+  );
   assertEquals(steps.length, 3);
-  const patchActions = (await world.findFacts({ type: "Action" }))
-    .filter((a) => a.properties["actionType"] === "procedure.patch");
+  const patchActions = (await world.findFacts({ type: "Action" })).filter(
+    (a) => a.properties["actionType"] === "procedure.patch",
+  );
   assertEquals(patchActions.length, 1);
   await world.close();
 });
 
 test("correction: a regressing procedure patch is rejected in the fork, never promoted", async () => {
   const world = procedureWorld();
-  const result = await applyProcedurePatch(world, {
-    procedureId: "twin:procedure/call-prep",
-    procedureName: "Call prep",
-    steps: [
-      {
-        description: "Read the thread",
-        precondition: "a thread exists",
-        expectedOutcome: "context known",
-      },
-    ],
-    evidence: ["twin:procedure/call-prep-step-1"],
-    source: "twin:procedure-patch",
-    author: "twin",
-    regressionChecks: [{
-      name: "calendar-step-present",
-      check: async (fork) => {
-        const steps = await fork.findFacts({ type: "ProcedureStep" });
-        const ok = steps.some((s) =>
-          s.properties["description"] === "Check the calendar" &&
-          s.properties["procedure"]?.includes("call-prep-v2")
-        );
-        return {
-          pass: ok,
-          details: ok ? [] : ["calendar step missing in fork"],
-        };
-      },
-    }],
-  }, { now: LATER });
+  const result = await applyProcedurePatch(
+    world,
+    {
+      procedureId: "twin:procedure/call-prep",
+      procedureName: "Call prep",
+      steps: [
+        {
+          description: "Read the thread",
+          precondition: "a thread exists",
+          expectedOutcome: "context known",
+        },
+      ],
+      evidence: ["twin:procedure/call-prep-step-1"],
+      source: "twin:procedure-patch",
+      author: "twin",
+      regressionChecks: [
+        {
+          name: "calendar-step-present",
+          check: async (fork) => {
+            const steps = await fork.findFacts({ type: "ProcedureStep" });
+            const ok = steps.some(
+              (s) =>
+                s.properties["description"] === "Check the calendar" &&
+                s.properties["procedure"]?.includes("call-prep-v2"),
+            );
+            return {
+              pass: ok,
+              details: ok ? [] : ["calendar step missing in fork"],
+            };
+          },
+        },
+      ],
+    },
+    { now: LATER },
+  );
   assertEquals(result.status, "rejected");
   assert(
     result.evalDetails?.some((d) => d.includes("calendar-step-present: FAIL")),
@@ -487,23 +504,28 @@ test("correction: a regressing procedure patch is rejected in the fork, never pr
   assertEquals(head?.id, "twin:procedure/call-prep");
   assertEquals(await world.getFact("twin:procedure/call-prep-v2"), undefined);
   // The rejection itself is audited.
-  const rejections = (await world.findFacts({ type: "Action" }))
-    .filter((a) => a.properties["actionType"] === "procedure.patch.rejected");
+  const rejections = (await world.findFacts({ type: "Action" })).filter(
+    (a) => a.properties["actionType"] === "procedure.patch.rejected",
+  );
   assertEquals(rejections.length, 1);
   await world.close();
 });
 
 test("correction: retracting a whole procedure is ask-first", async () => {
   const world = procedureWorld();
-  const result = await applyProcedurePatch(world, {
-    procedureId: "twin:procedure/call-prep",
-    procedureName: "Call prep",
-    steps: [],
-    evidence: [],
-    source: "twin:procedure-patch",
-    author: "twin",
-    regressionChecks: [],
-  }, { now: LATER });
+  const result = await applyProcedurePatch(
+    world,
+    {
+      procedureId: "twin:procedure/call-prep",
+      procedureName: "Call prep",
+      steps: [],
+      evidence: [],
+      source: "twin:procedure-patch",
+      author: "twin",
+      regressionChecks: [],
+    },
+    { now: LATER },
+  );
   assertEquals(result.status, "ask-first");
   assertEquals(await world.getFact("twin:procedure/call-prep-v2"), undefined);
   await world.close();

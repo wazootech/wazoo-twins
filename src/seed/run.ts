@@ -1,5 +1,5 @@
 /**
- * Seed runner: `deno task seed` (full) / `deno task seed --incremental`.
+ * Seed runner: `bun run seed` (full) / `bun run seed --incremental`.
  *
  * Runs every Phase 0.4 importer in order, validates every fact, writes
  * quarantined facts to `~/workspace/wazoo-twins-data/quarantine/<source>.json`,
@@ -28,9 +28,10 @@ import { importGmail } from "./gmail.ts";
 import { importMemoryMd } from "./memory-md.ts";
 import { importTrackers } from "./trackers.ts";
 
-const IMPORTERS: Array<
-  { name: string; run: (retrievedAt: string) => Promise<SeedResult> }
-> = [
+const IMPORTERS: Array<{
+  name: string;
+  run: (retrievedAt: string) => Promise<SeedResult>;
+}> = [
   { name: "memory-md", run: importMemoryMd },
   { name: "trackers", run: importTrackers },
   { name: "github", run: importGithub },

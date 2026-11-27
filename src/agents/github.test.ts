@@ -22,34 +22,36 @@ function fakeGitHubFetch(): typeof fetch {
     await Promise.resolve();
     const url = String(input);
     const body = url.includes("/pulls")
-      ? [{
-        number: 7,
-        title: "Add briefing agent",
-        state: "open",
-        html_url: "https://github.com/wazootech/wazoo-twins/pull/7",
-        created_at: "2026-11-06T00:00:00Z",
-        user: { login: "EthanThatOneKid" },
-      }]
+      ? [
+          {
+            number: 7,
+            title: "Add briefing agent",
+            state: "open",
+            html_url: "https://github.com/wazootech/wazoo-twins/pull/7",
+            created_at: "2026-11-06T00:00:00Z",
+            user: { login: "EthanThatOneKid" },
+          },
+        ]
       : [
-        {
-          number: 3,
-          title: "Morning brief misses deadlines",
-          state: "open",
-          html_url: "https://github.com/wazootech/wazoo-twins/issues/3",
-          created_at: "2026-11-05T00:00:00Z",
-          user: { login: "EthanThatOneKid" },
-          labels: [],
-        },
-        {
-          number: 5,
-          title: "Draft reply tone",
-          state: "open",
-          html_url: "https://github.com/wazootech/wazoo-twins/issues/5",
-          created_at: "2026-11-05T00:00:00Z",
-          user: { login: "EthanThatOneKid" },
-          labels: [{ name: "twin" }],
-        },
-      ];
+          {
+            number: 3,
+            title: "Morning brief misses deadlines",
+            state: "open",
+            html_url: "https://github.com/wazootech/wazoo-twins/issues/3",
+            created_at: "2026-11-05T00:00:00Z",
+            user: { login: "EthanThatOneKid" },
+            labels: [],
+          },
+          {
+            number: 5,
+            title: "Draft reply tone",
+            state: "open",
+            html_url: "https://github.com/wazootech/wazoo-twins/issues/5",
+            created_at: "2026-11-05T00:00:00Z",
+            user: { login: "EthanThatOneKid" },
+            labels: [{ name: "twin" }],
+          },
+        ];
     return new Response(JSON.stringify(body), { status: 200 });
   }) as typeof fetch;
 }
@@ -66,7 +68,7 @@ test("github agent: live read lists issues and PRs with URL citations", async ()
   assertEquals(result.claims.length, 3);
   assert(
     result.claims.every((c) =>
-      c.citations[0].factId.startsWith("https://github.com/")
+      c.citations[0].factId.startsWith("https://github.com/"),
     ),
   );
 });

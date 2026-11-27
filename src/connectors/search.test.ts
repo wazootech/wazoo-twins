@@ -42,14 +42,11 @@ test("search: searchWeb returns parsed results via injected fetch", async () => 
 });
 
 test("search: searchWeb returns [] on network failure or non-OK status", async () => {
-  const failing =
-    ((): Promise<Response> =>
-      Promise.reject(new Error("network down"))) as typeof fetch;
+  const failing = ((): Promise<Response> =>
+    Promise.reject(new Error("network down"))) as typeof fetch;
   assertEquals(await searchWeb("x", 5, failing), []);
   const notOk = ((): Promise<Response> =>
-    Promise.resolve(
-      new Response("blocked", { status: 403 }),
-    )) as typeof fetch;
+    Promise.resolve(new Response("blocked", { status: 403 }))) as typeof fetch;
   assertEquals(await searchWeb("x", 5, notOk), []);
   assertEquals(await searchWeb("   ", 5, failing), []);
 });

@@ -33,7 +33,8 @@ export function verifyClaims(
   const byId = new Map(facts.map((f) => [f.id, f]));
   const verified: CitedClaim[] = claims.map((claim) => {
     const citationsPresent = claim.citations.filter((c) => byId.has(c.factId));
-    const verified = claim.citations.length > 0 &&
+    const verified =
+      claim.citations.length > 0 &&
       citationsPresent.length === claim.citations.length;
     return {
       text: claim.text,
@@ -113,10 +114,10 @@ export function gateWrite(
   return {
     allowed: false,
     blocked: true,
-    reason:
-      `untraceable claim — no World fact, public source, or named source behind "${
-        claim.text.slice(0, 80)
-      }"`,
+    reason: `untraceable claim — no World fact, public source, or named source behind "${claim.text.slice(
+      0,
+      80,
+    )}"`,
     openQuestion: `Needs verification: ${claim.text}`,
   };
 }
@@ -134,17 +135,18 @@ export function gateFactWrite(fact: Fact, facts: Fact[]): WriteGateResult {
       allowed: false,
       blocked: true,
       reason: `missing provenance: ${errors.join("; ")}`,
-      openQuestion:
-        `Needs verification: ${fact.label} (no provenance recorded)`,
+      openQuestion: `Needs verification: ${fact.label} (no provenance recorded)`,
     };
   }
   return gateWrite(
     {
       text: fact.label,
-      citations: [{
-        factId: fact.provenance.source,
-        source: fact.provenance.source,
-      }],
+      citations: [
+        {
+          factId: fact.provenance.source,
+          source: fact.provenance.source,
+        },
+      ],
     },
     facts,
   );

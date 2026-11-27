@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 /**
  * Tests for the World client (memory + libsql backends, hosted guard).
- * Run: `deno task test src/world/client.test.ts`
+ * Run: `bun test src/world/client.test.ts`
  */
 import { assert, assertEquals, assertRejects } from "../testutil/assert.ts";
 import { createWorldClient } from "./client.ts";
@@ -72,10 +72,12 @@ test("memory: addFacts is idempotent (fact-ID dedup, no duplicates)", async () =
   try {
     const fact = commitment("twin:commitment/x", "do the thing");
     await world.addFacts([fact]);
-    await world.addFacts([{
-      ...fact,
-      properties: { ...fact.properties, status: "done" },
-    }]);
+    await world.addFacts([
+      {
+        ...fact,
+        properties: { ...fact.properties, status: "done" },
+      },
+    ]);
     assertEquals(await world.count(), 1);
     const reloaded = await world.getFact("twin:commitment/x");
     assertEquals(reloaded?.properties["status"], "done");
@@ -120,8 +122,8 @@ test("memory: query (SPARQL SELECT) returns variable->value rows", async () => {
     );
     assertEquals(rows.length, 2);
     assert(
-      rows.every((r) =>
-        typeof r["s"] === "string" && typeof r["desc"] === "string"
+      rows.every(
+        (r) => typeof r["s"] === "string" && typeof r["desc"] === "string",
       ),
     );
   } finally {
@@ -261,8 +263,9 @@ test("libsql: file backend round-trips and persists across clients", async () =>
     });
     try {
       assertEquals(
-        (await reopened.getFact("twin:commitment/persist"))
-          ?.properties["description"],
+        (await reopened.getFact("twin:commitment/persist"))?.properties[
+          "description"
+        ],
         "persisted fact",
       );
       assertEquals(await reopened.count(), 1);

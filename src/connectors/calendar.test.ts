@@ -50,14 +50,16 @@ test("calendar connector: listEvents works with a token exchange (injected fetch
     }
     return new Response(
       JSON.stringify({
-        items: [{
-          id: "ev1",
-          summary: "Call with Ernest McCarter",
-          start: { dateTime: "2026-11-06T11:00:00-08:00" },
-          end: { dateTime: "2026-11-06T11:30:00-08:00" },
-          attendees: [{ email: "ernest@example.com" }],
-          htmlLink: "https://calendar.google.com/event?eid=ev1",
-        }],
+        items: [
+          {
+            id: "ev1",
+            summary: "Call with Ernest McCarter",
+            start: { dateTime: "2026-11-06T11:00:00-08:00" },
+            end: { dateTime: "2026-11-06T11:30:00-08:00" },
+            attendees: [{ email: "ernest@example.com" }],
+            htmlLink: "https://calendar.google.com/event?eid=ev1",
+          },
+        ],
       }),
       { status: 200 },
     );

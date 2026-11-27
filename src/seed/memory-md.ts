@@ -97,9 +97,11 @@ function hasDeadline(text: string): boolean {
     weak.index + weak[0].length + 12,
   );
   if (
-    /^\s*(sent|drafted|completed|done|merged|filed|submitted|closed|signed|delivered|published|posted)\b/i
-      .test(rightAfter)
-  ) return false;
+    /^\s*(sent|drafted|completed|done|merged|filed|submitted|closed|signed|delivered|published|posted)\b/i.test(
+      rightAfter,
+    )
+  )
+    return false;
   const after = text.slice(
     weak.index + weak[0].length,
     weak.index + weak[0].length + 80,
@@ -204,7 +206,9 @@ export function parseMemoryMarkdown(
 function personNameFromFilename(path: string): string {
   const base = path.split("/").pop() ?? "";
   const stem = base.replace(/\.md$/, "");
-  return stem.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+  return stem
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 }
 
@@ -217,8 +221,9 @@ export function parsePersonFile(
 ): Fact | undefined {
   const bullets = parseBullets(text);
   const first = bullets[0]?.text ?? "";
-  const email = first.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)
-    ?.[0];
+  const email = first.match(
+    /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/,
+  )?.[0];
   const relationship = truncate(first.split(/[—–]/)[0], 300) || "contact";
   return {
     id: factId("Person", slugify(name)),
@@ -312,9 +317,11 @@ export async function importMemoryMd(
   try {
     for (const entry of await readdir(peopleDir, { withFileTypes: true })) {
       if (
-        !entry.isFile() || !entry.name.endsWith(".md") ||
+        !entry.isFile() ||
+        !entry.name.endsWith(".md") ||
         entry.name === "INDEX.md"
-      ) continue;
+      )
+        continue;
       files++;
       const text = await readFile(`${peopleDir}/${entry.name}`, "utf8");
       const name = personNameFromFilename(entry.name);

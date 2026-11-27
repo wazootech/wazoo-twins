@@ -11,10 +11,11 @@ import { claimFor, findFactsByClass } from "./common.ts";
 export const jobsAgent: SubAgent = {
   name: "jobs",
   async run(_input: unknown, ctx: AgentContext): Promise<AgentResult> {
-    const opportunities = (await findFactsByClass(ctx.world, "Opportunity"))
-      .sort((a, b) =>
-        (a.properties.due ?? "9999").localeCompare(b.properties.due ?? "9999")
-      );
+    const opportunities = (
+      await findFactsByClass(ctx.world, "Opportunity")
+    ).sort((a, b) =>
+      (a.properties.due ?? "9999").localeCompare(b.properties.due ?? "9999"),
+    );
     const notes: string[] = [];
     if (opportunities.length === 0) {
       return {

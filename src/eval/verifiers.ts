@@ -41,11 +41,7 @@ function numericCore(token: string): string {
   return token.replace(/[^0-9.]/g, "");
 }
 
-const ID_PATTERNS: RegExp[] = [
-  /\bHRC\d{7,}\b/g,
-  /\bA\d{10}\b/g,
-  /\b0\d{7}\b/g,
-];
+const ID_PATTERNS: RegExp[] = [/\bHRC\d{7,}\b/g, /\bA\d{10}\b/g, /\b0\d{7}\b/g];
 const EMAIL_PATTERN = /[\w.+-]+@[\w-]+\.[\w.]+/g;
 const AMOUNT_PATTERN = /\$[\d,]+(?:\.\d+)?/g;
 
@@ -78,11 +74,7 @@ export function verifyDraftText(
   >,
 ): VerifierResult {
   const draftPart = answer.text.split("Grounded in:")[0];
-  const result = verifySubstrings(
-    answer.text,
-    task.expectedSubstrings,
-    [],
-  );
+  const result = verifySubstrings(answer.text, task.expectedSubstrings, []);
   const forbiddenResult = verifySubstrings(
     draftPart,
     [],
@@ -157,8 +149,10 @@ export function overlapsTeachingBlock(
   if (!parsed) return false;
   if (!TEACHING_BLOCK.weekdays.has(parsed.weekday)) return false;
   const end = parsed.startMinutes + durationMinutes;
-  return parsed.startMinutes < TEACHING_BLOCK.endMinutes &&
-    end > TEACHING_BLOCK.startMinutes;
+  return (
+    parsed.startMinutes < TEACHING_BLOCK.endMinutes &&
+    end > TEACHING_BLOCK.startMinutes
+  );
 }
 
 /**
@@ -179,7 +173,7 @@ export function verifySchedulingAnswer(
   const proposedLine = proposedMatch[1].split("[")[0].trim();
   const candidates = task.candidates ?? [];
   const named = candidates.find((c) =>
-    normalize(proposedLine).includes(normalize(c))
+    normalize(proposedLine).includes(normalize(c)),
   );
   if (!named) {
     details.push(

@@ -112,8 +112,10 @@ function header(
   headers: Array<{ name: string; value: string }>,
   name: string,
 ): string {
-  return headers.find((h) => h.name.toLowerCase() === name.toLowerCase())
-    ?.value ?? "";
+  return (
+    headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ??
+    ""
+  );
 }
 
 export async function importGmail(
@@ -132,11 +134,10 @@ export async function importGmail(
   const listResponse = await fetch(listUrl, { headers: auth });
   if (!listResponse.ok) {
     throw new Error(
-      `Gmail list failed (${listResponse.status}): ${await listResponse
-        .text()}`,
+      `Gmail list failed (${listResponse.status}): ${await listResponse.text()}`,
     );
   }
-  const listData = await listResponse.json() as {
+  const listData = (await listResponse.json()) as {
     messages?: Array<{ id: string; threadId: string }>;
   };
   const listed = listData.messages ?? [];
@@ -148,7 +149,7 @@ export async function importGmail(
       { headers: auth },
     );
     if (!response.ok) continue;
-    const data = await response.json() as {
+    const data = (await response.json()) as {
       snippet?: string;
       payload?: { headers?: Array<{ name: string; value: string }> };
     };

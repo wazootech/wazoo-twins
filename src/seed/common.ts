@@ -80,9 +80,10 @@ export function validateAndSplit(
 }
 
 /** Deduplicate facts by id, keeping the first occurrence. */
-export function dedupFacts(
-  facts: Fact[],
-): { facts: Fact[]; duplicates: number } {
+export function dedupFacts(facts: Fact[]): {
+  facts: Fact[];
+  duplicates: number;
+} {
   const seen = new Set<string>();
   const kept: Fact[] = [];
   let duplicates = 0;
@@ -99,7 +100,10 @@ export function dedupFacts(
 
 /** Slugify a label for a stable fact id: lowercase, words joined by "-". */
 export function slugify(text: string, maxWords = 8): string {
-  const words = text.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").split(/\s+/)
+  const words = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/\s+/)
     .filter(Boolean)
     .slice(0, maxWords);
   return words.join("-").slice(0, 80) || "untitled";
@@ -172,9 +176,10 @@ export function parseDateLoose(text: string): string | undefined {
     const day = Number(m[2]);
     const year = m[3] ? Number(m[3]) : 2026;
     if (month && day >= 1 && day <= 31) {
-      return `${year}-${String(month).padStart(2, "0")}-${
-        String(day).padStart(2, "0")
-      }`;
+      return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+        2,
+        "0",
+      )}`;
     }
   }
   const dayFirst = new RegExp(
@@ -185,9 +190,9 @@ export function parseDateLoose(text: string): string | undefined {
   if (d) {
     const month = MONTHS[d[2].toLowerCase()];
     if (month) {
-      return `${d[3]}-${String(month).padStart(2, "0")}-${
-        String(Number(d[1])).padStart(2, "0")
-      }`;
+      return `${d[3]}-${String(month).padStart(2, "0")}-${String(
+        Number(d[1]),
+      ).padStart(2, "0")}`;
     }
   }
   return undefined;
@@ -229,9 +234,10 @@ export function findDates(text: string): DatedMatch[] {
     const year = m[3] ? Number(m[3]) : 2026;
     if (month && day >= 1 && day <= 31) {
       found.push({
-        date: `${year}-${String(month).padStart(2, "0")}-${
-          String(day).padStart(2, "0")
-        }`,
+        date: `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
+          2,
+          "0",
+        )}`,
         index: m.index ?? 0,
       });
     }
@@ -244,9 +250,9 @@ export function findDates(text: string): DatedMatch[] {
     const month = MONTHS[m[2].toLowerCase()];
     if (month) {
       found.push({
-        date: `${m[3]}-${String(month).padStart(2, "0")}-${
-          String(Number(m[1])).padStart(2, "0")
-        }`,
+        date: `${m[3]}-${String(month).padStart(2, "0")}-${String(
+          Number(m[1]),
+        ).padStart(2, "0")}`,
         index: m.index ?? 0,
       });
     }
@@ -277,7 +283,7 @@ export function deadlineDate(text: string): string | undefined {
   // date, not the due date. In the corpus the "~" date is always the
   // NBIS ~Nov 8 deadline.
   const approx = findDates(text).find((d) =>
-    text.slice(Math.max(0, d.index - 2), d.index).includes("~")
+    text.slice(Math.max(0, d.index - 2), d.index).includes("~"),
   );
   if (approx) return approx.date;
   const strong = /\b(due|deadline)\b/i.exec(text);
@@ -293,8 +299,11 @@ export function deadlineDate(text: string): string | undefined {
 
 /** True for the error a missing file or directory raises (`ENOENT`). */
 export function isNotFound(error: unknown): boolean {
-  return typeof error === "object" && error !== null &&
-    (error as { code?: unknown }).code === "ENOENT";
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    (error as { code?: unknown }).code === "ENOENT"
+  );
 }
 
 /** Read a file as text; returns undefined when it does not exist. */

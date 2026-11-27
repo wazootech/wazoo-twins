@@ -3,9 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Bun toolchain manifest for @wazoo/twins. Dependency ranges mirror deno.json imports.",
+  "description": "Wazoo Twins — a super-agent that orchestrates many other agents using shared expansive context via Worlds infrastructure. First Twin: Ethan Davidson (dogfood build).",
   "packageManager": "bun@1.4.5",
   "scripts": {
+    "brief": "bun src/service/brief.ts",
+    "check": "bun check --no-script",
+    "ci": "bun run fmt:check && bun run lint && bun run check && bun run test",
+    "eval": "bun src/eval/run.ts",
+    "fmt": "bun fmt --no-script",
+    "fmt:check": "bun fmt --no-script --check",
+    "lint": "oxlint --deny-warnings",
+    "seed": "bun src/seed/run.ts",
+    "server": "bun src/service/server.ts",
+    "smoke": "bun src/eval/smoke.ts",
     "test": "bun test"
   },
   "dependencies": {
@@ -14,6 +24,7 @@
     "@worlds/sdk": "npm:@jsr/worlds__sdk@^0.9.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0"
+    "@types/node": "^24.0.0",
+    "oxlint": "1.94.0"
   }
 }

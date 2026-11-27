@@ -40,7 +40,7 @@ test("calendar: free slots never include the teaching block", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const events = await world.findFacts({ type: "Event" });
   const tuesdayEvents = events.filter((e) =>
-    (e.properties.start ?? "").startsWith(TUESDAY)
+    (e.properties.start ?? "").startsWith(TUESDAY),
   );
   const slots = findFreeSlots(tuesdayEvents, TUESDAY);
   // Teaching 2:15–4pm PT occupies the block; slots must end by 1:30pm or start at/after 4:30pm.
@@ -55,8 +55,9 @@ test("calendar: free slots never include the teaching block", async () => {
 
 test("calendar: overlapping events on Friday are flagged as conflicts", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
-  const events = (await world.findFacts({ type: "Event" }))
-    .filter((e) => (e.properties.start ?? "").startsWith(TODAY));
+  const events = (await world.findFacts({ type: "Event" })).filter((e) =>
+    (e.properties.start ?? "").startsWith(TODAY),
+  );
   const conflicts = findConflicts(events);
   assertEquals(conflicts.length, 1);
   assertEquals(conflicts[0][0].label, "Call with John Carlo Manuel");

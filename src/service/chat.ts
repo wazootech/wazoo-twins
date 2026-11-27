@@ -17,11 +17,12 @@ import { createWorldClient, type WorldClient } from "../world/client.ts";
 /** Render an orchestrator result as plain text (UNVERIFIED claims labelled). */
 export function formatResult(result: OrchestratorResult): string {
   const lines: string[] = [];
-  const heading = result.action === "needs-approval"
-    ? "Needs approval"
-    : result.action === "ask"
-    ? "A question"
-    : "Answer";
+  const heading =
+    result.action === "needs-approval"
+      ? "Needs approval"
+      : result.action === "ask"
+        ? "A question"
+        : "Answer";
   lines.push(`## ${heading} — ${result.kind}`);
   for (const claim of result.claims) lines.push(`- ${renderClaim(claim)}`);
   if (result.summary.length > 0) {

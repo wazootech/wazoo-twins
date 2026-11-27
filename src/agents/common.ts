@@ -41,11 +41,14 @@ export async function findFactsByClass(
   const all = await world.findFacts({});
   // Current facts only (correction-loop spec §2.1): a superseded fact is
   // history, not an answer — a corrected deadline must win in later briefs.
-  return currentFacts(all.filter((f) =>
-    f.type === className ||
-    f.type.endsWith(`#${className}`) ||
-    f.type.endsWith(`/${className}`)
-  ));
+  return currentFacts(
+    all.filter(
+      (f) =>
+        f.type === className ||
+        f.type.endsWith(`#${className}`) ||
+        f.type.endsWith(`/${className}`),
+    ),
+  );
 }
 
 /** Leading "YYYY-MM-DD" of an ISO date/datetime string, if present. */

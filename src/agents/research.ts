@@ -62,9 +62,12 @@ export function createResearchAgent(searchFn: SearchFn = searchWeb): SubAgent {
       const notes: string[] = [];
 
       const worldFacts = await ctx.world.search(query, 10);
-      const relevant = worldFacts.filter((f) =>
-        f.type === "Person" || f.type === "Organization" ||
-        f.type.endsWith("#Person") || f.type.endsWith("#Organization")
+      const relevant = worldFacts.filter(
+        (f) =>
+          f.type === "Person" ||
+          f.type === "Organization" ||
+          f.type.endsWith("#Person") ||
+          f.type.endsWith("#Organization"),
       );
       const worldClaims = (relevant.length > 0 ? relevant : worldFacts).slice(
         0,

@@ -184,12 +184,16 @@ async function scenarioFiveCorrections(): Promise<CorrectionScenarioResult> {
   ];
   const checks: Array<[boolean, string]> = [];
   for (const c of corrections) {
-    const applied = await applyCorrection(world, {
-      oldId: c.oldId,
-      replacement: c.replacement,
-      source: "ethan",
-      author: "Ethan",
-    }, { now: NOW });
+    const applied = await applyCorrection(
+      world,
+      {
+        oldId: c.oldId,
+        replacement: c.replacement,
+        source: "ethan",
+        author: "Ethan",
+      },
+      { now: NOW },
+    );
     checks.push([
       applied.status === "applied",
       `correction to ${c.oldId} applied (${applied.status})`,
@@ -285,39 +289,46 @@ async function scenarioRegressingPatch(): Promise<CorrectionScenarioResult> {
       provenance: { source: "MEMORY.md — test", retrievedAt: NOW },
     },
   ]);
-  const patch = await applyProcedurePatch(world, {
-    procedureId: "twin:procedure/call-prep",
-    procedureName: "Call prep",
-    steps: [
-      {
-        description: "Read the thread",
-        precondition: "a thread exists",
-        expectedOutcome: "context known",
-      },
-    ],
-    evidence: ["twin:procedure/call-prep-step-1"],
-    source: "twin:procedure-patch",
-    author: "twin",
-    regressionChecks: [{
-      name: "calendar-step-present",
-      check: async (fork) => {
-        // Current facts only: the superseded old step is still in the
-        // fork by design (history is preserved), so a raw findFacts
-        // would "find" the calendar step even after it was removed.
-        const steps = currentFacts(
-          await fork.findFacts({ type: "ProcedureStep" }),
-        );
-        const ok = steps.some((s) =>
-          s.properties["description"] === "Check the calendar" &&
-          s.properties["procedure"] === "twin:procedure/call-prep-v2"
-        );
-        return {
-          pass: ok,
-          details: ok ? [] : ["calendar step missing in fork"],
-        };
-      },
-    }],
-  }, { now: NOW });
+  const patch = await applyProcedurePatch(
+    world,
+    {
+      procedureId: "twin:procedure/call-prep",
+      procedureName: "Call prep",
+      steps: [
+        {
+          description: "Read the thread",
+          precondition: "a thread exists",
+          expectedOutcome: "context known",
+        },
+      ],
+      evidence: ["twin:procedure/call-prep-step-1"],
+      source: "twin:procedure-patch",
+      author: "twin",
+      regressionChecks: [
+        {
+          name: "calendar-step-present",
+          check: async (fork) => {
+            // Current facts only: the superseded old step is still in the
+            // fork by design (history is preserved), so a raw findFacts
+            // would "find" the calendar step even after it was removed.
+            const steps = currentFacts(
+              await fork.findFacts({ type: "ProcedureStep" }),
+            );
+            const ok = steps.some(
+              (s) =>
+                s.properties["description"] === "Check the calendar" &&
+                s.properties["procedure"] === "twin:procedure/call-prep-v2",
+            );
+            return {
+              pass: ok,
+              details: ok ? [] : ["calendar step missing in fork"],
+            };
+          },
+        },
+      ],
+    },
+    { now: NOW },
+  );
   const checks: Array<[boolean, string]> = [];
   checks.push([
     patch.status === "rejected",
@@ -327,8 +338,9 @@ async function scenarioRegressingPatch(): Promise<CorrectionScenarioResult> {
     (await world.getFact("twin:procedure/call-prep-v2")) === undefined,
     "rejected patch never promoted (no v2 in the World)",
   ]);
-  const rejections = (await world.findFacts({ type: "Action" }))
-    .filter((a) => a.properties["actionType"] === "procedure.patch.rejected");
+  const rejections = (await world.findFacts({ type: "Action" })).filter(
+    (a) => a.properties["actionType"] === "procedure.patch.rejected",
+  );
   checks.push([rejections.length === 1, "rejection audited"]);
   await world.close();
   return result("corr-03-regressing-patch-rejected", checks);
@@ -338,21 +350,25 @@ async function scenarioRegressingPatch(): Promise<CorrectionScenarioResult> {
 async function scenarioUndo(): Promise<CorrectionScenarioResult> {
   const world = await seedSyntheticWorld();
   const checks: Array<[boolean, string]> = [];
-  await applyCorrection(world, {
-    oldId: "twin:deadline/mozilla",
-    replacement: {
-      id: "twin:deadline/mozilla-v2",
-      type: "Deadline",
-      label: "Mozilla Human-Scale AI Incubator proposal",
-      properties: {
-        description: "Deadline Fri Nov 22, 2026, 11:59pm PT.",
-        due: "2026-11-22T23:59:00-08:00",
+  await applyCorrection(
+    world,
+    {
+      oldId: "twin:deadline/mozilla",
+      replacement: {
+        id: "twin:deadline/mozilla-v2",
+        type: "Deadline",
+        label: "Mozilla Human-Scale AI Incubator proposal",
+        properties: {
+          description: "Deadline Fri Nov 22, 2026, 11:59pm PT.",
+          due: "2026-11-22T23:59:00-08:00",
+        },
+        provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
       },
-      provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
+      source: "ethan",
+      author: "Ethan",
     },
-    source: "ethan",
-    author: "Ethan",
-  }, { now: NOW });
+    { now: NOW },
+  );
   const undone = await undoCorrection(world, {
     factId: "twin:deadline/mozilla-v2",
     author: "Ethan",
@@ -360,7 +376,7 @@ async function scenarioUndo(): Promise<CorrectionScenarioResult> {
   checks.push([undone.status === "applied", `undo applied (${undone.status})`]);
   checks.push([
     undone.message.includes("Undid the correction") &&
-    undone.message.includes("Nov 20"),
+      undone.message.includes("Nov 20"),
     "undo message states what it undid",
   ]);
   checks.push(
@@ -388,12 +404,16 @@ async function scenarioGuards(): Promise<CorrectionScenarioResult> {
     "",
     "",
   );
-  const blocked = await applyCorrection(world, {
-    oldId: "twin:deadline/mozilla",
-    replacement: noProv,
-    source: "ethan",
-    author: "Ethan",
-  }, { now: NOW });
+  const blocked = await applyCorrection(
+    world,
+    {
+      oldId: "twin:deadline/mozilla",
+      replacement: noProv,
+      source: "ethan",
+      author: "Ethan",
+    },
+    { now: NOW },
+  );
   checks.push([
     blocked.status === "open-question",
     `missing-provenance write blocked (${blocked.status})`,
@@ -403,21 +423,25 @@ async function scenarioGuards(): Promise<CorrectionScenarioResult> {
     "blocked write never lands as a fact",
   ]);
   // Silent overwrite is impossible: supersede keeps the old fact.
-  const applied = await applyCorrection(world, {
-    oldId: "twin:deadline/mozilla",
-    replacement: {
-      id: "twin:deadline/mozilla-v2",
-      type: "Deadline",
-      label: "Mozilla Human-Scale AI Incubator proposal",
-      properties: {
-        description: "Deadline Fri Nov 22, 2026, 11:59pm PT.",
-        due: "2026-11-22T23:59:00-08:00",
+  const applied = await applyCorrection(
+    world,
+    {
+      oldId: "twin:deadline/mozilla",
+      replacement: {
+        id: "twin:deadline/mozilla-v2",
+        type: "Deadline",
+        label: "Mozilla Human-Scale AI Incubator proposal",
+        properties: {
+          description: "Deadline Fri Nov 22, 2026, 11:59pm PT.",
+          due: "2026-11-22T23:59:00-08:00",
+        },
+        provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
       },
-      provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
+      source: "ethan",
+      author: "Ethan",
     },
-    source: "ethan",
-    author: "Ethan",
-  }, { now: NOW });
+    { now: NOW },
+  );
   checks.push([applied.status === "applied", "correction applied"]);
   const old = await world.getFact("twin:deadline/mozilla");
   checks.push([
@@ -436,17 +460,23 @@ async function scenarioGuards(): Promise<CorrectionScenarioResult> {
   // Make the old fact Ethan-asserted so the write is ask-first.
   const oldFact = await world2.getFact("twin:commitment/nbis-eapp");
   if (oldFact) {
-    await world2.addFacts([{
-      ...oldFact,
-      provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
-    }]);
+    await world2.addFacts([
+      {
+        ...oldFact,
+        provenance: { source: `Ethan, in chat ${NOW}`, retrievedAt: NOW },
+      },
+    ]);
   }
-  const denied = await applyCorrection(world2, {
-    oldId: "twin:commitment/nbis-eapp",
-    replacement,
-    source: "sync",
-    author: "twin",
-  }, { now: NOW });
+  const denied = await applyCorrection(
+    world2,
+    {
+      oldId: "twin:commitment/nbis-eapp",
+      replacement,
+      source: "sync",
+      author: "twin",
+    },
+    { now: NOW },
+  );
   checks.push([
     denied.status === "ask-first",
     `unapproved ask-first write not applied (${denied.status})`,
@@ -455,13 +485,17 @@ async function scenarioGuards(): Promise<CorrectionScenarioResult> {
     (await world2.getFact("twin:commitment/nbis-eapp-v2")) === undefined,
     "unapproved ask-first write left no fact",
   ]);
-  const approved = await applyCorrection(world2, {
-    oldId: "twin:commitment/nbis-eapp",
-    replacement,
-    source: "sync",
-    author: "twin",
-    approved: true,
-  }, { now: NOW });
+  const approved = await applyCorrection(
+    world2,
+    {
+      oldId: "twin:commitment/nbis-eapp",
+      replacement,
+      source: "sync",
+      author: "twin",
+      approved: true,
+    },
+    { now: NOW },
+  );
   checks.push([
     approved.status === "applied",
     "approved ask-first write applied",

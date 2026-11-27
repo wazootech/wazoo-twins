@@ -142,7 +142,10 @@ test("provenance: chainContaining finds the full chain from any link", () => {
     "twin:commitment/x-v3",
   ];
   for (const id of ids) {
-    assertEquals(chainContaining(facts, id).map((f) => f.id), ids);
+    assertEquals(
+      chainContaining(facts, id).map((f) => f.id),
+      ids,
+    );
   }
   assertEquals(chainContaining(facts, "twin:commitment/missing"), []);
 });
@@ -150,9 +153,10 @@ test("provenance: chainContaining finds the full chain from any link", () => {
 test("provenance: isSuperseded and currentFacts filter history out", () => {
   assert(isSuperseded(v1Superseded));
   assert(!isSuperseded(v1));
-  assertEquals(currentFacts([v1Superseded, v2]).map((f) => f.id), [
-    "twin:commitment/x-v2",
-  ]);
+  assertEquals(
+    currentFacts([v1Superseded, v2]).map((f) => f.id),
+    ["twin:commitment/x-v2"],
+  );
 });
 
 test("provenance: normalizeIri unifies twin: and expanded forms", () => {
@@ -201,8 +205,8 @@ test("provenance: factToQuads emits the blame quad when typed, none when absent"
     ...base,
     provenance: { ...base.provenance, blame: "Ethan" },
   };
-  const blameQuads = factToQuads(blamed).filter((q) =>
-    q.predicate === Props.blame
+  const blameQuads = factToQuads(blamed).filter(
+    (q) => q.predicate === Props.blame,
   );
   assertEquals(blameQuads.length, 1);
   assertEquals(blameQuads[0].object, "Ethan");
