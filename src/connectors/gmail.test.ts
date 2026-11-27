@@ -1,9 +1,10 @@
+import { test } from "node:test";
 import {
   assert,
   assertEquals,
   assertRejects,
   assertStringIncludes,
-} from "@std/assert";
+} from "../testutil/assert.ts";
 import { GmailConnector, GmailNotConfiguredError } from "./gmail.ts";
 
 const noCreds = new GmailConnector({
@@ -12,7 +13,7 @@ const noCreds = new GmailConnector({
   refreshToken: "",
 });
 
-Deno.test("gmail: reads throw a clear OAuth error when not set up", async () => {
+test("gmail: reads throw a clear OAuth error when not set up", async () => {
   assertEquals(noCreds.isConfigured(), false);
   await assertRejects(
     () => noCreds.listMessages(),
@@ -26,7 +27,7 @@ Deno.test("gmail: reads throw a clear OAuth error when not set up", async () => 
   );
 });
 
-Deno.test("gmail: createDraft and send are Phase 2 stubs that throw", async () => {
+test("gmail: createDraft and send are Phase 2 stubs that throw", async () => {
   await assertRejects(
     () => noCreds.createDraft("a@b.c", "hi", "body"),
     Error,
@@ -39,7 +40,7 @@ Deno.test("gmail: createDraft and send are Phase 2 stubs that throw", async () =
   );
 });
 
-Deno.test("gmail: listMessages works with a token exchange (injected fetch)", async () => {
+test("gmail: listMessages works with a token exchange (injected fetch)", async () => {
   const calls: string[] = [];
   const fetchFn = (async (input: string | URL | Request): Promise<Response> => {
     await Promise.resolve();

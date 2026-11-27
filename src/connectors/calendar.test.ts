@@ -1,4 +1,5 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals, assertRejects } from "../testutil/assert.ts";
 import { CalendarConnector, CalendarNotConfiguredError } from "./calendar.ts";
 
 const noCreds = new CalendarConnector({
@@ -7,7 +8,7 @@ const noCreds = new CalendarConnector({
   refreshToken: "",
 });
 
-Deno.test("calendar connector: reads throw a clear OAuth error when not set up", async () => {
+test("calendar connector: reads throw a clear OAuth error when not set up", async () => {
   assertEquals(noCreds.isConfigured(), false);
   await assertRejects(
     () =>
@@ -25,7 +26,7 @@ Deno.test("calendar connector: reads throw a clear OAuth error when not set up",
   );
 });
 
-Deno.test("calendar connector: createEvent is a Phase 2 stub that throws", async () => {
+test("calendar connector: createEvent is a Phase 2 stub that throws", async () => {
   await assertRejects(
     () =>
       noCreds.createEvent({
@@ -38,7 +39,7 @@ Deno.test("calendar connector: createEvent is a Phase 2 stub that throws", async
   );
 });
 
-Deno.test("calendar connector: listEvents works with a token exchange (injected fetch)", async () => {
+test("calendar connector: listEvents works with a token exchange (injected fetch)", async () => {
   const fetchFn = (async (input: string | URL | Request): Promise<Response> => {
     await Promise.resolve();
     const url = String(input);

@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
 import { createResearchAgent } from "./research.ts";
@@ -10,7 +15,7 @@ const ctx = () => ({
   today: TODAY,
 });
 
-Deno.test("research: World facts cited, web results cited to URLs, nothing invented", async () => {
+test("research: World facts cited, web results cited to URLs, nothing invented", async () => {
   const agent = createResearchAgent(() =>
     Promise.resolve([
       {
@@ -35,7 +40,7 @@ Deno.test("research: World facts cited, web results cited to URLs, nothing inven
   assert(result.claims.every((c) => c.verified));
 });
 
-Deno.test("research: no World record and no web results yields empty claims + open questions", async () => {
+test("research: no World record and no web results yields empty claims + open questions", async () => {
   const agent = createResearchAgent(() => Promise.resolve([]));
   const result = await agent.run({ person: "Zorg Blorp" }, ctx());
   assertEquals(result.claims, []);
@@ -46,7 +51,7 @@ Deno.test("research: no World record and no web results yields empty claims + op
   assert(result.notes.some((n) => n.includes("Open question")));
 });
 
-Deno.test("research: empty input reports the gap instead of inventing", async () => {
+test("research: empty input reports the gap instead of inventing", async () => {
   const agent = createResearchAgent(() => Promise.resolve([]));
   const result = await agent.run({}, ctx());
   assertEquals(result.claims, []);

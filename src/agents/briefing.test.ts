@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
 import {
@@ -9,7 +14,7 @@ import {
 
 const TODAY = "2026-11-06";
 
-Deno.test("briefing: morning brief lists today's events, 7-day deadlines, open items", async () => {
+test("briefing: morning brief lists today's events, 7-day deadlines, open items", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const brief = await buildMorningBrief(world, TODAY);
   assertStringIncludes(brief.markdown, "Call with Ernest McCarter");
@@ -31,7 +36,7 @@ Deno.test("briefing: morning brief lists today's events, 7-day deadlines, open i
   assert(brief.claims.every((c) => c.verified));
 });
 
-Deno.test("briefing: every brief line cites its source fact", async () => {
+test("briefing: every brief line cites its source fact", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const brief = await buildMorningBrief(world, TODAY);
   const factLines = brief.markdown.split("\n").filter((l) =>
@@ -43,14 +48,14 @@ Deno.test("briefing: every brief line cites its source fact", async () => {
   }
 });
 
-Deno.test("briefing: brief is correct with no model key (template fallback)", async () => {
+test("briefing: brief is correct with no model key (template fallback)", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const brief = await buildMorningBrief(world, TODAY);
   assertStringIncludes(brief.markdown, "Good morning, Ethan.");
   assertStringIncludes(brief.markdown, "Call with Ernest McCarter");
 });
 
-Deno.test("briefing: date-only events render no phantom time", async () => {
+test("briefing: date-only events render no phantom time", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   await world.addFacts([{
     id: "twin:event/log-entry",
@@ -67,7 +72,7 @@ Deno.test("briefing: date-only events render no phantom time", async () => {
   );
 });
 
-Deno.test("briefing: 'noted' commitments count as open", async () => {
+test("briefing: 'noted' commitments count as open", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   await world.addFacts([{
     id: "twin:commitment/noted-item",
@@ -84,7 +89,7 @@ Deno.test("briefing: 'noted' commitments count as open", async () => {
   );
 });
 
-Deno.test("briefing: open commitments cap at 15 with a count line", async () => {
+test("briefing: open commitments cap at 15 with a count line", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const extra = Array.from({ length: 20 }, (_, i) => ({
     id: `twin:commitment/extra-${i}`,
@@ -108,7 +113,7 @@ Deno.test("briefing: open commitments cap at 15 with a count line", async () => 
   assertEquals(sectionLines.length, 16);
 });
 
-Deno.test("briefing: evening summary reports still-open items", async () => {
+test("briefing: evening summary reports still-open items", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const summary = await buildEveningSummary(world, TODAY);
   assertStringIncludes(summary.markdown, "No Twin runs recorded today.");
@@ -116,7 +121,7 @@ Deno.test("briefing: evening summary reports still-open items", async () => {
   assertStringIncludes(summary.markdown, "Travis Long");
 });
 
-Deno.test("briefing: question mode answers from World facts, reports misses", async () => {
+test("briefing: question mode answers from World facts, reports misses", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const ctx = { world, tier: "draft" as const, today: TODAY };
   const hit = await briefingAgent.run(

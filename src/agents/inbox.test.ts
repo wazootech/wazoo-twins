@@ -1,9 +1,10 @@
+import { test } from "node:test";
 import {
   assert,
   assertEquals,
   assertStringIncludes,
   assertThrows,
-} from "@std/assert";
+} from "../testutil/assert.ts";
 import { GmailConnector } from "../connectors/gmail.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
@@ -26,13 +27,13 @@ const noGmail = new GmailConnector({
   refreshToken: "",
 });
 
-Deno.test("inbox: triage sorts needs-reply / FYI by World Thread facts", async () => {
+test("inbox: triage sorts needs-reply / FYI by World Thread facts", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const threads = await world.findFacts({ type: "Thread" });
   assertEquals(threads.map(triageThread).sort(), ["fyi", "needs-reply"]);
 });
 
-Deno.test("inbox: run triages and drafts only for needs-reply threads", async () => {
+test("inbox: run triages and drafts only for needs-reply threads", async () => {
   const agent = createInboxAgent({ gmail: noGmail });
   const result = await agent.run({}, ctx());
   assertStringIncludes(result.summary[0], "1 need a reply, 1 FYI, 0 ignore");
@@ -44,7 +45,7 @@ Deno.test("inbox: run triages and drafts only for needs-reply threads", async ()
   assert(result.notes.some((n) => n.includes("Hi Travis")));
 });
 
-Deno.test("inbox: draft template quotes the last message, invents nothing", async () => {
+test("inbox: draft template quotes the last message, invents nothing", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const thread = (await world.findFacts({ type: "Thread" }))
     .find((t) => t.id === "twin:thread/travis-long")!;
@@ -59,7 +60,7 @@ Deno.test("inbox: draft template quotes the last message, invents nothing", asyn
   assertStringIncludes(draft.body, "Best,\nEthan");
 });
 
-Deno.test("inbox: sending always throws (Phase 1 drafts only)", () => {
+test("inbox: sending always throws (Phase 1 drafts only)", () => {
   assertThrows(
     () => sendReply(),
     Error,

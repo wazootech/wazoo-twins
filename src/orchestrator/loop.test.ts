@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { createResearchAgent } from "../agents/research.ts";
 import type { AgentResult } from "../agents/types.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
@@ -15,7 +20,7 @@ function ctx() {
   };
 }
 
-Deno.test("loop: 'what's open?' returns verified claims and writes audit quads", async () => {
+test("loop: 'what's open?' returns verified claims and writes audit quads", async () => {
   const c = ctx();
   const before = await c.world.count();
   const result = await runIntent("what's open?", c);
@@ -34,7 +39,7 @@ Deno.test("loop: 'what's open?' returns verified claims and writes audit quads",
   );
 });
 
-Deno.test("loop: external send intent needs approval and performs nothing", async () => {
+test("loop: external send intent needs approval and performs nothing", async () => {
   const c = ctx();
   const result = await runIntent("send an email to Travis", c);
   assertEquals(result.action, "needs-approval");
@@ -46,7 +51,7 @@ Deno.test("loop: external send intent needs approval and performs nothing", asyn
   );
 });
 
-Deno.test("loop: tier above draft is clamped to the Phase 1 maximum", async () => {
+test("loop: tier above draft is clamped to the Phase 1 maximum", async () => {
   const c = ctx();
   const result = await runIntent("what's open?", { ...c, tier: "auto" });
   assert(
@@ -55,7 +60,7 @@ Deno.test("loop: tier above draft is clamped to the Phase 1 maximum", async () =
   assertEquals(result.action, "present");
 });
 
-Deno.test("loop: unknown intent with no World facts asks one question", async () => {
+test("loop: unknown intent with no World facts asks one question", async () => {
   const c = ctx();
   const result = await runIntent("flibberty gibbet zzz", c);
   assertEquals(result.action, "ask");
@@ -63,7 +68,7 @@ Deno.test("loop: unknown intent with no World facts asks one question", async ()
   assertStringIncludes(result.question, "flibberty gibbet zzz");
 });
 
-Deno.test("loop: missing context triggers one follow-up research round, bounded", async () => {
+test("loop: missing context triggers one follow-up research round, bounded", async () => {
   const c = ctx();
   const research = createResearchAgent(() => Promise.resolve([]));
   const result = await runIntent("when is the Zorg Blorp thingamajig?", c, {
@@ -74,7 +79,7 @@ Deno.test("loop: missing context triggers one follow-up research round, bounded"
   assert(result.notes.some((n) => n.includes("No public web results")));
 });
 
-Deno.test("loop: duplicate claims merge, keeping the most recent provenance", async () => {
+test("loop: duplicate claims merge, keeping the most recent provenance", async () => {
   const c = ctx();
   const oldClaim = {
     text: "Shared claim",
@@ -132,7 +137,7 @@ Deno.test("loop: duplicate claims merge, keeping the most recent provenance", as
   assert(result.notes.some((n) => n.includes("Merged duplicate claim")));
 });
 
-Deno.test("loop: unverified claims are kept and labelled, never dropped", async () => {
+test("loop: unverified claims are kept and labelled, never dropped", async () => {
   const c = ctx();
   const lyingAgent = {
     name: "briefing",

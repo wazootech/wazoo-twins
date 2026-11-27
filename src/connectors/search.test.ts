@@ -1,4 +1,5 @@
-import { assert, assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { parseDuckDuckGoHtml, searchWeb } from "./search.ts";
 
 const SAMPLE_HTML = `
@@ -13,7 +14,7 @@ const SAMPLE_HTML = `
 </div>
 </body></html>`;
 
-Deno.test("search: DuckDuckGo HTML parses titles, unwrapped URLs, and snippets", () => {
+test("search: DuckDuckGo HTML parses titles, unwrapped URLs, and snippets", () => {
   const results = parseDuckDuckGoHtml(SAMPLE_HTML);
   assertEquals(results.length, 2);
   assertEquals(results[0].title, "Ernest McCarter — General Translation");
@@ -22,7 +23,7 @@ Deno.test("search: DuckDuckGo HTML parses titles, unwrapped URLs, and snippets",
   assertEquals(results[1].url, "https://example.com/gt");
 });
 
-Deno.test("search: unparseable HTML yields zero results, never invented ones", () => {
+test("search: unparseable HTML yields zero results, never invented ones", () => {
   assertEquals(
     parseDuckDuckGoHtml("<html><body>no results here</body></html>"),
     [],
@@ -30,7 +31,7 @@ Deno.test("search: unparseable HTML yields zero results, never invented ones", (
   assertEquals(parseDuckDuckGoHtml(""), []);
 });
 
-Deno.test("search: searchWeb returns parsed results via injected fetch", async () => {
+test("search: searchWeb returns parsed results via injected fetch", async () => {
   const fetchFn = ((): Promise<Response> =>
     Promise.resolve(
       new Response(SAMPLE_HTML, { status: 200 }),
@@ -40,7 +41,7 @@ Deno.test("search: searchWeb returns parsed results via injected fetch", async (
   assertEquals(results[0].url, "https://example.com/ernest");
 });
 
-Deno.test("search: searchWeb returns [] on network failure or non-OK status", async () => {
+test("search: searchWeb returns [] on network failure or non-OK status", async () => {
   const failing =
     ((): Promise<Response> =>
       Promise.reject(new Error("network down"))) as typeof fetch;

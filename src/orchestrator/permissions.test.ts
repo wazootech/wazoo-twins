@@ -1,3 +1,4 @@
+import { test } from "node:test";
 /**
  * Permission-tier tests (plan §3.5; correction-loop spec §3).
  *
@@ -6,7 +7,7 @@
  * an approval card on top of the tier, and forbidden actions stay
  * forbidden at every tier.
  */
-import { assertEquals, assertThrows } from "@std/assert";
+import { assertEquals, assertThrows } from "../testutil/assert.ts";
 import {
   ACTION_MIN_TIER,
   clampTier,
@@ -17,7 +18,7 @@ import {
   requireInternalWrite,
 } from "./permissions.ts";
 
-Deno.test("permissions: world.write needs the approved tier, not read", () => {
+test("permissions: world.write needs the approved tier, not read", () => {
   assertEquals(ACTION_MIN_TIER["world.write"], "approved");
   assertEquals(ACTION_MIN_TIER["world.write.internal"], "approved");
   assertEquals(isActionAllowed("world.write", "read"), false);
@@ -26,7 +27,7 @@ Deno.test("permissions: world.write needs the approved tier, not read", () => {
   assertEquals(isActionAllowed("world.read", "read"), true);
 });
 
-Deno.test("permissions: external writes need approved tier and stay card-gated", () => {
+test("permissions: external writes need approved tier and stay card-gated", () => {
   assertEquals(ACTION_MIN_TIER["gmail.send"], "approved");
   assertEquals(ACTION_MIN_TIER["calendar.create"], "approved");
   assertEquals(ACTION_MIN_TIER["github.write"], "approved");
@@ -35,7 +36,7 @@ Deno.test("permissions: external writes need approved tier and stay card-gated",
   assertEquals(isActionAllowed("gmail.send", "draft"), false);
 });
 
-Deno.test("permissions: forbidden actions are forbidden at every tier", () => {
+test("permissions: forbidden actions are forbidden at every tier", () => {
   for (const tier of ["read", "draft", "approved", "auto"] as const) {
     assertEquals(isActionAllowed("money.move", tier), false);
     assertEquals(isActionAllowed("job.apply", tier), false);
@@ -43,14 +44,14 @@ Deno.test("permissions: forbidden actions are forbidden at every tier", () => {
   }
 });
 
-Deno.test("permissions: phase max tiers clamp correctly", () => {
+test("permissions: phase max tiers clamp correctly", () => {
   assertEquals(PHASE1_MAX_TIER, "draft");
   assertEquals(PHASE2_MAX_TIER, "approved");
   assertEquals(clampTier("auto", PHASE2_MAX_TIER), "approved");
   assertEquals(clampTier("read", PHASE2_MAX_TIER), "read");
 });
 
-Deno.test("permissions: classifyInternalWrite — auto for cited fresh corrections", () => {
+test("permissions: classifyInternalWrite — auto for cited fresh corrections", () => {
   assertEquals(
     classifyInternalWrite({
       contradictsEthanAssertedFact: false,
@@ -72,7 +73,7 @@ Deno.test("permissions: classifyInternalWrite — auto for cited fresh correctio
   );
 });
 
-Deno.test("permissions: classifyInternalWrite — ask-first cases", () => {
+test("permissions: classifyInternalWrite — ask-first cases", () => {
   const base = {
     contradictsEthanAssertedFact: false,
     retractsWholeProcedure: false,
@@ -108,7 +109,7 @@ Deno.test("permissions: classifyInternalWrite — ask-first cases", () => {
   );
 });
 
-Deno.test("permissions: requireInternalWrite enforces tier and approval", () => {
+test("permissions: requireInternalWrite enforces tier and approval", () => {
   // Below the approved tier: denied even for auto writes.
   assertThrows(
     () => requireInternalWrite("draft", "auto", false),

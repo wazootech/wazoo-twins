@@ -1,4 +1,9 @@
-import { assert, assertEquals, assertStringIncludes } from "@std/assert";
+import { test } from "node:test";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "../testutil/assert.ts";
 import { CalendarConnector } from "../connectors/calendar.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import { ethanFixtureFacts } from "../testutil/fixtures.ts";
@@ -22,7 +27,7 @@ const noCalendar = new CalendarConnector({
   refreshToken: "",
 });
 
-Deno.test("calendar: teaching block is Tue/Thu 1:30–4:30pm PT, nothing else", () => {
+test("calendar: teaching block is Tue/Thu 1:30–4:30pm PT, nothing else", () => {
   assertEquals(isTeachingBlock(TUESDAY, 14 * 60), true);
   assertEquals(isTeachingBlock(TUESDAY, 16 * 60 + 29), true);
   assertEquals(isTeachingBlock(TUESDAY, 13 * 60), false);
@@ -31,7 +36,7 @@ Deno.test("calendar: teaching block is Tue/Thu 1:30–4:30pm PT, nothing else", 
   assertEquals(isTeachingBlock("2026-11-05", 15 * 60), true); // Thursday
 });
 
-Deno.test("calendar: free slots never include the teaching block", async () => {
+test("calendar: free slots never include the teaching block", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const events = await world.findFacts({ type: "Event" });
   const tuesdayEvents = events.filter((e) =>
@@ -48,7 +53,7 @@ Deno.test("calendar: free slots never include the teaching block", async () => {
   assert(slots.some((s) => s.start === "9:00am"));
 });
 
-Deno.test("calendar: overlapping events on Friday are flagged as conflicts", async () => {
+test("calendar: overlapping events on Friday are flagged as conflicts", async () => {
   const world = createFakeWorldClient(ethanFixtureFacts());
   const events = (await world.findFacts({ type: "Event" }))
     .filter((e) => (e.properties.start ?? "").startsWith(TODAY));
@@ -58,7 +63,7 @@ Deno.test("calendar: overlapping events on Friday are flagged as conflicts", asy
   assertEquals(conflicts[0][1].label, "Call with Jeff Kazzee");
 });
 
-Deno.test("calendar: run reports conflicts, slots, and the connector fallback note", async () => {
+test("calendar: run reports conflicts, slots, and the connector fallback note", async () => {
   const agent = createCalendarAgent(noCalendar);
   const result = await agent.run({}, ctx());
   assert(
@@ -73,7 +78,7 @@ Deno.test("calendar: run reports conflicts, slots, and the connector fallback no
   assert(!result.notes.some((n) => n.includes("teaching block applies")));
 });
 
-Deno.test("calendar: run on a Tuesday notes the teaching block", async () => {
+test("calendar: run on a Tuesday notes the teaching block", async () => {
   const agent = createCalendarAgent(noCalendar);
   const result = await agent.run({ date: TUESDAY }, ctx());
   assert(result.notes.some((n) => n.includes("teaching block applies")));
