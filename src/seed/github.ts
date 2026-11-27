@@ -10,6 +10,7 @@
  * Cap: ~200 items total (~25 per repo). Each item becomes a Task fact
  * with provenance `github:<owner>/<repo>#<number>`.
  */
+import { spawn } from "node:child_process";
 import {
   dedupFacts,
   emptyResult,
@@ -48,21 +49,24 @@ export interface GithubItem {
 
 const MCP_CLI = "/opt/hatch/bin/github";
 
-async function runCommand(
+function runCommand(
   cmd: string,
   args: string[],
 ): Promise<{ code: number; stdout: string; stderr: string }> {
-  const command = new Deno.Command(cmd, {
-    args,
-    stdout: "piped",
-    stderr: "piped",
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, { stdio: ["ignore", "pipe", "pipe"] });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.setEncoding("utf8").on("data", (chunk: string) => {
+      stdout += chunk;
+    });
+    child.stderr.setEncoding("utf8").on("data", (chunk: string) => {
+      stderr += chunk;
+    });
+    // A missing binary rejects (as Deno.Command did); a non-zero exit resolves.
+    child.on("error", reject);
+    child.on("close", (code) => resolve({ code: code ?? 1, stdout, stderr }));
   });
-  const { code, stdout, stderr } = await command.output();
-  return {
-    code,
-    stdout: new TextDecoder().decode(stdout),
-    stderr: new TextDecoder().decode(stderr),
-  };
 }
 
 /** Parse the MCP `call-read-tool` envelope; the tool result is JSON text. */

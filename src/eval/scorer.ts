@@ -11,6 +11,7 @@
  * approval rate: no human reviewed these drafts. The real approval rate
  * (Phase 1 task 1.4) is measured from Ethan's actual approvals.
  */
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import type { HarnessResult, TaskKind, TaskResult } from "./types.ts";
 
 export interface PerKindScore {
@@ -100,13 +101,13 @@ export async function writeReport(
   report: EvalReport,
 ): Promise<void> {
   const dir = path.split("/").slice(0, -1).join("/");
-  if (dir) await Deno.mkdir(dir, { recursive: true });
-  await Deno.writeTextFile(path, JSON.stringify(report, null, 2) + "\n");
+  if (dir) await mkdir(dir, { recursive: true });
+  await writeFile(path, JSON.stringify(report, null, 2) + "\n");
 }
 
 /** Read a previously written report. */
 export async function readReport(path: string): Promise<EvalReport> {
-  const text = await Deno.readTextFile(path);
+  const text = await readFile(path, "utf8");
   return JSON.parse(text) as EvalReport;
 }
 

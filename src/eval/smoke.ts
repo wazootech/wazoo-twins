@@ -19,6 +19,7 @@
  *
  * Exit code: 1 when any smoke question fails.
  */
+import process from "node:process";
 import type { WorldClient } from "../world/client.ts";
 import { answerFromWorld, runEval } from "./harness.ts";
 import { seedSyntheticWorld } from "./synthetic-world.ts";
@@ -34,7 +35,7 @@ function flagValue(args: string[], flag: string): string | undefined {
 }
 
 async function main(): Promise<number> {
-  const worldArg = flagValue(Deno.args, "--world") ?? "synthetic";
+  const worldArg = flagValue(process.argv.slice(2), "--world") ?? "synthetic";
   let world: WorldClient;
   if (worldArg === "real") {
     try {
@@ -89,5 +90,5 @@ async function main(): Promise<number> {
 }
 
 if (import.meta.main) {
-  Deno.exit(await main());
+  process.exit(await main());
 }

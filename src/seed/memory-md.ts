@@ -21,6 +21,7 @@
  *
  * Every fact carries provenance { source: "<file>#L<line>", retrievedAt }.
  */
+import { readdir, readFile } from "node:fs/promises";
 import {
   deadlineDate,
   dedupFacts,
@@ -28,6 +29,7 @@ import {
   factId,
   firstDate,
   homePath,
+  isNotFound,
   parseDateLoose,
   readIfExists,
   slugify,
@@ -283,10 +285,12 @@ export async function importMemoryMd(
   // Daily notes: ~/memory/*.md (not people/, not INDEX.md).
   const dailyDir = homePath("memory");
   try {
-    for await (const entry of Deno.readDir(dailyDir)) {
-      if (!entry.isFile || !/^20\d\d-\d\d-\d\d\.md$/.test(entry.name)) continue;
+    for (const entry of await readdir(dailyDir, { withFileTypes: true })) {
+      if (!entry.isFile() || !/^20\d\d-\d\d-\d\d\.md$/.test(entry.name)) {
+        continue;
+      }
       files++;
-      const text = await Deno.readTextFile(`${dailyDir}/${entry.name}`);
+      const text = await readFile(`${dailyDir}/${entry.name}`, "utf8");
       const contextDate = entry.name.replace(/\.md$/, "");
       const parsed = parseMemoryMarkdown(
         text,
@@ -300,19 +304,19 @@ export async function importMemoryMd(
       result.counts[`daily:${entry.name}`] = parsed.parsed;
     }
   } catch (error) {
-    if (!(error instanceof Deno.errors.NotFound)) throw error;
+    if (!isNotFound(error)) throw error;
   }
 
   // People files: ~/memory/people/*.md (not INDEX.md).
   const peopleDir = homePath("memory/people");
   try {
-    for await (const entry of Deno.readDir(peopleDir)) {
+    for (const entry of await readdir(peopleDir, { withFileTypes: true })) {
       if (
-        !entry.isFile || !entry.name.endsWith(".md") ||
+        !entry.isFile() || !entry.name.endsWith(".md") ||
         entry.name === "INDEX.md"
       ) continue;
       files++;
-      const text = await Deno.readTextFile(`${peopleDir}/${entry.name}`);
+      const text = await readFile(`${peopleDir}/${entry.name}`, "utf8");
       const name = personNameFromFilename(entry.name);
       const fact = parsePersonFile(
         text,
@@ -324,7 +328,7 @@ export async function importMemoryMd(
       result.counts[`people:${entry.name}`] = 1;
     }
   } catch (error) {
-    if (!(error instanceof Deno.errors.NotFound)) throw error;
+    if (!isNotFound(error)) throw error;
   }
 
   const deduped = dedupFacts(candidates);

@@ -7,6 +7,7 @@
  * connector. When no token is set, every call throws `GitHubNotConfiguredError`
  * and callers fall back to World facts.
  */
+import process from "node:process";
 
 export class GitHubNotConfiguredError extends Error {
   constructor() {
@@ -42,11 +43,7 @@ type FetchFn = typeof fetch;
 const REPO_RE = /^[\w.-]+\/[\w.-]+$/;
 
 function env(name: string): string | undefined {
-  try {
-    return Deno.env.get(name);
-  } catch {
-    return undefined;
-  }
+  return process.env[name];
 }
 
 export class GitHubConnector {
