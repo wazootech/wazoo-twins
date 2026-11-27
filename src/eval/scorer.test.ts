@@ -1,4 +1,5 @@
-import { assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assertEquals } from "../testutil/assert.ts";
 import { compareReports, scoreResults } from "./scorer.ts";
 import type { EvalReport } from "./scorer.ts";
 import type { HarnessResult, TaskResult } from "./types.ts";
@@ -34,7 +35,7 @@ function harnessResult(results: TaskResult[]): HarnessResult {
   };
 }
 
-Deno.test("scorer: aggregates pass@1 overall and per kind", () => {
+test("scorer: aggregates pass@1 overall and per kind", () => {
   const report = scoreResults(
     harnessResult([
       taskResult("brief-01", "briefing", true),
@@ -53,7 +54,7 @@ Deno.test("scorer: aggregates pass@1 overall and per kind", () => {
   assertEquals(report.world, "synthetic");
 });
 
-Deno.test("scorer: draft approval proxy is the fraction of passing drafts", () => {
+test("scorer: draft approval proxy is the fraction of passing drafts", () => {
   const report = scoreResults(
     harnessResult([
       taskResult("draft-01", "draft", true),
@@ -71,7 +72,7 @@ Deno.test("scorer: draft approval proxy is the fraction of passing drafts", () =
   );
 });
 
-Deno.test("scorer: compareReports lists regressions and improvements, never hides them", () => {
+test("scorer: compareReports lists regressions and improvements, never hides them", () => {
   const baseline: EvalReport = scoreResults(
     harnessResult([
       taskResult("a", "briefing", true),
@@ -96,7 +97,7 @@ Deno.test("scorer: compareReports lists regressions and improvements, never hide
   assertEquals(comparison.passAt1Delta, 0);
 });
 
-Deno.test("scorer: failedRun propagates from the harness", () => {
+test("scorer: failedRun propagates from the harness", () => {
   const harness = harnessResult([taskResult("a", "briefing", true)]);
   harness.failedRun = true;
   harness.unapprovedActions = 1;

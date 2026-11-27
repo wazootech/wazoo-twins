@@ -1,9 +1,10 @@
-import { assert, assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { parseMemoryMarkdown, parsePersonFile } from "./memory-md.ts";
 
 const NOW = "2026-11-06T12:00:00.000Z";
 
-Deno.test("parseMemoryMarkdown: decision and deadline bullets classify with dates", () => {
+test("parseMemoryMarkdown: decision and deadline bullets classify with dates", () => {
   const text = [
     "## Facts",
     "- RTX Effectors offer decided Oct 12, 2026 over HWIL.",
@@ -27,7 +28,7 @@ Deno.test("parseMemoryMarkdown: decision and deadline bullets classify with date
   assert(facts.every((f) => f.provenance.source === "MEMORY.md"));
 });
 
-Deno.test("parseMemoryMarkdown: deadline uses the date nearest the keyword, not the log date", () => {
+test("parseMemoryMarkdown: deadline uses the date nearest the keyword, not the log date", () => {
   const text = [
     "## Facts",
     "- CCPA request SENT Fri Nov 6, 2026, 2:53am PT. Confirmation due Fri Nov 20, 2026; full response due Mon Dec 21, 2026.",
@@ -44,7 +45,7 @@ Deno.test("parseMemoryMarkdown: deadline uses the date nearest the keyword, not 
   assertEquals(facts[0].properties["due"], "2026-11-20");
 });
 
-Deno.test("parseMemoryMarkdown: weak deadline words need a date in the same clause", () => {
+test("parseMemoryMarkdown: weak deadline words need a date in the same clause", () => {
   const text = [
     "## Facts",
     // Incidental "request" — log entries, not deadlines.
@@ -74,7 +75,7 @@ Deno.test("parseMemoryMarkdown: weak deadline words need a date in the same clau
   assertEquals(facts[4].properties["due"], "2026-11-08");
 });
 
-Deno.test("parseMemoryMarkdown: [event] bullets become Events with the file date", () => {
+test("parseMemoryMarkdown: [event] bullets become Events with the file date", () => {
   const text = [
     "## Verified extraction",
     "- [event|high] On Nov 4, 2026, an Ernest interview prep Google Doc was created for Ethan.",
@@ -95,7 +96,7 @@ Deno.test("parseMemoryMarkdown: [event] bullets become Events with the file date
   assertEquals(facts[1].type, "Commitment");
 });
 
-Deno.test("parseMemoryMarkdown: nested bullets and short lines are skipped, not guessed", () => {
+test("parseMemoryMarkdown: nested bullets and short lines are skipped, not guessed", () => {
   const text = [
     "## Facts",
     "- Real bullet with enough text to be a fact.",
@@ -113,7 +114,7 @@ Deno.test("parseMemoryMarkdown: nested bullets and short lines are skipped, not 
   assertEquals(facts.length, 1);
 });
 
-Deno.test("parsePersonFile: builds a Person fact with name and contact", () => {
+test("parsePersonFile: builds a Person fact with name and contact", () => {
   const text = [
     "# John Carlo Manuel",
     "- Wazoo collaborator helping with developer relations — john@example.com",

@@ -1,3 +1,4 @@
+import { test } from "node:test";
 /**
  * Correction-loop audit tests (spec §6).
  *
@@ -5,7 +6,7 @@
  * were approved also produce an Approval fact. Auto writes record that
  * they were auto under the tier rule.
  */
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { createFakeWorldClient } from "../testutil/fake-world.ts";
 import {
   correctionAuditFacts,
@@ -32,7 +33,7 @@ function record(
   };
 }
 
-Deno.test("audit: auto correction produces one valid Action fact", () => {
+test("audit: auto correction produces one valid Action fact", () => {
   const facts = correctionAuditFacts(record(), {
     source: "twin:correction-loop",
     retrievedAt: AT,
@@ -48,7 +49,7 @@ Deno.test("audit: auto correction produces one valid Action fact", () => {
   assertEquals(validateFact(facts[0]).length, 0);
 });
 
-Deno.test("audit: approved ask-first correction adds an Approval fact", () => {
+test("audit: approved ask-first correction adds an Approval fact", () => {
   const facts = correctionAuditFacts(
     record({ decision: "approved", approvedBy: "Ethan" }),
     { source: "twin:correction-loop", retrievedAt: AT },
@@ -63,7 +64,7 @@ Deno.test("audit: approved ask-first correction adds an Approval fact", () => {
   assertEquals(action?.properties["approvedBy"], "Ethan");
 });
 
-Deno.test("audit: recordWriteAudit writes the facts into the World", async () => {
+test("audit: recordWriteAudit writes the facts into the World", async () => {
   const world = createFakeWorldClient();
   const facts = await recordWriteAudit(
     world,
@@ -75,7 +76,7 @@ Deno.test("audit: recordWriteAudit writes the facts into the World", async () =>
   await world.close();
 });
 
-Deno.test("audit: rejected procedure patch is audited with its outcome", () => {
+test("audit: rejected procedure patch is audited with its outcome", () => {
   const facts = correctionAuditFacts(
     record({
       kind: "procedure.patch.rejected",

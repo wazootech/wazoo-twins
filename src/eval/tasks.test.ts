@@ -1,4 +1,5 @@
-import { assert, assertEquals } from "@std/assert";
+import { test } from "node:test";
+import { assert, assertEquals } from "../testutil/assert.ts";
 import { answerFromWorld, runEval } from "./harness.ts";
 import {
   seedSyntheticWorld,
@@ -11,7 +12,7 @@ import { DRAFT_TASKS } from "./tasks/drafts.ts";
 import { SCHEDULING_TASKS } from "./tasks/scheduling.ts";
 import { SMOKE_TASKS } from "./tasks/smoke.ts";
 
-Deno.test("tasks: counts are 20 smoke, 10 briefing, 10 draft, 5 scheduling", () => {
+test("tasks: counts are 20 smoke, 10 briefing, 10 draft, 5 scheduling", () => {
   assertEquals(SMOKE_TASKS.length, 20);
   assertEquals(BRIEFING_TASKS.length, 10);
   assertEquals(DRAFT_TASKS.length, 10);
@@ -20,7 +21,7 @@ Deno.test("tasks: counts are 20 smoke, 10 briefing, 10 draft, 5 scheduling", () 
   assertEquals(ALL_TASKS.length, 45);
 });
 
-Deno.test("tasks: every task has an id, kind, question, source, and keywords", () => {
+test("tasks: every task has an id, kind, question, source, and keywords", () => {
   const ids = new Set<string>();
   for (const task of ALL_TASKS) {
     assert(task.id.length > 0, "task id must not be empty");
@@ -39,7 +40,7 @@ Deno.test("tasks: every task has an id, kind, question, source, and keywords", (
   }
 });
 
-Deno.test("tasks: draft tasks have draft points and scheduling tasks have candidates", () => {
+test("tasks: draft tasks have draft points and scheduling tasks have candidates", () => {
   for (const task of DRAFT_TASKS) {
     assert(
       (task.draftPoints ?? []).length > 0,
@@ -64,7 +65,7 @@ Deno.test("tasks: draft tasks have draft points and scheduling tasks have candid
   }
 });
 
-Deno.test("tasks: every task's source names MEMORY.md or the opportunity tracker", () => {
+test("tasks: every task's source names MEMORY.md or the opportunity tracker", () => {
   for (const task of ALL_TASKS) {
     assert(
       task.source.includes("MEMORY.md") ||
@@ -74,7 +75,7 @@ Deno.test("tasks: every task's source names MEMORY.md or the opportunity tracker
   }
 });
 
-Deno.test("synthetic world: seed facts validate against the ontology", async () => {
+test("synthetic world: seed facts validate against the ontology", async () => {
   const world = await seedSyntheticWorld();
   assertEquals(await world.count(), SYNTHETIC_FACTS.length);
   const fact = await world.getFact("twin:commitment/nbis-eapp");
@@ -82,7 +83,7 @@ Deno.test("synthetic world: seed facts validate against the ontology", async () 
   await world.close();
 });
 
-Deno.test("synthetic world: search finds facts by keyword, findFacts filters by type", async () => {
+test("synthetic world: search finds facts by keyword, findFacts filters by type", async () => {
   const world = await seedSyntheticWorld();
   const hits = await world.search("NBIS eApp");
   assert(hits.some((f) => f.id === "twin:commitment/nbis-eapp"));
@@ -92,7 +93,7 @@ Deno.test("synthetic world: search finds facts by keyword, findFacts filters by 
   await world.close();
 });
 
-Deno.test("synthetic world: supersede records the replacement, never silently overwrites", async () => {
+test("synthetic world: supersede records the replacement, never silently overwrites", async () => {
   const world = new SyntheticWorldClient();
   await world.addFacts(SYNTHETIC_FACTS);
   const replacement = {
@@ -110,7 +111,7 @@ Deno.test("synthetic world: supersede records the replacement, never silently ov
   await world.close();
 });
 
-Deno.test("tasks: full held-out + smoke set passes against the synthetic world", async () => {
+test("tasks: full held-out + smoke set passes against the synthetic world", async () => {
   const world = await seedSyntheticWorld();
   const result = await runEval(world, ALL_TASKS, answerFromWorld);
   await world.close();

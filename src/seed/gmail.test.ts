@@ -1,4 +1,6 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import process from "node:process";
+import { test } from "node:test";
+import { assertEquals, assertRejects } from "../testutil/assert.ts";
 import {
   gmailThreadsToFacts,
   groupGmailThreads,
@@ -8,7 +10,7 @@ import { GOOGLE_OAUTH_NOT_SETUP } from "./calendar.ts";
 
 const NOW = "2026-11-06T12:00:00.000Z";
 
-Deno.test("gmailThreadsToFacts: one Thread per thread, needsReply from the latest sender", () => {
+test("gmailThreadsToFacts: one Thread per thread, needsReply from the latest sender", () => {
   const threads = groupGmailThreads([
     {
       id: "m1",
@@ -53,7 +55,7 @@ Deno.test("gmailThreadsToFacts: one Thread per thread, needsReply from the lates
   );
 });
 
-Deno.test("importGmail throws the clear OAuth error when credentials are absent", async () => {
+test("importGmail throws the clear OAuth error when credentials are absent", async () => {
   for (
     const name of [
       "GOOGLE_CLIENT_ID",
@@ -61,7 +63,7 @@ Deno.test("importGmail throws the clear OAuth error when credentials are absent"
       "GOOGLE_REFRESH_TOKEN",
     ]
   ) {
-    Deno.env.delete(name);
+    delete process.env[name];
   }
   await assertRejects(() => importGmail(), Error, GOOGLE_OAUTH_NOT_SETUP);
 });

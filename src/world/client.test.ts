@@ -1,8 +1,12 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { test } from "node:test";
 /**
  * Tests for the World client (memory + libsql backends, hosted guard).
  * Run: `deno task test src/world/client.test.ts`
  */
-import { assert, assertEquals, assertRejects } from "@std/assert";
+import { assert, assertEquals, assertRejects } from "../testutil/assert.ts";
 import { createWorldClient } from "./client.ts";
 import type { Fact } from "./types.ts";
 
@@ -22,7 +26,7 @@ function commitment(
   };
 }
 
-Deno.test("memory: addFacts round-trips through getFact", async () => {
+test("memory: addFacts round-trips through getFact", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     await world.addFacts([
@@ -40,7 +44,7 @@ Deno.test("memory: addFacts round-trips through getFact", async () => {
   }
 });
 
-Deno.test("memory: the typed provenance blame round-trips through getFact", async () => {
+test("memory: the typed provenance blame round-trips through getFact", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     const fact = commitment(
@@ -63,7 +67,7 @@ Deno.test("memory: the typed provenance blame round-trips through getFact", asyn
   }
 });
 
-Deno.test("memory: addFacts is idempotent (fact-ID dedup, no duplicates)", async () => {
+test("memory: addFacts is idempotent (fact-ID dedup, no duplicates)", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     const fact = commitment("twin:commitment/x", "do the thing");
@@ -80,7 +84,7 @@ Deno.test("memory: addFacts is idempotent (fact-ID dedup, no duplicates)", async
   }
 });
 
-Deno.test("memory: invalid facts never half-land", async () => {
+test("memory: invalid facts never half-land", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     const good = commitment("twin:commitment/good", "good fact");
@@ -104,7 +108,7 @@ Deno.test("memory: invalid facts never half-land", async () => {
   }
 });
 
-Deno.test("memory: query (SPARQL SELECT) returns variable->value rows", async () => {
+test("memory: query (SPARQL SELECT) returns variable->value rows", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     await world.addFacts([
@@ -125,7 +129,7 @@ Deno.test("memory: query (SPARQL SELECT) returns variable->value rows", async ()
   }
 });
 
-Deno.test("memory: findFacts filters by type and property value", async () => {
+test("memory: findFacts filters by type and property value", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     await world.addFacts([
@@ -153,7 +157,7 @@ Deno.test("memory: findFacts filters by type and property value", async () => {
   }
 });
 
-Deno.test("memory: search finds facts by keyword", async () => {
+test("memory: search finds facts by keyword", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     await world.addFacts([
@@ -169,7 +173,7 @@ Deno.test("memory: search finds facts by keyword", async () => {
   }
 });
 
-Deno.test("memory: supersede keeps the old fact and records the marker", async () => {
+test("memory: supersede keeps the old fact and records the marker", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     const oldFact = commitment("twin:commitment/old", "old wording", {
@@ -202,7 +206,7 @@ Deno.test("memory: supersede keeps the old fact and records the marker", async (
   }
 });
 
-Deno.test("memory: update runs a SPARQL UPDATE", async () => {
+test("memory: update runs a SPARQL UPDATE", async () => {
   const world = await createWorldClient({ backend: "memory" });
   try {
     await world.addFacts([commitment("twin:commitment/a", "alpha")]);
@@ -218,7 +222,7 @@ Deno.test("memory: update runs a SPARQL UPDATE", async () => {
   }
 });
 
-Deno.test("hosted: throws a clear NOT-IMPLEMENTED error, never fakes a connection", async () => {
+test("hosted: throws a clear NOT-IMPLEMENTED error, never fakes a connection", async () => {
   await assertRejects(
     () =>
       createWorldClient({
@@ -236,9 +240,9 @@ Deno.test("hosted: throws a clear NOT-IMPLEMENTED error, never fakes a connectio
   );
 });
 
-Deno.test("libsql: file backend round-trips and persists across clients", async () => {
-  const dir = await Deno.makeTempDir();
-  const path = `${dir}/world.db`;
+test("libsql: file backend round-trips and persists across clients", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "twins-world-"));
+  const path = join(dir, "world.db").replaceAll("\\", "/");
   try {
     const world = await createWorldClient({
       backend: "libsql",
@@ -266,6 +270,10 @@ Deno.test("libsql: file backend round-trips and persists across clients", async 
       await reopened.close();
     }
   } finally {
-    await Deno.remove(dir, { recursive: true });
+    // Best effort: on Windows the libsql file handle outlives close() and the
+    // directory stays locked (EBUSY) until the process exits.
+    await rm(dir, { recursive: true, force: true, maxRetries: 3 }).catch(
+      () => {},
+    );
   }
 });
